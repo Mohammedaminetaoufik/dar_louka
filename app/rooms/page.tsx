@@ -1,38 +1,43 @@
 "use client"
 
+import { useState, useEffect, useRef } from "react"
+import { motion, useInView } from "framer-motion"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { motion } from "framer-motion"
-import { useLanguage } from "@/components/language-provider"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useInView } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
 import { Users, Wifi, Calendar, Loader2 } from "lucide-react"
 import { BookingForm } from "@/components/booking/booking-form"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { getRooms } from "@/app/actions/rooms"
 import { ImageCarousel } from "@/components/image-carousel"
-import type { Room } from "@/lib/api-client"
+import { useLanguage } from "@/components/language-provider"
+
+// Fetch all rooms from the API
+async function getRooms() {
+  const res = await fetch("/api/rooms")
+  if (!res.ok) throw new Error("Failed to fetch rooms")
+  return res.json()
+}
 
 export default function RoomsPage() {
   const { t } = useLanguage()
   const roomsRef = useRef(null)
   const isRoomsInView = useInView(roomsRef, { once: true, margin: "-100px" })
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
-  const [rooms, setRooms] = useState<Room[]>([])
+  const [rooms, setRooms] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchRoomsData = async () => {
       try {
         setLoading(true)
         const data = await getRooms()
+        console.log("Rooms fetched:", data)
         setRooms(data)
         setError(null)
       } catch (err) {
-        console.error("[v0] Error loading rooms:", err)
+        console.error("[RoomsPage] Error loading rooms:", err)
         setError("Failed to load rooms")
       } finally {
         setLoading(false)
@@ -45,8 +50,9 @@ export default function RoomsPage() {
   return (
     <div className="min-h-screen">
       <Header />
+
       <main>
-        {/* Hero Section */}
+        {/* Hero */}
         <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
           <motion.div
             initial={{ scale: 1.1 }}
@@ -65,15 +71,13 @@ export default function RoomsPage() {
 
           <div className="relative z-10 container mx-auto px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
-                {t("rooms.title")}
-              </h1>
+              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4">{t("rooms.title")}</h1>
               <p className="text-xl md:text-2xl text-sand-100">{t("rooms.subtitle")}</p>
             </motion.div>
           </div>
         </section>
 
-        {/* Booking Form Section */}
+        {/* Booking Form */}
         <section className="py-12 bg-background border-b border-border">
           <div className="container mx-auto px-4">
             <BookingForm />
@@ -102,24 +106,20 @@ export default function RoomsPage() {
                     transition={{ duration: 0.6, delay: index * 0.2 }}
                   >
                     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                      <div
-                        className={`grid grid-cols-1 lg:grid-cols-2 gap-0 ${index % 2 === 1 ? "lg:grid-flow-dense" : ""}`}
-                      >
+                      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-0 ${index % 2 === 1 ? "lg:grid-flow-dense" : ""}`}>
+                        {/* Images */}
                         <div className={`relative ${index % 2 === 1 ? "lg:col-start-2" : ""}`}>
                           <ImageCarousel
                             images={room.images && room.images.length > 0 ? room.images : [room.image]}
-                            autoScroll={true}
+                            autoScroll
                             autoScrollInterval={5000}
                           />
                         </div>
 
                         {/* Content */}
                         <CardContent className="p-8 lg:p-12 flex flex-col justify-center">
-                          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                            {room.name}
-                          </h2>
+                          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">{room.name}</h2>
 
-                          {/* Room Info */}
                           <div className="flex flex-wrap gap-4 mb-6 text-muted-foreground">
                             <div className="flex items-center gap-2">
                               <Users className="h-4 w-4" />
@@ -143,7 +143,7 @@ export default function RoomsPage() {
                             </div>
                           )}
 
-                          {/* Price and Booking */}
+                          {/* Price & Booking */}
                           <div className="flex items-center justify-between pt-6 border-t border-border">
                             <div>
                               <span className="text-sm text-muted-foreground">{t("rooms.from")}</span>
@@ -194,37 +194,20 @@ export default function RoomsPage() {
               You can also book your stay through our trusted partner platforms
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 bg-transparent"
-                onClick={() => window.open("https://booking.com", "_blank")}
-              >
-                <Calendar className="h-5 w-5 mr-2" />
-                Booking.com
+              <Button variant="outline" size="lg" className="border-2 bg-transparent" onClick={() => window.open("https://booking.com", "_blank")}>
+                <Calendar className="h-5 w-5 mr-2" /> Booking.com
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 bg-transparent"
-                onClick={() => window.open("https://airbnb.com", "_blank")}
-              >
-                <Calendar className="h-5 w-5 mr-2" />
-                Airbnb
+              <Button variant="outline" size="lg" className="border-2 bg-transparent" onClick={() => window.open("https://airbnb.com", "_blank")}>
+                <Calendar className="h-5 w-5 mr-2" /> Airbnb
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 bg-transparent"
-                onClick={() => window.open("https://tripadvisor.com", "_blank")}
-              >
-                <Calendar className="h-5 w-5 mr-2" />
-                TripAdvisor
+              <Button variant="outline" size="lg" className="border-2 bg-transparent" onClick={() => window.open("https://tripadvisor.com", "_blank")}>
+                <Calendar className="h-5 w-5 mr-2" /> TripAdvisor
               </Button>
             </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   )

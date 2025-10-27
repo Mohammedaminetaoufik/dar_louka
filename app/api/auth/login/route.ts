@@ -16,9 +16,10 @@ export async function POST(request: NextRequest) {
       where: { email },
     })
 
-    if (!admin || !verifyPassword(password, admin.password)) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
-    }
+    if (!admin || password !== admin.password) {
+  return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
+}
+
 
     const response = NextResponse.json(
       { success: true, admin: { id: admin.id, email: admin.email, name: admin.name } },

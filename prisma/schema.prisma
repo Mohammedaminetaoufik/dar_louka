@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,9 +16,9 @@ model Room {
   description String   @db.Text
   price       Float
   capacity    Int
-  amenities   String[] @default([])
+  amenities   Json?
   image       String
-  images      String[] @default([])
+  images      Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
