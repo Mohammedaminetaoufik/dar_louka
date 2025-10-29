@@ -77,12 +77,7 @@ export default function RoomsPage() {
           </div>
         </section>
 
-        {/* Booking Form */}
-        <section className="py-12 bg-background border-b border-border">
-          <div className="container mx-auto px-4">
-            <BookingForm />
-          </div>
-        </section>
+        
 
         {/* Rooms Grid */}
         <section ref={roomsRef} className="py-20 bg-sand-50">

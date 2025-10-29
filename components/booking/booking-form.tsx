@@ -1,134 +1,111 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
-import { useLanguage } from "@/components/language-provider"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Textarea } from "@/components/ui/textarea"
+import { Loader2 } from "lucide-react"
 
-interface BookingFormProps {
-  selectedRoom?: string
-}
+export function BookingForm({ selectedRoom }: { selectedRoom?: string }) {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    guests: 1,
+    checkIn: "",
+    checkOut: "",
+    specialRequests: "",
+  })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-export function BookingForm({ selectedRoom }: BookingFormProps) {
-  const { t } = useLanguage()
-  const [checkIn, setCheckIn] = useState<Date>()
-  const [checkOut, setCheckOut] = useState<Date>()
-  const [guests, setGuests] = useState("2")
-  const [room, setRoom] = useState(selectedRoom || "")
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would integrate with your booking system
-    // For now, we'll show an alert
-    alert(
-      `Booking request:\nCheck-in: ${checkIn ? format(checkIn, "PPP") : "Not selected"}\nCheck-out: ${checkOut ? format(checkOut, "PPP") : "Not selected"}\nGuests: ${guests}\nRoom: ${room || "Any available"}`,
-    )
+    setLoading(true)
+    setSuccess(null)
+    setError(null)
+
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          roomId: selectedRoom,
+        }),
+      })
+
+      if (!res.ok) throw new Error("Failed to create booking")
+
+      setSuccess("Your booking request has been sent successfully!")
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        guests: 1,
+        checkIn: "",
+        checkOut: "",
+        specialRequests: "",
+      })
+    } catch (err) {
+      console.error(err)
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <Card className="shadow-lg">
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Check-in Date */}
-            <div className="space-y-2">
-              <Label htmlFor="checkin">{t("booking.checkin")}</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn("w-full justify-start text-left font-normal", !checkIn && "text-muted-foreground")}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {checkIn ? format(checkIn, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={checkIn}
-                    onSelect={setCheckIn}
-                    initialFocus
-                    disabled={(date) => date < new Date()}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {success && <div className="text-green-600">{success}</div>}
+      {error && <div className="text-red-600">{error}</div>}
 
-            {/* Check-out Date */}
-            <div className="space-y-2">
-              <Label htmlFor="checkout">{t("booking.checkout")}</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn("w-full justify-start text-left font-normal", !checkOut && "text-muted-foreground")}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {checkOut ? format(checkOut, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={checkOut}
-                    onSelect={setCheckOut}
-                    initialFocus
-                    disabled={(date) => date < (checkIn || new Date())}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+      <div>
+        <Label htmlFor="name">Name</Label>
+        <Input id="name" name="name" value={form.name} onChange={handleChange} required />
+      </div>
 
-            {/* Guests */}
-            <div className="space-y-2">
-              <Label htmlFor="guests">{t("booking.guests")}</Label>
-              <Select value={guests} onValueChange={setGuests}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select guests" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Guest</SelectItem>
-                  <SelectItem value="2">2 Guests</SelectItem>
-                  <SelectItem value="3">3 Guests</SelectItem>
-                  <SelectItem value="4">4 Guests</SelectItem>
-                  <SelectItem value="5">5+ Guests</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" name="email" value={form.email} onChange={handleChange} required />
+      </div>
 
-            {/* Room Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="room">{t("booking.room")}</Label>
-              <Select value={room} onValueChange={setRoom}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Any available" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="any">Any Available</SelectItem>
-                  <SelectItem value="atlas-suite">Atlas Suite</SelectItem>
-                  <SelectItem value="garden-room">Garden Room</SelectItem>
-                  <SelectItem value="family-suite">Family Suite</SelectItem>
-                  <SelectItem value="deluxe-room">Deluxe Room</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <div>
+        <Label htmlFor="phone">Phone</Label>
+        <Input id="phone" name="phone" value={form.phone} onChange={handleChange} required />
+      </div>
 
-          <Button type="submit" size="lg" className="w-full md:w-auto bg-terracotta-600 hover:bg-terracotta-700">
-            {t("booking.submit")}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="checkIn">Check-In</Label>
+          <Input id="checkIn" type="date" name="checkIn" value={form.checkIn} onChange={handleChange} required />
+        </div>
+        <div>
+          <Label htmlFor="checkOut">Check-Out</Label>
+          <Input id="checkOut" type="date" name="checkOut" value={form.checkOut} onChange={handleChange} required />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="guests">Guests</Label>
+        <Input id="guests" type="number" min="1" name="guests" value={form.guests} onChange={handleChange} required />
+      </div>
+
+      <div>
+        <Label htmlFor="specialRequests">Special Requests</Label>
+        <Textarea id="specialRequests" name="specialRequests" value={form.specialRequests} onChange={handleChange} />
+      </div>
+
+      <Button type="submit" className="w-full bg-terracotta-600 hover:bg-terracotta-700" disabled={loading}>
+        {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : "Book Now"}
+      </Button>
+    </form>
   )
 }
