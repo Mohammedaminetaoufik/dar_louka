@@ -8,8 +8,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { Calendar, Loader2 } from "lucide-react"
-import { getEvents } from "@/app/actions/events"
-import type { Event } from "@/lib/api-client"
+
+export interface Event {
+  id: number
+  title: string
+  description: string
+  date: string
+  price?: number
+  image?: string
+}
 
 export default function EventsPage() {
   const { t } = useLanguage()
@@ -23,7 +30,9 @@ export default function EventsPage() {
     const fetchEventsData = async () => {
       try {
         setLoading(true)
-        const data = await getEvents()
+        const response = await fetch("/api/events")
+        if (!response.ok) throw new Error("Failed to fetch events")
+        const data: Event[] = await response.json()
         setEvents(data)
         setError(null)
       } catch (err) {
@@ -114,7 +123,9 @@ export default function EventsPage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
                           <Calendar className="h-4 w-4" />
-                          <span>{event.date}</span>
+                          <span>
+  {new Date(event.date).toLocaleDateString("fr-FR")}
+</span>
                         </div>
                         <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{event.title}</h3>
                         <p className="text-muted-foreground leading-relaxed mb-3">{event.description}</p>
