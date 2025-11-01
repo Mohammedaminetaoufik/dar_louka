@@ -8,9 +8,18 @@ import Link from "next/link"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { Users, Wifi, Loader2 } from "lucide-react"
-import { getRooms } from "@/app/actions/rooms"
 import { ImageCarousel } from "@/components/image-carousel"
-import type { Room } from "@/lib/api-client"
+
+export interface Room {
+  id: number
+  name: string
+  description: string
+  price: number
+  capacity: number
+  amenities: string[]
+  images?: string[] // multiple images
+  image: string // fallback single image
+}
 
 export function RoomPreview() {
   const { t } = useLanguage()
@@ -22,8 +31,10 @@ export function RoomPreview() {
   useEffect(() => {
     const fetchRoomsData = async () => {
       try {
-        const data = await getRooms()
-        setRooms(data.slice(0, 3))
+        const response = await fetch("/api/rooms")
+        if (!response.ok) throw new Error("Failed to fetch rooms")
+        const data: Room[] = await response.json()
+        setRooms(data.slice(0, 3)) // show only first 3
       } catch (err) {
         console.error("[v0] Error loading rooms:", err)
       } finally {

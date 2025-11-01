@@ -12,9 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ImageCarousel } from "@/components/image-carousel"
 import { useLanguage } from "@/components/language-provider"
 
-// Fetch all rooms from the API
 async function getRooms() {
-  const res = await fetch("/api/rooms")
+  const res = await fetch("/api/rooms", { cache: "no-store" })
   if (!res.ok) throw new Error("Failed to fetch rooms")
   return res.json()
 }
@@ -26,7 +25,7 @@ export default function RoomsPage() {
   const [rooms, setRooms] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
+  const [selectedRoomForBooking, setSelectedRoomForBooking] = useState<{id: string, name: string} | null>(null)
 
   useEffect(() => {
     const fetchRoomsData = async () => {
@@ -77,8 +76,6 @@ export default function RoomsPage() {
           </div>
         </section>
 
-        
-
         {/* Rooms Grid */}
         <section ref={roomsRef} className="py-20 bg-sand-50">
           <div className="container mx-auto px-4">
@@ -89,9 +86,19 @@ export default function RoomsPage() {
               </div>
             )}
 
-            {error && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">{error}</div>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <p className="text-red-700 font-semibold">{error}</p>
+                <Button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-4 bg-terracotta-600 hover:bg-terracotta-700"
+                >
+                  Retry
+                </Button>
+              </div>
+            )}
 
-            {!loading && rooms.length > 0 && (
+            {!loading && !error && rooms.length > 0 && (
               <div className="space-y-16">
                 {rooms.map((room, index) => (
                   <motion.div
@@ -129,7 +136,7 @@ export default function RoomsPage() {
                           {/* Amenities */}
                           {room.amenities && room.amenities.length > 0 && (
                             <div className="grid grid-cols-2 gap-3 mb-6">
-                              {room.amenities.map((amenity, i) => (
+                              {room.amenities.map((amenity: string, i: number) => (
                                 <div key={i} className="flex items-center gap-2 text-sm">
                                   <Wifi className="h-4 w-4 text-primary" />
                                   <span>{amenity}</span>
@@ -152,16 +159,21 @@ export default function RoomsPage() {
                                 <Button
                                   size="lg"
                                   className="bg-terracotta-600 hover:bg-terracotta-700"
-                                  onClick={() => setSelectedRoom(room.id.toString())}
+                                  onClick={() => setSelectedRoomForBooking({ id: room.id.toString(), name: room.name })}
                                 >
                                   {t("rooms.book")}
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
+                              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
-                                  <DialogTitle className="font-serif text-2xl">Book {room.name}</DialogTitle>
+                                  <DialogTitle className="font-serif text-2xl">
+                                    {t("booking.title")}
+                                  </DialogTitle>
                                 </DialogHeader>
-                                <BookingForm selectedRoom={room.id.toString()} />
+                                <BookingForm 
+                                  selectedRoom={selectedRoomForBooking?.id} 
+                                  roomName={selectedRoomForBooking?.name}
+                                />
                               </DialogContent>
                             </Dialog>
                           </div>
@@ -173,7 +185,7 @@ export default function RoomsPage() {
               </div>
             )}
 
-            {!loading && rooms.length === 0 && !error && (
+            {!loading && !error && rooms.length === 0 && (
               <div className="text-center py-20">
                 <p className="text-muted-foreground text-lg">{t("common.noData")}</p>
               </div>

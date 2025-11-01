@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { RoomsManager } from "@/components/admin/rooms-manager"
+import {RoomsManager}  from "@/components/admin/rooms-manager"
 import { EventsManager } from "@/components/admin/events-manager"
 import { GalleryManager } from "@/components/admin/gallery-manager"
 import { BookingsManager } from "@/components/admin/bookings-manager"
