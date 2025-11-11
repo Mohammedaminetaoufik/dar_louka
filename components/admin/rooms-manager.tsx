@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Loader2, Edit2, Trash2, X, Upload, Image as ImageIcon } from "lucide-react"
+import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar } from "lucide-react"
 
 interface Room {
   id: number
@@ -16,17 +16,22 @@ interface Room {
   amenities: string[]
   image: string
   images?: string[]
+  icalToken?: string
+  icalImportUrls?: string[]
 }
 
 export function RoomsManager() {
   const [rooms, setRooms] = useState<Room[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [formData, setFormData] = useState<Partial<Room>>({ amenities: [] })
+  const [formData, setFormData] = useState<Partial<Room>>({ amenities: [], icalImportUrls: [] })
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [newAmenity, setNewAmenity] = useState("")
+  const [newIcalUrl, setNewIcalUrl] = useState("")
+  const [copiedToken, setCopiedToken] = useState<string | null>(null)
+  const [syncing, setSyncing] = useState<number | null>(null)
 
   useEffect(() => {
     fetchRooms()
@@ -54,10 +59,7 @@ export function RoomsManager() {
         body: formDataUpload,
       })
 
-      if (!response.ok) {
-        throw new Error("Upload failed")
-      }
-
+      if (!response.ok) throw new Error("Upload failed")
       const data = await response.json()
       return data.url
     } catch (error) {
@@ -68,7 +70,6 @@ export function RoomsManager() {
   }
 
   async function handleSave() {
-    // Validate required fields
     if (!formData.name?.trim()) {
       alert("Please enter room name")
       return
@@ -89,7 +90,6 @@ export function RoomsManager() {
       return
     }
 
-    // Check if at least one image exists (existing or new)
     const hasExistingImages = (formData.images || []).length > 0
     const hasNewImages = imageFiles.length > 0
     
@@ -104,7 +104,6 @@ export function RoomsManager() {
     try {
       let uploadedImages: string[] = []
 
-      // Upload new images if selected
       if (imageFiles.length > 0) {
         for (const file of imageFiles) {
           const url = await handleImageUpload(file)
@@ -112,17 +111,13 @@ export function RoomsManager() {
         }
       }
 
-      // Combine existing images with new uploads
       const existingImages = (formData.images || []).filter(img => typeof img === 'string')
       const allImages = [...existingImages, ...uploadedImages]
-
-      // Use first image as main image if no main image exists
       const mainImage = formData.image || allImages[0] || ""
 
       const method = editingId ? "PUT" : "POST"
       const url = editingId ? `/api/rooms/${editingId}` : "/api/rooms"
 
-      // Prepare data to send
       const roomData = {
         name: formData.name?.trim(),
         description: formData.description?.trim(),
@@ -131,9 +126,8 @@ export function RoomsManager() {
         image: mainImage,
         images: allImages,
         amenities: formData.amenities || [],
+        icalImportUrls: formData.icalImportUrls || [],
       }
-
-      console.log("Sending room data:", roomData) // Debug log
 
       const response = await fetch(url, {
         method,
@@ -144,12 +138,11 @@ export function RoomsManager() {
       if (response.ok) {
         alert("Room saved successfully!")
         fetchRooms()
-        setFormData({ amenities: [] })
+        setFormData({ amenities: [], icalImportUrls: [] })
         setEditingId(null)
         setImageFiles([])
       } else {
         const errorData = await response.json()
-        console.error("Save error:", errorData)
         alert(`Failed to save room: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
@@ -174,7 +167,10 @@ export function RoomsManager() {
 
   function handleEdit(room: Room) {
     setEditingId(room.id)
-    setFormData(room)
+    setFormData({
+      ...room,
+      icalImportUrls: room.icalImportUrls || []
+    })
     setImageFiles([])
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -189,7 +185,6 @@ export function RoomsManager() {
       return
     }
 
-    // Validate file sizes
     for (const file of files) {
       if (file.size > 5 * 1024 * 1024) {
         alert(`File ${file.name} is too large. Maximum size is 5MB`)
@@ -226,6 +221,60 @@ export function RoomsManager() {
       ...prev,
       amenities: (prev.amenities || []).filter((_, i) => i !== index)
     }))
+  }
+
+  function addIcalUrl() {
+    if (!newIcalUrl.trim()) return
+    
+    try {
+      new URL(newIcalUrl.trim())
+    } catch {
+      alert("Please enter a valid URL")
+      return
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      icalImportUrls: [...(prev.icalImportUrls || []), newIcalUrl.trim()]
+    }))
+    setNewIcalUrl("")
+  }
+
+  function removeIcalUrl(index: number) {
+    setFormData(prev => ({
+      ...prev,
+      icalImportUrls: (prev.icalImportUrls || []).filter((_, i) => i !== index)
+    }))
+  }
+
+  function copyIcalToken(token: string) {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`${window.location.origin}/api/ical/${token}`)
+      setCopiedToken(token)
+      setTimeout(() => setCopiedToken(null), 2000)
+    }
+  }
+
+  async function syncIcalCalendar(roomId: number) {
+    setSyncing(roomId)
+    try {
+      const response = await fetch(`/api/rooms/${roomId}/sync-ical`, {
+        method: 'POST',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        alert(`Successfully synced ${data.bookingsImported} bookings from external calendars`)
+        fetchRooms()
+      } else {
+        alert('Failed to sync calendars')
+      }
+    } catch (error) {
+      console.error('Sync error:', error)
+      alert('Error syncing calendars')
+    } finally {
+      setSyncing(null)
+    }
   }
 
   if (loading) {
@@ -294,7 +343,6 @@ export function RoomsManager() {
           <div>
             <Label>Amenities</Label>
             <div className="space-y-3">
-              {/* Add new amenity */}
               <div className="flex gap-2">
                 <Input
                   value={newAmenity}
@@ -303,11 +351,11 @@ export function RoomsManager() {
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
                 />
                 <Button type="button" onClick={addAmenity} variant="outline">
+                  <Plus className="h-4 w-4 mr-1" />
                   Add
                 </Button>
               </div>
 
-              {/* Display amenities */}
               {(formData.amenities || []).length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {(formData.amenities || []).map((amenity, index) => (
@@ -330,11 +378,68 @@ export function RoomsManager() {
             </div>
           </div>
 
-          {/* Images Upload (Max 3) */}
+          {/* iCal Import URLs */}
+          <div className="border-t pt-6">
+            <Label className="flex items-center gap-2 text-lg font-semibold mb-3">
+              <Calendar className="h-5 w-5" />
+              External Calendar Integration (iCal)
+            </Label>
+            <p className="text-sm text-olive-600 mb-4">
+              Import bookings from Booking.com, Airbnb, TripAdvisor, and other platforms that provide iCal feeds
+            </p>
+            
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={newIcalUrl}
+                  onChange={(e) => setNewIcalUrl(e.target.value)}
+                  placeholder="https://platform.com/ical/feed/your-property-id"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addIcalUrl())}
+                />
+                <Button type="button" onClick={addIcalUrl} variant="outline">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add
+                </Button>
+              </div>
+
+              {(formData.icalImportUrls || []).length > 0 && (
+                <div className="space-y-2">
+                  {(formData.icalImportUrls || []).map((url, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between bg-white border border-sand-300 rounded-md p-3"
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <ExternalLink className="h-4 w-4 text-olive-600 flex-shrink-0" />
+                        <span className="text-sm text-olive-700 truncate">{url}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeIcalUrl(index)}
+                        className="ml-2 text-red-600 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="bg-moroccan-blue-50 border border-moroccan-blue-200 rounded-md p-3">
+                <p className="text-xs text-moroccan-blue-800">
+                  <strong>How to get iCal URLs:</strong><br/>
+                  • Booking.com: Extranet → Calendar → Export Calendar<br/>
+                  • Airbnb: Listings → Calendar → Availability Settings → Export Calendar<br/>
+                  • TripAdvisor: Calendar → Sync Calendars → Export
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Images Upload */}
           <div>
             <Label>Room Images * (Max 3 images)</Label>
             <div className="space-y-3">
-              {/* Existing Images */}
               {(formData.images || []).length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
                   {(formData.images || []).map((image, index) => (
@@ -356,7 +461,6 @@ export function RoomsManager() {
                 </div>
               )}
 
-              {/* New Image Previews */}
               {imageFiles.length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
                   {imageFiles.map((file, index) => (
@@ -381,7 +485,6 @@ export function RoomsManager() {
                 </div>
               )}
 
-              {/* Upload Button */}
               {totalImages < 3 && (
                 <div>
                   <input
@@ -401,14 +504,7 @@ export function RoomsManager() {
                       Upload Images ({totalImages}/3)
                     </span>
                   </label>
-                  <p className="text-xs text-olive-600 mt-2">
-                    Upload up to 3 images (max 5MB each). Supported: JPG, PNG, GIF
-                  </p>
                 </div>
-              )}
-
-              {totalImages === 0 && !editingId && (
-                <p className="text-red-600 text-sm">At least one image is required</p>
               )}
             </div>
           </div>
@@ -433,7 +529,7 @@ export function RoomsManager() {
               <Button
                 onClick={() => {
                   setEditingId(null)
-                  setFormData({ amenities: [] })
+                  setFormData({ amenities: [], icalImportUrls: [] })
                   setImageFiles([])
                 }}
                 variant="outline"
@@ -450,7 +546,6 @@ export function RoomsManager() {
         <h2 className="text-2xl font-bold text-olive-900">Rooms List</h2>
         {rooms.length === 0 ? (
           <div className="text-center py-12 bg-sand-50 rounded-lg">
-            <ImageIcon className="h-16 w-16 mx-auto text-sand-300 mb-3" />
             <p className="text-olive-600">No rooms yet. Create your first room above!</p>
           </div>
         ) : (
@@ -458,7 +553,6 @@ export function RoomsManager() {
             {rooms.map((room) => (
               <div key={room.id} className="bg-white border border-sand-200 rounded-lg p-6 shadow-sm">
                 <div className="flex gap-4">
-                  {/* Room Images */}
                   <div className="w-48 flex-shrink-0">
                     {room.images && room.images.length > 0 ? (
                       <div className="grid grid-cols-2 gap-2">
@@ -480,10 +574,10 @@ export function RoomsManager() {
                     )}
                   </div>
                   
-                  {/* Room Info */}
                   <div className="flex-1">
                     <h3 className="font-bold text-xl text-olive-900 mb-2">{room.name}</h3>
                     <p className="text-olive-700 text-sm mb-3 line-clamp-2">{room.description}</p>
+                    
                     <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                       <span className="text-olive-600">
                         <strong>Price:</strong> ${room.price}/night
@@ -492,26 +586,52 @@ export function RoomsManager() {
                         <strong>Capacity:</strong> {room.capacity} guests
                       </span>
                     </div>
-                    {room.amenities && room.amenities.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {room.amenities.slice(0, 5).map((amenity, idx) => (
-                          <span
-                            key={idx}
-                            className="text-xs bg-sand-100 px-2 py-1 rounded-full text-olive-700"
+
+                    {room.icalToken && typeof window !== 'undefined' && (
+                      <div className="mb-3 bg-green-50 border border-green-200 rounded-md p-3">
+                        <p className="text-xs font-semibold text-green-800 mb-1">Export Calendar URL:</p>
+                        <div className="flex items-center gap-2">
+                          <code className="flex-1 text-xs bg-white px-2 py-1 rounded border border-green-300 truncate">
+                            {window.location.origin}/api/ical/{room.icalToken}
+                          </code>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => copyIcalToken(room.icalToken!)}
+                            className="flex-shrink-0"
                           >
-                            {amenity}
-                          </span>
-                        ))}
-                        {room.amenities.length > 5 && (
-                          <span className="text-xs bg-sand-100 px-2 py-1 rounded-full text-olive-700">
-                            +{room.amenities.length - 5} more
-                          </span>
-                        )}
+                            {copiedToken === room.icalToken ? (
+                              <>✓ Copied</>
+                            ) : (
+                              <><Copy className="h-3 w-3 mr-1" /> Copy</>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {room.icalImportUrls && room.icalImportUrls.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-xs font-semibold text-moroccan-blue-800 mb-1">
+                          Syncing from {room.icalImportUrls.length} external calendar(s)
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => syncIcalCalendar(room.id)}
+                          disabled={syncing === room.id}
+                          className="text-xs"
+                        >
+                          {syncing === room.id ? (
+                            <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Syncing...</>
+                          ) : (
+                            <><Calendar className="h-3 w-3 mr-1" /> Sync Now</>
+                          )}
+                        </Button>
                       </div>
                     )}
                   </div>
 
-                  {/* Actions */}
                   <div className="flex flex-col gap-2">
                     <Button
                       onClick={() => handleEdit(room)}

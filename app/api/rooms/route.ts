@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         images: body.images || [],
         icalToken, // 🔹 pour ton export iCal
         icalImportUrls: body.icalImportUrls || [], // 🔹 Booking/TripAdvisor URLs
-      },
+      } as any,
     })
 
     return NextResponse.json(room, { status: 201 })
