@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,18 +8,19 @@ datasource db {
 }
 
 model Room {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String   @db.Text
-  price       Float
-  capacity    Int
-  amenities   Json?
-  image       String
-  images      Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  bookings    Booking[]
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String    @db.Text
+  price          Float
+  capacity       Int
+  amenities      String?   @db.LongText
+  image          String
+  images         String?   @db.LongText
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  icalImportUrls String?   @db.LongText
+  icalToken      String?   @unique(map: "icalToken")
+  bookings       Booking[]
 
   @@map("rooms")
 }
@@ -56,24 +54,25 @@ model GalleryImage {
 }
 
 model Booking {
-  id               Int      @id @default(autoincrement())
-  roomId           Int
-  room             Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  checkIn          DateTime
-  checkOut         DateTime
-  guests           Int
-  name             String
-  email            String
-  phone            String
-  specialRequests  String?  @db.Text
-  status           String   @default("pending")
-  bookingComId     String?
-  airbnbId         String?
-  tripadvisorId    String?
-  externalStatus   String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  roomId          Int
+  checkIn         DateTime
+  checkOut        DateTime
+  guests          Int
+  name            String
+  email           String
+  phone           String
+  specialRequests String?  @db.Text
+  status          String   @default("pending")
+  bookingComId    String?
+  airbnbId        String?
+  tripadvisorId   String?
+  externalStatus  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
+  @@index([roomId], map: "bookings_roomId_fkey")
   @@map("bookings")
 }
 
