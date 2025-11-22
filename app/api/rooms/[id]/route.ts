@@ -3,6 +3,17 @@ import { type NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
+const safeParseJSON = (str: string | null | undefined): unknown[] => {
+  if (!str) return []
+  try {
+    const parsed = JSON.parse(str)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.warn("[JSON Parse] Invalid JSON string:", str)
+    return []
+  }
+}
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
@@ -19,8 +30,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Room not found" }, { status: 404 })
     }
 
+    const serializedRoom = {
+      ...room,
+      amenities: safeParseJSON(room.amenities),
+      images: safeParseJSON(room.images),
+      icalImportUrls: safeParseJSON(room.icalImportUrls),
+    }
+
     // ✅ Return full room including icalToken (safe for admin-only use)
-    return NextResponse.json(room)
+    return NextResponse.json(serializedRoom)
   } catch (error) {
     console.error("[GET /api/rooms/:id] Error:", error)
     return NextResponse.json({ error: "Failed to fetch room" }, { status: 500 })
@@ -69,7 +87,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     })
 
-    return NextResponse.json(room)
+    const serializedRoom = {
+      ...room,
+      amenities: safeParseJSON(room.amenities),
+      images: safeParseJSON(room.images),
+      icalImportUrls: safeParseJSON(room.icalImportUrls),
+    }
+
+    return NextResponse.json(serializedRoom)
   } catch (error) {
     console.error("[PUT /api/rooms/:id] Error:", error)
     return NextResponse.json({ error: "Failed to update room" }, { status: 500 })
