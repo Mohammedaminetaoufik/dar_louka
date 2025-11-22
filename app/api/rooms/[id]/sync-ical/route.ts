@@ -14,9 +14,10 @@ const safeParseJSON = (str: string | null | undefined): string[] => {
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const roomId = Number.parseInt(params.id)
+    const { id } = await params
+    const roomId = Number.parseInt(id)
     if (isNaN(roomId)) {
       return NextResponse.json({ error: "Invalid room ID" }, { status: 400 })
     }

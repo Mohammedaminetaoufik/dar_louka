@@ -3,9 +3,10 @@ import { type NextRequest, NextResponse } from "next/server"
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const roomId = Number.parseInt(params.id)
+    const { id } = await params
+    const roomId = Number.parseInt(id)
     if (isNaN(roomId)) {
       return NextResponse.json({ error: "Invalid room ID" }, { status: 400 })
     }
@@ -27,9 +28,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // Optional: Add PUT if you want to update room via API (not required for UI fix)
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const roomId = Number.parseInt(params.id)
+    const { id } = await params
+    const roomId = Number.parseInt(id)
     if (isNaN(roomId)) {
       return NextResponse.json({ error: "Invalid room ID" }, { status: 400 })
     }
@@ -62,8 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         image: body.image?.trim() ?? null,
         amenities: JSON.stringify(body.amenities || []),
         images: JSON.stringify(body.images || []),
-        icalImportUrls: body.icalImportUrls ? JSON.stringify(body.icalImportUrls) : null,
-        // ✅ Preserve icalToken unless explicitly updated
+        ...(body.icalImportUrls && { icalImportUrls: JSON.stringify(body.icalImportUrls) }),
         ...(body.icalToken && { icalToken: body.icalToken }),
       },
     })
@@ -75,9 +76,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const roomId = Number.parseInt(params.id)
+    const { id } = await params
+    const roomId = Number.parseInt(id)
     if (isNaN(roomId)) {
       return NextResponse.json({ error: "Invalid room ID" }, { status: 400 })
     }
