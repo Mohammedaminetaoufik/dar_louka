@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar, Eye } from "lucide-react"
 
 interface Room {
   id: number
@@ -24,7 +25,11 @@ export function RoomsManager() {
   const [rooms, setRooms] = useState<Room[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [formData, setFormData] = useState<Partial<Room>>({ amenities: [], icalImportUrls: [] })
+  const [formData, setFormData] = useState<Partial<Room>>({
+    amenities: [],
+    icalImportUrls: [],
+    images: [],
+  })
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -32,6 +37,9 @@ export function RoomsManager() {
   const [newIcalUrl, setNewIcalUrl] = useState("")
   const [copiedToken, setCopiedToken] = useState<string | null>(null)
   const [syncing, setSyncing] = useState<number | null>(null)
+  const [viewingIcal, setViewingIcal] = useState<{ token: string; roomName: string } | null>(null)
+  const [icalContent, setIcalContent] = useState<string>("")
+  const [loadingIcal, setLoadingIcal] = useState(false)
 
   useEffect(() => {
     fetchRooms()
@@ -118,6 +126,7 @@ export function RoomsManager() {
       const method = editingId ? "PUT" : "POST"
       const url = editingId ? `/api/rooms/${editingId}` : "/api/rooms"
 
+      // ✅ Preserve icalToken on update (critical!)
       const roomData = {
         name: formData.name?.trim(),
         description: formData.description?.trim(),
@@ -127,6 +136,7 @@ export function RoomsManager() {
         images: allImages,
         amenities: formData.amenities || [],
         icalImportUrls: formData.icalImportUrls || [],
+        ...(editingId && formData.icalToken && { icalToken: formData.icalToken }), // only if editing & present
       }
 
       const response = await fetch(url, {
@@ -138,7 +148,7 @@ export function RoomsManager() {
       if (response.ok) {
         alert("Room saved successfully!")
         fetchRooms()
-        setFormData({ amenities: [], icalImportUrls: [] })
+        setFormData({ amenities: [], icalImportUrls: [], images: [] })
         setEditingId(null)
         setImageFiles([])
       } else {
@@ -157,22 +167,42 @@ export function RoomsManager() {
   async function handleDelete(id: number) {
     if (confirm("Are you sure you want to delete this room?")) {
       try {
-        await fetch(`/api/rooms/${id}`, { method: "DELETE" })
-        fetchRooms()
+        const response = await fetch(`/api/rooms/${id}`, { method: "DELETE" })
+        if (response.ok) {
+          alert("Room deleted successfully")
+          fetchRooms()
+        } else {
+          alert("Failed to delete room")
+        }
       } catch (error) {
         console.error("Error deleting room:", error)
+        alert("Error deleting room")
       }
     }
   }
 
-  function handleEdit(room: Room) {
-    setEditingId(room.id)
-    setFormData({
-      ...room,
-      icalImportUrls: room.icalImportUrls || []
-    })
-    setImageFiles([])
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  // ✅ FIXED: Fetch full room (with icalToken) for editing
+  async function handleEdit(room: Room) {
+    try {
+      const res = await fetch(`/api/rooms/${room.id}`)
+      if (!res.ok) throw new Error(`Failed to load room (HTTP ${res.status})`)
+      
+      const fullRoom = await res.json()
+
+      setEditingId(fullRoom.id)
+      setFormData({
+        ...fullRoom,
+        // ✅ Safe defaults in case DB returns null/invalid JSON
+        amenities: Array.isArray(fullRoom.amenities) ? fullRoom.amenities : [],
+        icalImportUrls: Array.isArray(fullRoom.icalImportUrls) ? fullRoom.icalImportUrls : [],
+        images: Array.isArray(fullRoom.images) ? fullRoom.images : [],
+      })
+      setImageFiles([])
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch (error) {
+      console.error("Error loading room for edit:", error)
+      alert("Could not load room details. Please try again.")
+    }
   }
 
   function handleImageFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -255,6 +285,34 @@ export function RoomsManager() {
     }
   }
 
+  async function viewIcalContent(token: string, roomName: string) {
+    setViewingIcal({ token, roomName })
+    setLoadingIcal(true)
+    setIcalContent("")
+
+    try {
+      const response = await fetch(`/api/ical/${token}`)
+      if (response.ok) {
+        const content = await response.text()
+        setIcalContent(content)
+      } else {
+        setIcalContent(`Error: HTTP ${response.status} — unable to load iCal`)
+      }
+    } catch (error) {
+      console.error("Error fetching iCal:", error)
+      setIcalContent("Error: Failed to fetch iCal content")
+    } finally {
+      setLoadingIcal(false)
+    }
+  }
+
+  function downloadIcal(token: string, roomName: string) {
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}/api/ical/${token}`
+      window.open(url, '_blank')
+    }
+  }
+
   async function syncIcalCalendar(roomId: number) {
     setSyncing(roomId)
     try {
@@ -264,14 +322,15 @@ export function RoomsManager() {
       
       if (response.ok) {
         const data = await response.json()
-        alert(`Successfully synced ${data.bookingsImported} bookings from external calendars`)
+        alert(`✅ Successfully synced ${data.bookingsImported} bookings from external calendars`)
         fetchRooms()
       } else {
-        alert('Failed to sync calendars')
+        const error = await response.json().catch(() => ({}))
+        alert(`❌ Sync failed: ${error.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Sync error:', error)
-      alert('Error syncing calendars')
+      alert('❌ Network error during sync. Check console.')
     } finally {
       setSyncing(null)
     }
@@ -323,6 +382,8 @@ export function RoomsManager() {
               <Label>Price per Night (USD) *</Label>
               <Input
                 type="number"
+                min="0"
+                step="0.01"
                 value={formData.price || ""}
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                 placeholder="150"
@@ -332,6 +393,7 @@ export function RoomsManager() {
               <Label>Capacity (Guests) *</Label>
               <Input
                 type="number"
+                min="1"
                 value={formData.capacity || ""}
                 onChange={(e) => setFormData({ ...formData, capacity: Number(e.target.value) })}
                 placeholder="2"
@@ -348,7 +410,7 @@ export function RoomsManager() {
                   value={newAmenity}
                   onChange={(e) => setNewAmenity(e.target.value)}
                   placeholder="e.g., Free WiFi, Mountain View"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
                 />
                 <Button type="button" onClick={addAmenity} variant="outline">
                   <Plus className="h-4 w-4 mr-1" />
@@ -368,6 +430,7 @@ export function RoomsManager() {
                         type="button"
                         onClick={() => removeAmenity(index)}
                         className="hover:text-terracotta-900"
+                        aria-label="Remove amenity"
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -394,7 +457,7 @@ export function RoomsManager() {
                   value={newIcalUrl}
                   onChange={(e) => setNewIcalUrl(e.target.value)}
                   placeholder="https://platform.com/ical/feed/your-property-id"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addIcalUrl())}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addIcalUrl())}
                 />
                 <Button type="button" onClick={addIcalUrl} variant="outline">
                   <Plus className="h-4 w-4 mr-1" />
@@ -417,6 +480,7 @@ export function RoomsManager() {
                         type="button"
                         onClick={() => removeIcalUrl(index)}
                         className="ml-2 text-red-600 hover:text-red-700"
+                        aria-label="Remove URL"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -443,7 +507,7 @@ export function RoomsManager() {
               {(formData.images || []).length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
                   {(formData.images || []).map((image, index) => (
-                    <div key={index} className="relative group">
+                    <div key={`existing-${index}`} className="relative group">
                       <img
                         src={image}
                         alt={`Room ${index + 1}`}
@@ -453,6 +517,7 @@ export function RoomsManager() {
                         type="button"
                         onClick={() => removeExistingImage(index)}
                         className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Remove image"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -464,7 +529,7 @@ export function RoomsManager() {
               {imageFiles.length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
                   {imageFiles.map((file, index) => (
-                    <div key={index} className="relative group">
+                    <div key={`new-${index}`} className="relative group">
                       <img
                         src={URL.createObjectURL(file)}
                         alt={`New ${index + 1}`}
@@ -474,6 +539,7 @@ export function RoomsManager() {
                         type="button"
                         onClick={() => removeImageFile(index)}
                         className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Remove new image"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -529,7 +595,7 @@ export function RoomsManager() {
               <Button
                 onClick={() => {
                   setEditingId(null)
-                  setFormData({ amenities: [], icalImportUrls: [] })
+                  setFormData({ amenities: [], icalImportUrls: [], images: [] })
                   setImageFiles([])
                 }}
                 variant="outline"
@@ -589,8 +655,8 @@ export function RoomsManager() {
 
                     {room.icalToken && typeof window !== 'undefined' && (
                       <div className="mb-3 bg-green-50 border border-green-200 rounded-md p-3">
-                        <p className="text-xs font-semibold text-green-800 mb-1">Export Calendar URL:</p>
-                        <div className="flex items-center gap-2">
+                        <p className="text-xs font-semibold text-green-800 mb-2">iCal Export URL (Share with booking platforms):</p>
+                        <div className="flex items-center gap-2 mb-2">
                           <code className="flex-1 text-xs bg-white px-2 py-1 rounded border border-green-300 truncate">
                             {window.location.origin}/api/ical/{room.icalToken}
                           </code>
@@ -605,6 +671,26 @@ export function RoomsManager() {
                             ) : (
                               <><Copy className="h-3 w-3 mr-1" /> Copy</>
                             )}
+                          </Button>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => viewIcalContent(room.icalToken!, room.name)}
+                            className="text-xs"
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View iCal
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => downloadIcal(room.icalToken!, room.name)}
+                            className="text-xs"
+                          >
+                            <Calendar className="h-3 w-3 mr-1" />
+                            Download .ics
                           </Button>
                         </div>
                       </div>
@@ -658,6 +744,48 @@ export function RoomsManager() {
           </div>
         )}
       </div>
+
+      {/* View iCal Modal */}
+      <Dialog open={!!viewingIcal} onOpenChange={() => setViewingIcal(null)}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              iCal Calendar: {viewingIcal?.roomName}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                This is your room's calendar in iCal format. Share the URL with booking platforms.
+              </p>
+              {viewingIcal && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => downloadIcal(viewingIcal.token, viewingIcal.roomName)}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              )}
+            </div>
+
+            <div className="bg-slate-900 text-green-400 p-4 rounded-lg overflow-auto max-h-[500px] font-mono text-xs">
+              {loadingIcal ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : icalContent ? (
+                <pre className="whitespace-pre-wrap">{icalContent}</pre>
+              ) : (
+                <p className="text-gray-400 italic">No iCal content loaded.</p>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
