@@ -1,12 +1,14 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar, Eye } from "lucide-react"
+import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar, RefreshCw } from "lucide-react"
 
 interface Room {
   id: number
@@ -82,17 +84,17 @@ export function RoomsManager() {
       alert("Please enter room name")
       return
     }
-    
+
     if (!formData.description?.trim()) {
       alert("Please enter room description")
       return
     }
-    
+
     if (!formData.price || formData.price <= 0) {
       alert("Please enter a valid price")
       return
     }
-    
+
     if (!formData.capacity || formData.capacity <= 0) {
       alert("Please enter a valid capacity")
       return
@@ -100,7 +102,7 @@ export function RoomsManager() {
 
     const hasExistingImages = (formData.images || []).length > 0
     const hasNewImages = imageFiles.length > 0
-    
+
     if (!hasExistingImages && !hasNewImages && !editingId) {
       alert("Please upload at least one image")
       return
@@ -110,7 +112,7 @@ export function RoomsManager() {
     setUploading(true)
 
     try {
-      let uploadedImages: string[] = []
+      const uploadedImages: string[] = []
 
       if (imageFiles.length > 0) {
         for (const file of imageFiles) {
@@ -119,7 +121,7 @@ export function RoomsManager() {
         }
       }
 
-      const existingImages = (formData.images || []).filter(img => typeof img === 'string')
+      const existingImages = (formData.images || []).filter((img) => typeof img === "string")
       const allImages = [...existingImages, ...uploadedImages]
       const mainImage = formData.image || allImages[0] || ""
 
@@ -153,7 +155,7 @@ export function RoomsManager() {
         setImageFiles([])
       } else {
         const errorData = await response.json()
-        alert(`Failed to save room: ${errorData.error || 'Unknown error'}`)
+        alert(`Failed to save room: ${errorData.error || "Unknown error"}`)
       }
     } catch (error) {
       console.error("Error saving room:", error)
@@ -186,7 +188,7 @@ export function RoomsManager() {
     try {
       const res = await fetch(`/api/rooms/${room.id}`)
       if (!res.ok) throw new Error(`Failed to load room (HTTP ${res.status})`)
-      
+
       const fullRoom = await res.json()
 
       setEditingId(fullRoom.id)
@@ -198,7 +200,7 @@ export function RoomsManager() {
         images: Array.isArray(fullRoom.images) ? fullRoom.images : [],
       })
       setImageFiles([])
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: "smooth" })
     } catch (error) {
       console.error("Error loading room for edit:", error)
       alert("Could not load room details. Please try again.")
@@ -209,7 +211,7 @@ export function RoomsManager() {
     const files = Array.from(e.target.files || [])
     const existingCount = (formData.images || []).length
     const newCount = files.length
-    
+
     if (existingCount + newCount > 3) {
       alert("Maximum 3 images allowed per room")
       return
@@ -222,40 +224,40 @@ export function RoomsManager() {
       }
     }
 
-    setImageFiles(prev => [...prev, ...files])
+    setImageFiles((prev) => [...prev, ...files])
   }
 
   function removeImageFile(index: number) {
-    setImageFiles(prev => prev.filter((_, i) => i !== index))
+    setImageFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
   function removeExistingImage(index: number) {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: (prev.images || []).filter((_, i) => i !== index)
+      images: (prev.images || []).filter((_, i) => i !== index),
     }))
   }
 
   function addAmenity() {
     if (!newAmenity.trim()) return
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      amenities: [...(prev.amenities || []), newAmenity.trim()]
+      amenities: [...(prev.amenities || []), newAmenity.trim()],
     }))
     setNewAmenity("")
   }
 
   function removeAmenity(index: number) {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      amenities: (prev.amenities || []).filter((_, i) => i !== index)
+      amenities: (prev.amenities || []).filter((_, i) => i !== index),
     }))
   }
 
   function addIcalUrl() {
     if (!newIcalUrl.trim()) return
-    
+
     try {
       new URL(newIcalUrl.trim())
     } catch {
@@ -263,22 +265,22 @@ export function RoomsManager() {
       return
     }
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      icalImportUrls: [...(prev.icalImportUrls || []), newIcalUrl.trim()]
+      icalImportUrls: [...(prev.icalImportUrls || []), newIcalUrl.trim()],
     }))
     setNewIcalUrl("")
   }
 
   function removeIcalUrl(index: number) {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      icalImportUrls: (prev.icalImportUrls || []).filter((_, i) => i !== index)
+      icalImportUrls: (prev.icalImportUrls || []).filter((_, i) => i !== index),
     }))
   }
 
   function copyIcalToken(token: string) {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       navigator.clipboard.writeText(`${window.location.origin}/api/ical/${token}`)
       setCopiedToken(token)
       setTimeout(() => setCopiedToken(null), 2000)
@@ -307,9 +309,9 @@ export function RoomsManager() {
   }
 
   function downloadIcal(token: string, roomName: string) {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const url = `${window.location.origin}/api/ical/${token}`
-      window.open(url, '_blank')
+      window.open(url, "_blank")
     }
   }
 
@@ -317,23 +319,31 @@ export function RoomsManager() {
     setSyncing(roomId)
     try {
       const response = await fetch(`/api/rooms/${roomId}/sync-ical`, {
-        method: 'POST',
+        method: "POST",
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         alert(`✅ Successfully synced ${data.bookingsImported} bookings from external calendars`)
         fetchRooms()
       } else {
         const error = await response.json().catch(() => ({}))
-        alert(`❌ Sync failed: ${error.error || 'Unknown error'}`)
+        alert(`❌ Sync failed: ${error.error || "Unknown error"}`)
       }
     } catch (error) {
-      console.error('Sync error:', error)
-      alert('❌ Network error during sync. Check console.')
+      console.error("Sync error:", error)
+      alert("❌ Network error during sync. Check console.")
     } finally {
       setSyncing(null)
     }
+  }
+
+  async function generateToken() {
+    const token = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+
+    setFormData((prev) => ({ ...prev, icalToken: token }))
   }
 
   if (loading) {
@@ -350,10 +360,8 @@ export function RoomsManager() {
     <div className="space-y-8">
       {/* Add/Edit Form */}
       <div className="bg-sand-50 p-6 rounded-lg border-2 border-sand-200">
-        <h2 className="text-2xl font-bold mb-6 text-olive-900">
-          {editingId ? "Edit Room" : "Add New Room"}
-        </h2>
-        
+        <h2 className="text-2xl font-bold mb-6 text-olive-900">{editingId ? "Edit Room" : "Add New Room"}</h2>
+
         <div className="space-y-6">
           {/* Name */}
           <div>
@@ -410,7 +418,7 @@ export function RoomsManager() {
                   value={newAmenity}
                   onChange={(e) => setNewAmenity(e.target.value)}
                   placeholder="e.g., Free WiFi, Mountain View"
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAmenity())}
                 />
                 <Button type="button" onClick={addAmenity} variant="outline">
                   <Plus className="h-4 w-4 mr-1" />
@@ -450,14 +458,14 @@ export function RoomsManager() {
             <p className="text-sm text-olive-600 mb-4">
               Import bookings from Booking.com, Airbnb, TripAdvisor, and other platforms that provide iCal feeds
             </p>
-            
+
             <div className="space-y-3">
               <div className="flex gap-2">
                 <Input
                   value={newIcalUrl}
                   onChange={(e) => setNewIcalUrl(e.target.value)}
                   placeholder="https://platform.com/ical/feed/your-property-id"
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addIcalUrl())}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addIcalUrl())}
                 />
                 <Button type="button" onClick={addIcalUrl} variant="outline">
                   <Plus className="h-4 w-4 mr-1" />
@@ -474,7 +482,9 @@ export function RoomsManager() {
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <ExternalLink className="h-4 w-4 text-olive-600 flex-shrink-0" />
-                        <span className="text-sm text-olive-700 truncate">{url}</span>
+                        <span className="text-sm text-olive-700 truncate" title={url}>
+                          {url}
+                        </span>
                       </div>
                       <button
                         type="button"
@@ -489,12 +499,56 @@ export function RoomsManager() {
                 </div>
               )}
 
-              <div className="bg-moroccan-blue-50 border border-moroccan-blue-200 rounded-md p-3">
+              {/* Export URL Section */}
+              <div className="mt-6 border-t pt-4">
+                <Label className="flex items-center gap-2 text-lg font-semibold mb-3 text-terracotta-700">
+                  <Calendar className="h-5 w-5" />
+                  Export Calendar (Outgoing iCal)
+                </Label>
+                <p className="text-sm text-olive-600 mb-4">
+                  Share this URL with Booking.com, Airbnb, etc. to sync your DAR LOUKA bookings with them.
+                </p>
+
+                {formData.icalToken ? (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-gray-50 border border-gray-300 rounded-md p-3 font-mono text-xs text-gray-600 break-all">
+                      {typeof window !== "undefined"
+                        ? `${window.location.origin}/api/ical/${formData.icalToken}`
+                        : `.../api/ical/${formData.icalToken}`}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => copyIcalToken(formData.icalToken!)}
+                      className="shrink-0"
+                    >
+                      {copiedToken === formData.icalToken ? "Copied!" : <Copy className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => downloadIcal(formData.icalToken!, formData.name || "room")}
+                      className="shrink-0"
+                      title="Download .ics file"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4 bg-yellow-50 p-4 rounded-md border border-yellow-200">
+                    <span className="text-yellow-800 text-sm">
+                      No iCal token generated for this room yet. Save the room to generate one.
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-moroccan-blue-50 border border-moroccan-blue-200 rounded-md p-3 mt-4">
                 <p className="text-xs text-moroccan-blue-800">
-                  <strong>How to get iCal URLs:</strong><br/>
-                  • Booking.com: Extranet → Calendar → Export Calendar<br/>
-                  • Airbnb: Listings → Calendar → Availability Settings → Export Calendar<br/>
-                  • TripAdvisor: Calendar → Sync Calendars → Export
+                  <strong>How to get iCal URLs:</strong>
+                  <br />• Booking.com: Extranet → Calendar → Export Calendar
+                  <br />• Airbnb: Listings → Calendar → Availability Settings → Export Calendar
+                  <br />• TripAdvisor: Calendar → Sync Calendars → Export
                 </p>
               </div>
             </div>
@@ -509,7 +563,7 @@ export function RoomsManager() {
                   {(formData.images || []).map((image, index) => (
                     <div key={`existing-${index}`} className="relative group">
                       <img
-                        src={image}
+                        src={image || "/placeholder.svg"}
                         alt={`Room ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -531,7 +585,7 @@ export function RoomsManager() {
                   {imageFiles.map((file, index) => (
                     <div key={`new-${index}`} className="relative group">
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={URL.createObjectURL(file) || "/placeholder.svg"}
                         alt={`New ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border-2 border-green-500"
                       />
@@ -566,9 +620,7 @@ export function RoomsManager() {
                     className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-sand-300 rounded-lg p-6 cursor-pointer hover:border-terracotta-500 hover:bg-terracotta-50 transition-colors"
                   >
                     <Upload className="h-6 w-6 text-sand-400" />
-                    <span className="text-olive-700 font-semibold">
-                      Upload Images ({totalImages}/3)
-                    </span>
+                    <span className="text-olive-700 font-semibold">Upload Images ({totalImages}/3)</span>
                   </label>
                 </div>
               )}
@@ -577,8 +629,8 @@ export function RoomsManager() {
 
           {/* Actions */}
           <div className="flex gap-3 pt-4">
-            <Button 
-              onClick={handleSave} 
+            <Button
+              onClick={handleSave}
               className="bg-terracotta-600 hover:bg-terracotta-700"
               disabled={saving || uploading || totalImages === 0}
             >
@@ -587,8 +639,10 @@ export function RoomsManager() {
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   {uploading ? "Uploading..." : "Saving..."}
                 </>
+              ) : editingId ? (
+                "Update Room"
               ) : (
-                editingId ? "Update Room" : "Create Room"
+                "Create Room"
               )}
             </Button>
             {editingId && (
@@ -608,141 +662,77 @@ export function RoomsManager() {
       </div>
 
       {/* Rooms List */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-olive-900">Rooms List</h2>
-        {rooms.length === 0 ? (
-          <div className="text-center py-12 bg-sand-50 rounded-lg">
-            <p className="text-olive-600">No rooms yet. Create your first room above!</p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-sand-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Capacity
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                iCal Status
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
             {rooms.map((room) => (
-              <div key={room.id} className="bg-white border border-sand-200 rounded-lg p-6 shadow-sm">
-                <div className="flex gap-4">
-                  <div className="w-48 flex-shrink-0">
-                    {room.images && room.images.length > 0 ? (
-                      <div className="grid grid-cols-2 gap-2">
-                        {room.images.slice(0, 3).map((img, idx) => (
-                          <img
-                            key={idx}
-                            src={img}
-                            alt={`${room.name} ${idx + 1}`}
-                            className="w-full h-20 object-cover rounded-lg"
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <img
-                        src={room.image || "/placeholder.svg"}
-                        alt={room.name}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                  
-                  <div className="flex-1">
-                    <h3 className="font-bold text-xl text-olive-900 mb-2">{room.name}</h3>
-                    <p className="text-olive-700 text-sm mb-3 line-clamp-2">{room.description}</p>
-                    
-                    <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                      <span className="text-olive-600">
-                        <strong>Price:</strong> ${room.price}/night
-                      </span>
-                      <span className="text-olive-600">
-                        <strong>Capacity:</strong> {room.capacity} guests
-                      </span>
-                    </div>
-
-                    {room.icalToken && typeof window !== 'undefined' && (
-                      <div className="mb-3 bg-green-50 border border-green-200 rounded-md p-3">
-                        <p className="text-xs font-semibold text-green-800 mb-2">iCal Export URL (Share with booking platforms):</p>
-                        <div className="flex items-center gap-2 mb-2">
-                          <code className="flex-1 text-xs bg-white px-2 py-1 rounded border border-green-300 truncate">
-                            {window.location.origin}/api/ical/{room.icalToken}
-                          </code>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => copyIcalToken(room.icalToken!)}
-                            className="flex-shrink-0"
-                          >
-                            {copiedToken === room.icalToken ? (
-                              <>✓ Copied</>
-                            ) : (
-                              <><Copy className="h-3 w-3 mr-1" /> Copy</>
-                            )}
-                          </Button>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => viewIcalContent(room.icalToken!, room.name)}
-                            className="text-xs"
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View iCal
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => downloadIcal(room.icalToken!, room.name)}
-                            className="text-xs"
-                          >
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Download .ics
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-
+              <tr key={room.id} className="hover:bg-sand-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <img
+                    src={room.image || "/placeholder.svg"}
+                    alt={room.name}
+                    className="h-12 w-16 object-cover rounded"
+                  />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{room.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-gray-500">{room.capacity} Guests</td>
+                <td className="px-6 py-4 whitespace-nowrap text-gray-500">${room.price}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {/* iCal Status Column with Sync Button */}
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        room.icalImportUrls && room.icalImportUrls.length > 0
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {room.icalImportUrls && room.icalImportUrls.length > 0
+                        ? `${room.icalImportUrls.length} Sources`
+                        : "None"}
+                    </span>
                     {room.icalImportUrls && room.icalImportUrls.length > 0 && (
-                      <div className="mb-3">
-                        <p className="text-xs font-semibold text-moroccan-blue-800 mb-1">
-                          Syncing from {room.icalImportUrls.length} external calendar(s)
-                        </p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => syncIcalCalendar(room.id)}
-                          disabled={syncing === room.id}
-                          className="text-xs"
-                        >
-                          {syncing === room.id ? (
-                            <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Syncing...</>
-                          ) : (
-                            <><Calendar className="h-3 w-3 mr-1" /> Sync Now</>
-                          )}
-                        </Button>
-                      </div>
+                      <button
+                        onClick={() => syncIcalCalendar(room.id)}
+                        disabled={syncing === room.id}
+                        className={`p-1 rounded-full hover:bg-gray-200 transition-colors ${syncing === room.id ? "animate-spin" : ""}`}
+                        title="Sync Calendars Now"
+                      >
+                        <RefreshCw className="h-4 w-4 text-blue-600" />
+                      </button>
                     )}
                   </div>
-
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      onClick={() => handleEdit(room)}
-                      variant="outline"
-                      size="sm"
-                      className="whitespace-nowrap"
-                    >
-                      <Edit2 className="h-4 w-4 mr-1" />
-                      Edit
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => handleEdit(room)}>
+                      <Edit2 className="h-4 w-4 text-olive-600" />
                     </Button>
-                    <Button
-                      onClick={() => handleDelete(room.id)}
-                      variant="outline"
-                      size="sm"
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
+                    <Button variant="ghost" size="sm" onClick={() => handleDelete(room.id)}>
+                      <Trash2 className="h-4 w-4 text-red-600" />
                     </Button>
                   </div>
-                </div>
-              </div>
+                </td>
+              </tr>
             ))}
-          </div>
-        )}
+          </tbody>
+        </table>
       </div>
 
       {/* View iCal Modal */}
@@ -754,7 +744,7 @@ export function RoomsManager() {
               iCal Calendar: {viewingIcal?.roomName}
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
