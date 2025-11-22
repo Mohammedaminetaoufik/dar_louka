@@ -31,7 +31,7 @@ export interface GalleryImage {
   category: string
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
+const API_BASE_URL = "/api"
 
 // Rooms API
 export async function fetchRooms(): Promise<Room[]> {
@@ -41,16 +41,16 @@ export async function fetchRooms(): Promise<Room[]> {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
-      console.error("[v0] Failed to fetch rooms:", response.status)
+      console.error("[v0] Failed to fetch rooms:", response.status, response.statusText)
       return []
     }
 
     const data = await response.json()
+    console.log("[v0] Fetched rooms successfully:", data.length)
     return data
   } catch (error) {
     console.error("[v0] Error fetching rooms:", error)
@@ -65,8 +65,7 @@ export async function fetchRoomById(id: number): Promise<Room | null> {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
@@ -89,8 +88,7 @@ export async function fetchEvents(): Promise<Event[]> {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
@@ -113,8 +111,7 @@ export async function fetchEventById(id: number): Promise<Event | null> {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
@@ -137,8 +134,7 @@ export async function fetchGalleryImages(): Promise<GalleryImage[]> {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
@@ -161,8 +157,7 @@ export async function fetchGalleryByCategory(category: string): Promise<GalleryI
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "revalidate",
-      next: { revalidate: 3600 },
+      cache: "no-store",
     })
 
     if (!response.ok) {
