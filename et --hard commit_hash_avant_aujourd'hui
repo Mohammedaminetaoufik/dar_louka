@@ -1,0 +1,19 @@
+[33m16d641f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: reset: moving to ORIG_HEAD
+[33m16d641f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{1}: reset: moving to ORIG_HEAD
+[33m16d641f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{2}: pull: Fast-forward
+[33m8e73e2e[m HEAD@{3}: pull: Fast-forward
+[33mdf3978d[m HEAD@{4}: pull: Fast-forward
+[33m268c0b5[m HEAD@{5}: pull: Fast-forward
+[33m61ed015[m HEAD@{6}: pull: Fast-forward
+[33m0a82eb6[m HEAD@{7}: pull: Fast-forward
+[33m99dd742[m HEAD@{8}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33md5b9d1a[m HEAD@{9}: commit: ical
+[33mdfdfe1a[m HEAD@{10}: commit: ical v2
+[33ma55c281[m HEAD@{11}: commit: ical
+[33maac1403[m HEAD@{12}: commit: wdfs
+[33m9636366[m HEAD@{13}: commit: some fixes
+[33mbe431af[m HEAD@{14}: commit: booking form
+[33mca9603a[m HEAD@{15}: commit: push changes
+[33m8e32bee[m HEAD@{16}: pull: Fast-forward
+[33m6e15450[m HEAD@{17}: Branch: renamed refs/heads/main to refs/heads/main
+[33m6e15450[m HEAD@{19}: commit (initial): dar louka
