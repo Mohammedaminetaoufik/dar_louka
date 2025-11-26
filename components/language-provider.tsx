@@ -4,7 +4,7 @@ import type React from "react"
 
 import { createContext, useContext, useState, useEffect } from "react"
 
-type Language = "en" | "fr" | "ar"
+type Language = "en" | "fr"
 
 interface LanguageContextType {
   language: Language
@@ -15,28 +15,28 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en")
+  const [language, setLanguage] = useState<Language>("fr")
 
   useEffect(() => {
     const savedLang = localStorage.getItem("language") as Language
-    if (savedLang) {
+    if (savedLang && (savedLang === "en" || savedLang === "fr")) {
       setLanguage(savedLang)
     }
 
     // Set HTML dir attribute for RTL
-    document.documentElement.setAttribute("dir", language === "ar" ? "rtl" : "ltr")
+    document.documentElement.setAttribute("dir", "ltr")
     document.documentElement.setAttribute("lang", language)
   }, [language])
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang)
     localStorage.setItem("language", lang)
-    document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr")
+    document.documentElement.setAttribute("dir", "ltr")
     document.documentElement.setAttribute("lang", lang)
   }
 
   const t = (key: string) => {
-    return translations[language][key] || key
+    return translations[language]?.[key] || key
   }
 
   return (
@@ -477,6 +477,11 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.directions.ourika.time": "20 minutes en voiture (15 km)",
     "contact.success": "Merci pour votre message! Nous vous répondrons bientôt.",
 
+    // Call to Action
+    "cta.title": "Prêt à Découvrir DAR LOUKA?",
+    "cta.subtitle": "Réservez votre escapade marocaine authentique dès aujourd'hui",
+    "cta.button": "Réserver Maintenant",
+
     // Footer
     "footer.tagline": "Découvrez l'hospitalité marocaine authentique",
     "footer.rights": "Tous droits réservés",
@@ -502,213 +507,5 @@ const translations: Record<Language, Record<string, string>> = {
     "amenities.mountain-garden-view": "Vue Montagne & Jardin",
     "amenities.bathroom": "Chambre à Coucher Privée",
     "amenities.bathrooms": "Chambres à Coucher 2",
-  },
-  ar: {
-    // Navigation
-    "nav.home": "الرئيسية",
-    "nav.about": "من نحن",
-    "nav.rooms": "الغرف والحجز",
-    "nav.events": "الفعاليات",
-    "nav.gallery": "المعرض",
-    "nav.contact": "اتصل بنا",
-
-    // Hero
-    "hero.title": "مرحباً بكم في دار لوكا",
-    "hero.subtitle": "اختبر الضيافة المغربية الأصيلة",
-    "hero.description":
-      "تقع في قلب تحناوت، بالقرب من مراكش، اكتشف ملاذاً هادئاً حيث تلتقي العمارة التقليدية بالراحة الحديثة",
-    "hero.cta": "احجز إقامتك",
-    "hero.explore": "استكشف",
-
-    // Features
-    "features.title": "لماذا تختار دار لوكا",
-    "features.authentic.title": "تجربة أصيلة",
-    "features.authentic.desc": "انغمس في العمارة والضيافة المغربية التقليدية",
-    "features.nature.title": "محاط بالطبيعة",
-    "features.nature.desc": "استمتع بإطلالات خلابة على جبال الأطلس والحدائق الخضراء",
-    "features.comfort.title": "راحة عصرية",
-    "features.comfort.desc": "اختبر المزيج المثالي من السحر التقليدي والمرافق المعاصرة",
-    "features.location.title": "موقع مثالي",
-    "features.location.desc": "على بعد 30 دقيقة فقط من مراكش، في قرية تحناوت الهادئة",
-
-    // About
-    "about.title": "عن دار لوكا",
-    "about.subtitle": "قصة من التقاليد والضيافة",
-    "about.description":
-      "دار لوكا هو أكثر من مجرد دار ضيافة. إنه احتفال بالثقافة المغربية والعمارة والضيافة الدافئة التي تحدد تراثنا. يقع في تحناوت، عند سفوح جبال الأطلس، ويوفر دار ضيافتنا ملاذاً فريداً من صخب مدينة مراكش.",
-    "about.story": "قصتنا",
-    "about.story.text":
-      "بُني بحب واحترام للعمارة المغربية التقليدية، يتميز دار لوكا بعناصر تصميم أصيلة بما في ذلك الأعمال الخشبية المنحوتة يدوياً، وبلاط الزليج الملون، والساحات الهادئة. كل ركن يحكي قصة من الحرفية والتراث الثقافي.",
-    "about.values": "قيمنا",
-    "about.values.text":
-      "نؤمن بالسياحة المستدامة، ودعم المجتمعات المحلية، والحفاظ على الجمال الطبيعي لمنطقتنا. فريقنا مكرس لتقديم خدمة شخصية تجعل كل ضيف يشعر وكأنه في بيته.",
-    "about.location": "موقعنا",
-    "about.location.text":
-      "تحناوت قرية ساحرة عند بوابة جبال الأطلس الكبير، تقدم التوازن المثالي بين سهولة الوصول والهدوء. على بعد 30 دقيقة فقط من المدينة القديمة النابضة بالحياة في مراكش، ولكن في عالم مختلف تماماً.",
-    "about.values.hospitality.title": "ضيافة أصيلة",
-    "about.values.hospitality.desc": "نرحب بكل ضيف كعائلة، نشارك دفء وكرم الثقافة المغربية",
-    "about.values.community.title": "دعم المجتمع",
-    "about.values.community.desc": "نعمل مع الحرفيين والشركات المحلية، ندعم مجتمع تحناوت",
-    "about.values.sustainable.title": "سياحة مستدامة",
-    "about.values.sustainable.desc": "نحمي بيئتنا الطبيعية ونحافظ على طرق البناء التقليدية",
-    "about.values.quality.title": "خدمة عالية الجودة",
-    "about.values.quality.desc": "نحافظ على أعلى المعايير مع احترام تراثنا الثقافي",
-    "about.location.discover": "اكتشف تحناوت",
-    "about.location.tahanaout":
-      "تحناوت قرية بربرية ساحرة تقع عند سفوح جبال الأطلس الكبير، على بعد 30 كيلومتراً فقط جنوب مراكش. معروفة بسوقها الأسبوعي وكبوابة لمغامرات الجبال، تقدم القرية لمحة أصيلة عن الحياة الريفية المغربية.",
-    "about.location.activities":
-      "المنطقة مثالية للمشي وركوب الدراجات الجبلية واستكشاف القرى البربرية التقليدية. حديقة توبقال الوطنية الشهيرة يسهل الوصول إليها، مما يجعل دار لوكا قاعدة مثالية للاسترخاء والمغامرة.",
-
-    // Rooms
-    "rooms.title": "غرفنا",
-    "rooms.subtitle": "الراحة تلتقي بالتقاليد",
-    "rooms.book": "احجز الآن",
-    "rooms.from": "ابتداءً من",
-    "rooms.night": "في الليلة",
-    "rooms.availability": "تحقق من التوفر",
-    "rooms.atlas-suite": "جناح الأطلس",
-    "rooms.garden-room": "غرفة الحديقة",
-    "rooms.family-suite": "جناح العائلة",
-    "rooms.deluxe-room": "غرفة ديلوكس",
-    "rooms.atlas-suite.desc":
-      "جناحنا المميز الذي يوفر إطلالات خلابة على جبال الأطلس. مزين بالحرفية المغربية التقليدية بما في ذلك خشب الأرز المنحوت يدوياً وبلاط الزليج الملون.",
-    "rooms.garden-room.desc":
-      "غرفة هادئة تطل على حدائقنا الخضراء وفناءنا التقليدي. مثالية للأزواج الذين يبحثون عن الهدوء والأجواء المغربية الأصيلة.",
-    "rooms.family-suite.desc":
-      "جناح واسع مثالي للعائلات، يتميز بمناطق نوم منفصلة وحمامين. يجمع بين الراحة والأناقة المغربية التقليدية.",
-    "rooms.deluxe-room.desc":
-      "غرفة مفروشة بأناقة تتميز بعناصر التصميم المغربي الأصيل ووسائل الراحة الحديثة. تطل على فناءنا التقليدي الجميل.",
-    "rooms.features": "مميزات الغرفة:",
-    "rooms.external.text": "يمكنك أيضاً حجز إقامتك من خلال منصات شركائنا الموثوقة",
-
-    // Booking
-    "booking.title": "احجز إقامتك",
-    "booking.checkin": "تسجيل الوصول",
-    "booking.checkout": "تسجيل المغادرة",
-    "booking.guests": "الضيوف",
-    "booking.room": "اختر الغرفة",
-    "booking.submit": "تحقق من التوفر",
-    "booking.external": "متاح أيضاً على",
-
-    // Events
-    "events.title": "الفعاليات والأنشطة",
-    "events.subtitle": "اكتشف سحر المغرب",
-    "events.local": "التجارب المحلية",
-    "events.activities": "الأنشطة",
-    "events.activities.intro": "من مغامرات الجبال إلى التجارب الثقافية، اكتشف الأنشطة العديدة المتاحة في دار لوكا",
-    "events.local.intro": "استكشف المنطقة المحيطة برحلات يومية منظمة",
-    "events.seasonal": "أبرز الأحداث الموسمية",
-    "events.seasonal.intro": "اختبر التقويم الثقافي الغني للمغرب على مدار العام",
-    "events.hiking": "المشي في جبال الأطلس",
-    "events.hiking.desc": "استكشف المسارات الخلابة مع إطلالات خلابة على جبال الأطلس الكبير والقرى البربرية التقليدية",
-    "events.biking": "ركوب الدراجات الجبلية",
-    "events.biking.desc": "اركب عبر الوديان ومسارات الجبال، واختبر المناظر الطبيعية المتنوعة للمنطقة",
-    "events.toubkal": "حديقة توبقال الوطنية",
-    "events.toubkal.desc": "قم بزيارة أعلى قمة في شمال أفريقيا واستكشف الحديقة الوطنية المذهلة مع جولات إرشادية",
-    "events.souk": "سوق تحناوت",
-    "events.souk.desc": "اختبر السوق الأسبوعي الأصيل حيث يتاجر السكان المحليون بالسلع والتوابل والحرف التقليدية",
-    "events.cooking": "دروس الطبخ المغربي",
-    "events.cooking.desc": "تعلم إعداد الأطباق التقليدية مثل الطاجين والكسكس بالمكونات المحلية",
-    "events.photography": "جولات التصوير الفوتوغرافي",
-    "events.photography.desc": "التقط جمال المناظر الطبيعية والعمارة والحياة اليومية المغربية مع إرشادات الخبراء",
-    "events.music": "أمسيات الموسيقى التقليدية",
-    "events.music.desc": "استمتع بعروض الموسيقى المغربية الأصيلة تحت النجوم في فناءنا",
-    "events.workshops": "ورش العمل الثقافية",
-    "events.workshops.desc": "شارك في ورش عمل الفخار أو النسيج أو الخط مع الحرفيين المحليين",
-    "events.marrakech": "رحلة يومية إلى مراكش",
-    "events.marrakech.desc": "استكشف الأسواق النابضة بالحياة والقصور التاريخية وساحة جامع الفنا المزدحمة",
-    "events.berber": "زيارة قرية بربرية",
-    "events.berber.desc": "اختبر الضيافة البربرية الأصيلة وتعلم عن الحياة الجبلية التقليدية",
-    "events.ourika": "رحلة وادي أوريكا",
-    "events.ourika.desc": "اكتشف الشلالات الجميلة والوديان الخضراء في هذه المنطقة الطبيعية المذهلة",
-    "events.spring": "الربيع (مارس-مايو)",
-    "events.spring.desc": "طقس مثالي للمشي، أزهار اللوز في الوديان، ومهرجان الورود في قلعة مكونة القريبة",
-    "events.summer": "الصيف (يونيو-أغسطس)",
-    "events.summer.desc": "اهرب من حرارة مراكش، واستمتع بنسيم الجبال البارد، واختبر المهرجانات البربرية التقليدية",
-    "events.autumn": "الخريف (سبتمبر-نوفمبر)",
-    "events.autumn.desc": "موسم الحصاد، قطف الزعفران، وظروف مثالية للمشي في الجبال والتصوير الفوتوغرافي",
-    "events.winter": "الشتاء (ديسمبر-فبراير)",
-    "events.winter.desc": "إطلالات على الجبال المغطاة بالثلوج، أمسيات دافئة بجانب النار، وقرب من منتجع أوكايمدن للتزلج",
-    "events.duration.halfday": "نصف يوم / يوم كامل",
-    "events.duration.2-4hours": "2-4 ساعات",
-    "events.duration.fullday": "يوم كامل",
-    "events.duration.tuesday": "صباح الثلاثاء",
-    "events.duration.3-4hours": "3-4 ساعات",
-    "events.duration.flexible": "مرن",
-    "events.duration.evenings": "المساء",
-    "events.duration.2-3hours": "2-3 ساعات",
-
-    // Gallery
-    "gallery.title": "المعرض",
-    "gallery.subtitle": "اكتشف مساحاتنا الجميلة",
-
-    // Contact
-    "contact.title": "اتصل بنا",
-    "contact.subtitle": "نحب أن نسمع منك",
-    "contact.name": "الاسم",
-    "contact.email": "البريد الإلكتروني",
-    "contact.phone": "الهاتف",
-    "contact.message": "الرسالة",
-    "contact.send": "إرسال الرسالة",
-    "contact.info": "معلومات الاتصال",
-    "contact.address": "العنوان",
-    "contact.address.text": "تحناوت، مراكش، المغرب",
-    "contact.location": "موقعنا",
-    "contact.form": "أرسل لنا رسالة",
-    "contact.form.name": "الاسم الكامل *",
-    "contact.form.email": "عنوان البريد الإلكتروني *",
-    "contact.form.phone": "رقم الهاتف",
-    "contact.form.message": "الرسالة *",
-    "contact.form.send": "إرسال الرسالة",
-    "contact.form.placeholder.name": "اسمك",
-    "contact.form.placeholder.email": "your.email@example.com",
-    "contact.form.placeholder.phone": "+212 XXX XXX XXX",
-    "contact.form.placeholder.message": "أخبرنا عن استفسارك أو طلباتك الخاصة...",
-    "contact.info.address": "العنوان",
-    "contact.info.address.line1": "دوار آيت سوكة، تحناوت",
-    "contact.info.address.line2": "مراكش-آسفي، المغرب",
-    "contact.info.phone": "الهاتف",
-    "contact.info.phone.line1": "+212 524 48 XX XX",
-    "contact.info.phone.line2": "+212 6XX XX XX XX",
-    "contact.info.email": "البريد الإلكتروني",
-    "contact.info.email.line1": "info@darlouka.com",
-    "contact.info.email.line2": "reservations@darlouka.com",
-    "contact.info.hours": "ساعات الاستقبال",
-    "contact.info.hours.line1": "الاثنين - الأحد: 8:00 صباحاً - 10:00 مساءً",
-    "contact.info.hours.line2": "اتصال طوارئ متاح على مدار الساعة",
-    "contact.location.description": "يقع في قلب تحناوت، على بعد 30 دقيقة فقط من مراكش، محاطاً بجبال الأطلس المهيبة",
-    "contact.directions.airport": "من مطار مراكش",
-    "contact.directions.airport.time": "45 دقيقة بالسيارة (40 كم)",
-    "contact.directions.medina": "من المدينة القديمة مراكش",
-    "contact.directions.medina.time": "30 دقيقة بالسيارة (30 كم)",
-    "contact.directions.ourika": "إلى وادي أوريكا",
-    "contact.directions.ourika.time": "20 دقيقة بالسيارة (15 كم)",
-    "contact.success": "شكراً لرسالتك! سنعود إليك قريباً.",
-
-    // Footer
-    "footer.tagline": "اختبر الضيافة المغربية الأصيلة",
-    "footer.rights": "جميع الحقوق محفوظة",
-    "footer.quick": "روابط سريعة",
-    "footer.follow": "تابعنا",
-
-    // Testimonials
-    "testimonials.title": "تجارب الضيوف",
-    "testimonials.subtitle": "ما يقوله ضيوفنا عن إقامتهم",
-    "testimonials.sarah":
-      "تجربة سحرية تماماً! العمارة المغربية التقليدية المدمجة مع الراحة الحديثة جعلت إقامتنا لا تُنسى. إطلالات جبال الأطلس خلابة.",
-    "testimonials.pierre":
-      "الضيافة المغربية في أفضل حالاتها. مكان هادئ وأصيل، مثالي لإعادة شحن الطاقة. المطبخ المحلي لذيذ!",
-    "testimonials.ahmed":
-      "تجربة رائعة في دار لوكا. المكان هادئ وجميل، والخدمة ممتازة. أنصح به بشدة لمن يبحث عن الأصالة المغربية.",
-
-    // Room amenities
-    "amenities.wifi": "واي فاي مجاني",
-    "amenities.breakfast": "الإفطار مشمول",
-    "amenities.mountain-view": "إطلالة على الجبل",
-    "amenities.garden-view": "إطلالة على الحديقة",
-    "amenities.courtyard-view": "إطلالة على الفناء",
-    "amenities.mountain-garden-view": "إطلالة على الجبل والحديقة",
-    "amenities.bathroom": "حمام خاص",
-    "amenities.bathrooms": "حمامان",
   },
 }

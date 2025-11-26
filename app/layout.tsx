@@ -2,6 +2,7 @@ import type React from "react"
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { LanguageProvider } from "@/components/language-provider"
+import WhatsAppButton from "@/components/whatsapp-button"
 import type { Metadata } from "next"
 
 const geistSans = Geist({
@@ -98,6 +99,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} font-sans antialiased`}>
         <LanguageProvider>{children}</LanguageProvider>
+        <WhatsAppButton />
       </body>
     </html>
   )
