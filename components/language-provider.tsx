@@ -56,6 +56,10 @@ export function useLanguage() {
 
 const translations: Record<Language, Record<string, string>> = {
   en: {
+    // Slogan
+    "slogan": "Atlas Retreat en Terre Berbère",
+    "tagline": "Authentic Berber Hospitality in the Heart of Marrakech",
+    
     // Navigation
     "nav.home": "Home",
     "nav.about": "About",
@@ -65,56 +69,56 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "Contact",
 
     // Hero
-    "hero.title": "Welcome to DAR LOUKA",
-    "hero.subtitle": "Experience Authentic Moroccan Hospitality",
+    "hero.title": "Welcome to Dar Louka",
+    "hero.subtitle": "Experience Authentic Moroccan Hospitality - Maison d'hôte in Tahanaout, Marrakech",
     "hero.description":
-      "Nestled in the heart of Tahanaout, near Marrakech, discover a peaceful retreat where traditional architecture meets modern comfort",
+      "Discover our authentic guesthouse near Marrakech offering Berber hospitality with stunning Atlas Mountain views. Dar Louka combines traditional Moroccan architecture with modern comfort for an unforgettable retreat.",
     "hero.cta": "Book Your Stay",
     "hero.explore": "Explore",
 
     // Features
-    "features.title": "Why Choose DAR LOUKA",
-    "features.authentic.title": "Authentic Experience",
-    "features.authentic.desc": "Immerse yourself in traditional Moroccan architecture and hospitality",
-    "features.nature.title": "Surrounded by Nature",
-    "features.nature.desc": "Enjoy breathtaking views of the Atlas Mountains and lush gardens",
+    "features.title": "Why Choose Dar Louka - Your Guest House in Marrakech",
+    "features.authentic.title": "Authentic Berber Experience",
+    "features.authentic.desc": "Traditional Moroccan architecture and genuine Berber hospitality in every corner of our guesthouse",
+    "features.nature.title": "Surrounded by Atlas Mountains",
+    "features.nature.desc": "Breathtaking views of the Atlas Mountains and lush gardens surrounding our maison d'hôte",
     "features.comfort.title": "Modern Comfort",
-    "features.comfort.desc": "Experience the perfect blend of traditional charm and contemporary amenities",
-    "features.location.title": "Perfect Location",
-    "features.location.desc": "Just 30 minutes from Marrakech, in the peaceful village of Tahanaout",
+    "features.comfort.desc": "Perfect blend of traditional Moroccan charm and contemporary amenities in Tahanaout",
+    "features.location.title": "Perfect Location near Marrakech",
+    "features.location.desc": "Just 30 minutes from Marrakech city center, in the peaceful village of Tahanaout, Morocco",
 
     // About
-    "about.title": "About DAR LOUKA",
-    "about.subtitle": "A Story of Tradition and Hospitality",
+    "about.title": "About Dar Louka - Maison d'hôte Marrakech",
+    "about.subtitle": "Atlas Retreat en Terre Berbère - A Story of Tradition and Hospitality",
     "about.description":
-      "DAR LOUKA is more than just a guesthouse. It is a celebration of Moroccan culture, architecture, and the warm hospitality that defines our heritage. Located in Tahanaout, at the foothills of the Atlas Mountains, our guesthouse offers a unique escape from the bustling city of Marrakech.",
+      "Dar Louka is more than just a guesthouse. It is an authentic celebration of Moroccan culture, Berber heritage, architecture, and the warm hospitality that defines our region. Located in Tahanaout, at the foothills of the High Atlas Mountains, our maison d'hôte offers a unique escape near Marrakech.",
     "about.story": "Our Story",
     "about.story.text":
-      "Built with love and respect for traditional Moroccan architecture, DAR LOUKA features authentic design elements including hand-carved woodwork, colorful zellige tiles, and peaceful courtyards. Every corner tells a story of craftsmanship and cultural heritage.",
+      "Built with love and respect for traditional Moroccan and Berber architecture, Dar Louka features authentic design elements including hand-carved woodwork, colorful zellige tiles, and peaceful courtyards. Every corner tells a story of craftsmanship and cultural heritage in this guesthouse near Marrakech.",
     "about.values": "Our Values",
     "about.values.text":
-      "We believe in sustainable tourism, supporting local communities, and preserving the natural beauty of our region. Our team is dedicated to providing personalized service that makes every guest feel at home.",
+      "We believe in sustainable tourism, supporting local Berber communities, and preserving the natural beauty of the Atlas region. Our team is dedicated to providing personalized service that makes every guest feel at home at our maison d'hôte.",
     "about.location": "Our Location",
     "about.location.text":
-      "Tahanaout is a charming village at the gateway to the High Atlas Mountains, offering the perfect balance between accessibility and tranquility. Just 30 minutes from Marrakech's vibrant medina, yet worlds away in atmosphere.",
-    "about.values.hospitality.title": "Authentic Hospitality",
+      "Tahanaout is a charming Berber village at the gateway to the High Atlas Mountains, just 30 kilometers south of Marrakech. Offering the perfect balance between accessibility and tranquility, our guesthouse is ideally positioned for exploring Morocco.",
+    "about.values.hospitality.title": "Authentic Berber Hospitality",
     "about.values.hospitality.desc":
-      "We welcome every guest as family, sharing the warmth and generosity of Moroccan culture",
+      "We welcome every guest as family, sharing the warmth and generosity of Moroccan culture at our Tahanaout guesthouse",
     "about.values.community.title": "Community Support",
-    "about.values.community.desc": "We work with local artisans and businesses, supporting the Tahanaout community",
+    "about.values.community.desc": "We work with local Berber artisans and businesses, supporting the Tahanaout and Marrakech region",
     "about.values.sustainable.title": "Sustainable Tourism",
-    "about.values.sustainable.desc": "We protect our natural environment and preserve traditional building methods",
+    "about.values.sustainable.desc": "We protect our natural environment and preserve traditional Moroccan and Berber building methods",
     "about.values.quality.title": "Quality Service",
-    "about.values.quality.desc": "We maintain the highest standards while respecting our cultural heritage",
-    "about.location.discover": "Discover Tahanaout",
+    "about.values.quality.desc": "We maintain the highest standards while respecting our cultural heritage at our maison d'hôte",
+    "about.location.discover": "Discover Tahanaout near Marrakech",
     "about.location.tahanaout":
-      "Tahanaout is a charming Berber village located at the foothills of the High Atlas Mountains, just 30 kilometers south of Marrakech. Known for its weekly souk (market) and as a gateway to mountain adventures, the village offers an authentic glimpse into rural Moroccan life.",
+      "Tahanaout is an authentic Berber village located at the foothills of the High Atlas Mountains, just 30 kilometers south of Marrakech. Known for its weekly souk (market) and as a gateway to mountain adventures, the village offers an authentic glimpse into rural Moroccan life.",
     "about.location.activities":
-      "The area is perfect for hiking, mountain biking, and exploring traditional Berber villages. The famous Toubkal National Park is easily accessible, making DAR LOUKA an ideal base for both relaxation and adventure.",
+      "The area is perfect for hiking, mountain biking, and exploring traditional Berber villages. The famous Toubkal National Park is easily accessible from our guest house, making Dar Louka an ideal base for both relaxation and adventure in Morocco.",
 
     // Rooms
-    "rooms.title": "Our Rooms",
-    "rooms.subtitle": "Comfort Meets Tradition",
+    "rooms.title": "Our Rooms - Guest House Accommodation in Marrakech",
+    "rooms.subtitle": "Comfort Meets Berber Tradition",
     "rooms.book": "Book Now",
     "rooms.from": "From",
     "rooms.night": "per night",
@@ -126,26 +130,52 @@ const translations: Record<Language, Record<string, string>> = {
     "rooms.atlas-suite.desc":
       "Our signature suite featuring stunning views of the Atlas Mountains. Decorated with traditional Moroccan craftsmanship including hand-carved cedar wood and colorful zellige tiles.",
     "rooms.garden-room.desc":
-      "A peaceful room overlooking our lush gardens and traditional courtyard. Perfect for couples seeking tranquility and authentic Moroccan ambiance.",
+      "A peaceful room overlooking our lush gardens and traditional Moroccan courtyard. Perfect for couples seeking tranquility and authentic hospitality at our maison d'hôte near Marrakech.",
     "rooms.family-suite.desc":
-      "Spacious suite ideal for families, featuring separate sleeping areas and two bathrooms. Combines comfort with traditional Moroccan elegance.",
+      "Spacious suite ideal for families, featuring separate sleeping areas and two bathrooms. Combines comfort with traditional Berber and Moroccan elegance.",
     "rooms.deluxe-room.desc":
-      "Elegantly appointed room featuring authentic Moroccan design elements and modern amenities. Overlooks our beautiful traditional courtyard.",
+      "Elegantly appointed room featuring authentic Moroccan design elements and modern amenities. Overlooks our beautiful traditional courtyard in our Tahanaout guesthouse.",
     "rooms.features": "Room Features:",
     "rooms.external.text": "You can also book your stay through our trusted partner platforms",
 
     // Booking
-    "booking.title": "Book Your Stay",
+    "booking.title": "Book Your Stay at Our Guest House near Marrakech",
     "booking.checkin": "Check-in",
     "booking.checkout": "Check-out",
     "booking.guests": "Guests",
     "booking.room": "Select Room",
     "booking.submit": "Check Availability",
     "booking.external": "Also available on",
+    "booking.form.fullName": "Full Name *",
+    "booking.form.email": "Email Address *",
+    "booking.form.phone": "Phone Number *",
+    "booking.form.guests": "Number of Guests *",
+    "booking.form.checkIn": "Check-In Date *",
+    "booking.form.checkOut": "Check-Out Date *",
+    "booking.form.specialRequests": "Special Requests (Optional)",
+    "booking.form.placeholder.name": "John Doe",
+    "booking.form.placeholder.email": "john@example.com",
+    "booking.form.placeholder.phone": "+212 XXX XXX XXX",
+    "booking.form.placeholder.requests": "Any special requirements or requests...",
+    "booking.form.bookingFor": "Booking for:",
+    "booking.form.submit": "Submit Booking Request",
+    "booking.form.sending": "Sending Request...",
+    "booking.form.required": "* Required fields. By submitting, you agree to our booking terms.",
+    "booking.form.success.title": "Booking Request Sent!",
+    "booking.form.success.message": "Thank you! We'll contact you shortly at {email} to confirm.",
+    "booking.form.error.name": "Please enter your name",
+    "booking.form.error.email": "Please enter a valid email address",
+    "booking.form.error.phone": "Please enter your phone number",
+    "booking.form.error.checkIn": "Please select check-in date",
+    "booking.form.error.checkOut": "Please select check-out date",
+    "booking.form.error.checkOutAfterCheckIn": "Check-out date must be after check-in date",
+    "booking.form.error.checkInPast": "Check-in date cannot be in the past",
+    "booking.form.error.conflict": "The room is already booked from {checkIn} to {checkOut}.",
+    "booking.form.error.title": "Error",
 
     // Events
-    "events.title": "Events & Activities",
-    "events.subtitle": "Discover the Magic of Morocco",
+    "events.title": "Events & Activities near Marrakech",
+    "events.subtitle": "Discover the Magic of Morocco from Our Guesthouse",
     "events.local": "Local Experiences",
     "events.activities": "Activities",
     "events.activities.intro":
@@ -276,8 +306,19 @@ const translations: Record<Language, Record<string, string>> = {
     "cta.title": "Ready to Experience DAR LOUKA?",
     "cta.subtitle": "Book your authentic Moroccan getaway today",
     "cta.button": "Book Now",
+
+    // Loading messages
+    "common.loading": "Loading...",
+    "loading.rooms": "Loading rooms...",
+    "loading.gallery": "Loading gallery...",
+    "loading.events": "Loading events...",
+    "common.noData": "No data available",
   },
   fr: {
+    // Slogan
+    "slogan": "Atlas Retreat en Terre Berbère",
+    "tagline": "Authenticité Berbère au Cœur de Marrakech",
+    
     // Navigation
     "nav.home": "Accueil",
     "nav.about": "À Propos",
@@ -287,33 +328,116 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.contact": "Contact",
 
     // Hero
-    "hero.title": "Bienvenue à DAR LOUKA",
-    "hero.subtitle": "Découvrez l'Hospitalité Marocaine Authentique",
+    "hero.title": "Bienvenue à Dar Louka",
+    "hero.subtitle": "Découvrez l'Hospitalité Authentique Marocaine - Maison d'hôte à Tahanaout, Marrakech",
     "hero.description":
-      "Niché au cœur de Tahanaout, près de Marrakech, découvrez une retraite paisible où l'architecture traditionnelle rencontre le confort moderne",
+      "Découvrez notre maison d'hôte authentique près de Marrakech offrant l'hospitalité berbère avec une vue spectaculaire sur l'Atlas. Dar Louka combine l'architecture marocaine traditionnelle au confort moderne pour une retraite inoubliable.",
     "hero.cta": "Réserver Votre Séjour",
     "hero.explore": "Explorer",
 
     // Features
-    "features.title": "Pourquoi Choisir DAR LOUKA",
-    "features.authentic.title": "Expérience Authentique",
-    "features.authentic.desc": "Plongez dans l'architecture et l'hospitalité marocaines traditionnelles",
-    "features.nature.title": "Entouré par la Nature",
-    "features.nature.desc": "Profitez de vues imprenables sur l'Atlas et des jardins luxuriants",
+    "features.title": "Pourquoi Choisir Dar Louka - Votre Maison d'hôte à Marrakech",
+    "features.authentic.title": "Expérience Berbère Authentique",
+    "features.authentic.desc": "Architecture marocaine traditionnelle et authentique hospitalité berbère dans chaque coin de notre maison d'hôte",
+    "features.nature.title": "Entouré par l'Atlas",
+    "features.nature.desc": "Vues imprenables sur les montagnes de l'Atlas et jardins luxuriants entourant notre maison d'hôte",
     "features.comfort.title": "Confort Moderne",
-    "features.comfort.desc": "Découvrez le mélange parfait de charme traditionnel et d'équipements contemporains",
-    "features.location.title": "Emplacement Parfait",
-    "features.location.desc": "À seulement 30 minutes de Marrakech, dans le village paisible de Tahanaout",
+    "features.comfort.desc": "Mélange parfait du charme marocain traditionnel et des équipements contemporains à Tahanaout",
+    "features.location.title": "Emplacement Parfait près de Marrakech",
+    "features.location.desc": "À seulement 30 minutes du centre-ville de Marrakech, dans le village paisible de Tahanaout, Maroc",
 
     // About
-    "about.title": "À Propos de DAR LOUKA",
-    "about.subtitle": "Une Histoire de Tradition et d'Hospitalité",
+    "about.title": "À Propos de Dar Louka - Maison d'hôte Marrakech",
+    "about.subtitle": "Atlas Retreat en Terre Berbère - Une Histoire de Tradition et d'Hospitalité",
     "about.description":
-      "DAR LOUKA est plus qu'une simple maison d'hôtes. C'est une célébration de la culture, de l'architecture et de la chaleureuse hospitalité marocaines qui définissent notre patrimoine. Située à Tahanaout, au pied de l'Atlas, notre maison d'hôtes offre une évasion unique de l'agitation de Marrakech.",
+      "Dar Louka est bien plus qu'une simple maison d'hôte. C'est une authentique célébration de la culture marocaine, du patrimoine berbère, de l'architecture, et de la chaleureuse hospitalité qui définit notre région. Située à Tahanaout, aux pieds de l'Atlas, notre maison d'hôte offre une évasion unique près de Marrakech.",
     "about.story": "Notre Histoire",
     "about.story.text":
-      "Construite avec amour et respect pour l'architecture marocaine traditionnelle, DAR LOUKA présente des éléments de design authentiques, notamment des boiseries sculptées à la main, des carreaux de zellige colorés et des cours paisibles. Chaque coin raconte une histoire d'artisanat et de patrimoine cultural.",
+      "Construite avec amour et respect pour l'architecture marocaine et berbère traditionnelle, Dar Louka présente des éléments de design authentiques, notamment des boiseries sculptées à la main, des carreaux de zellige colorés et des cours paisibles. Chaque coin raconte une histoire d'artisanat et de patrimoine culturel dans cette maison d'hôte près de Marrakech.",
     "about.values": "Nos Valeurs",
+    "about.values.text":
+      "Nous croyons au tourisme durable, au soutien des communautés berbères locales, et à la préservation de la beauté naturelle de la région de l'Atlas. Notre équipe se consacre à fournir un service personnalisé qui fait que chaque invité se sente chez lui dans notre maison d'hôte.",
+    "about.location": "Notre Emplacement",
+    "about.location.text":
+      "Tahanaout est un charmant village berbère à la porte du Haut Atlas, à seulement 30 kilomètres au sud de Marrakech. Offrant l'équilibre parfait entre accessibilité et tranquillité, notre maison d'hôte est idéalement positionnée pour explorer le Maroc.",
+    "about.values.hospitality.title": "Authentique Hospitalité Berbère",
+    "about.values.hospitality.desc":
+      "Nous accueillons chaque invité comme une famille, partageant la chaleur et la générosité de la culture marocaine dans notre maison d'hôte de Tahanaout",
+    "about.values.community.title": "Soutien Communautaire",
+    "about.values.community.desc":
+      "Nous travaillons avec des artisans berbères locaux et des entreprises, soutenant la région de Tahanaout et Marrakech",
+    "about.values.sustainable.title": "Tourisme Durable",
+    "about.values.sustainable.desc":
+      "Nous protégeons notre environnement naturel et préservons les méthodes de construction marocaines et berbères traditionnelles",
+    "about.values.quality.title": "Service de Qualité",
+    "about.values.quality.desc":
+      "Nous maintenons les normes les plus élevées tout en respectant notre patrimoine culturel dans notre maison d'hôte",
+    "about.location.discover": "Découvrez Tahanaout près de Marrakech",
+    "about.location.tahanaout":
+      "Tahanaout est un authentique village berbère situé aux pieds du Haut Atlas, à seulement 30 kilomètres au sud de Marrakech. Connu pour son marché hebdomadaire (souk) et comme porte d'entrée vers les aventures en montagne, le village offre une vision authentique de la vie rurale marocaine.",
+    "about.location.activities":
+      "La région est parfaite pour la randonnée, le VTT et l'exploration des villages berbères traditionnels. Le célèbre parc national du Toubkal est facilement accessible depuis notre maison d'hôte, faisant de Dar Louka une base idéale pour la détente et l'aventure au Maroc.",
+
+    // Rooms
+    "rooms.title": "Nos Chambres - Hébergement de Maison d'hôte à Marrakech",
+    "rooms.subtitle": "Confort rencontre la Tradition Berbère",
+    "rooms.book": "Réserver",
+    "rooms.from": "À partir de",
+    "rooms.night": "par nuit",
+    "rooms.availability": "Vérifier la Disponibilité",
+    "rooms.atlas-suite": "Suite Atlas",
+    "rooms.garden-room": "Chambre Jardin",
+    "rooms.family-suite": "Suite Familiale",
+    "rooms.deluxe-room": "Chambre Deluxe",
+    "rooms.atlas-suite.desc":
+      "Notre suite signature offrant une vue imprenable sur les montagnes de l'Atlas. Décorée avec l'artisanat marocain traditionnel, y compris du bois de cèdre sculpté à la main et des carreaux de zellige colorés.",
+    "rooms.garden-room.desc":
+      "Une chambre paisible donnant sur nos jardins luxuriants et notre cour marocaine traditionnelle. Parfaite pour les couples recherchant la tranquillité et l'authenticité dans notre maison d'hôte près de Marrakech.",
+    "rooms.family-suite.desc":
+      "Suite spacieuse idéale pour les familles, avec des espaces de couchage séparés et deux salles de bains. Combine confort et élégance marocaine et berbère traditionnelle.",
+    "rooms.deluxe-room.desc":
+      "Chambre élégamment aménagée avec des éléments de design marocain authentique et des équipements modernes. Donne sur notre belle cour traditionnelle dans notre maison d'hôte de Tahanaout.",
+    "rooms.features": "Caractéristiques de la Chambre:",
+    "rooms.external.text": "Vous pouvez également réserver votre séjour via nos plateformes partenaires de confiance",
+
+    // Booking
+    "booking.title": "Réservez Votre Séjour dans Notre Maison d'hôte près de Marrakech",
+    "booking.checkin": "Arrivée",
+    "booking.checkout": "Départ",
+    "booking.guests": "Invités",
+    "booking.room": "Choisir une Chambre",
+    "booking.submit": "Vérifier la Disponibilité",
+    "booking.external": "Également disponible sur",
+    "booking.form.fullName": "Nom Complet *",
+    "booking.form.email": "Adresse Email *",
+    "booking.form.phone": "Numéro de Téléphone *",
+    "booking.form.guests": "Nombre d'Invités *",
+    "booking.form.checkIn": "Date d'Arrivée *",
+    "booking.form.checkOut": "Date de Départ *",
+    "booking.form.specialRequests": "Demandes Spéciales (Optionnel)",
+    "booking.form.placeholder.name": "Jean Dupont",
+    "booking.form.placeholder.email": "jean@example.com",
+    "booking.form.placeholder.phone": "+212 XXX XXX XXX",
+    "booking.form.placeholder.requests": "Toute exigence ou demande spéciale...",
+    "booking.form.bookingFor": "Réservation pour:",
+    "booking.form.submit": "Envoyer la Demande de Réservation",
+    "booking.form.sending": "Envoi de la demande...",
+    "booking.form.required": "* Champs obligatoires. En envoyant, vous acceptez nos conditions de réservation.",
+    "booking.form.success.title": "Demande de Réservation Envoyée!",
+    "booking.form.success.message": "Merci! Nous vous contacterons bientôt à {email} pour confirmer.",
+    "booking.form.error.name": "Veuillez entrer votre nom",
+    "booking.form.error.email": "Veuillez entrer une adresse email valide",
+    "booking.form.error.phone": "Veuillez entrer votre numéro de téléphone",
+    "booking.form.error.checkIn": "Veuillez sélectionner la date d'arrivée",
+    "booking.form.error.checkOut": "Veuillez sélectionner la date de départ",
+    "booking.form.error.checkOutAfterCheckIn": "La date de départ doit être après la date d'arrivée",
+    "booking.form.error.checkInPast": "La date d'arrivée ne peut pas être dans le passé",
+    "booking.form.error.conflict": "La chambre est déjà réservée du {checkIn} au {checkOut}.",
+    "booking.form.error.title": "Erreur",
+
+    // Events
+    "events.title": "Événements & Activités près de Marrakech",
+    "events.subtitle": "Découvrez la Magie du Maroc depuis Notre Maison d'hôte",
     "about.values.text":
       "Nous croyons au tourisme durable, au soutien des communautés locales et à la préservation de la beauté naturelle de notre région. Notre équipe se consacre à fournir un service personnalisé qui fait que chaque invité se sente chez lui.",
     "about.location": "Notre Emplacement",
@@ -507,5 +631,12 @@ const translations: Record<Language, Record<string, string>> = {
     "amenities.mountain-garden-view": "Vue Montagne & Jardin",
     "amenities.bathroom": "Chambre à Coucher Privée",
     "amenities.bathrooms": "Chambres à Coucher 2",
+
+    // Loading messages
+    "common.loading": "Chargement...",
+    "loading.rooms": "Chargement des chambres...",
+    "loading.gallery": "Chargement de la galerie...",
+    "loading.events": "Chargement des événements...",
+    "common.noData": "Aucune donnée disponible",
   },
 }

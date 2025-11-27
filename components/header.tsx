@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Menu, X, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/components/language-provider"
@@ -52,8 +53,17 @@ export function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <motion.div whileHover={{ scale: 1.05 }} className="font-serif text-2xl md:text-3xl font-bold text-primary">
+            <Link href="/" className="flex items-center space-x-3">
+              <motion.div whileHover={{ scale: 1.05 }} className="w-12 h-12 md:w-14 md:h-14">
+                <Image
+                  src="/dar-louka-logo.svg"
+                  alt="Dar Louka Logo"
+                  width={56}
+                  height={56}
+                  className="w-full h-full"
+                />
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} className="font-serif text-xl md:text-2xl font-bold text-primary hidden sm:block">
                 DAR LOUKA
               </motion.div>
             </Link>

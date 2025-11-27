@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Base diamond pattern -->
+  <g id="pattern">
+    <polygon points="250,50 320,100 250,150 180,100" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="150,120 200,150 150,180 100,150" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="350,120 400,150 350,180 300,150" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="200,180 250,210 200,240 150,210" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="300,180 350,210 300,240 250,210" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="100,240 150,270 100,300 50,270" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="400,240 450,270 400,300 350,270" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="250,240 300,270 250,300 200,270" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="150,300 200,330 150,360 100,330" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="350,300 400,330 350,360 300,330" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="200,360 250,390 200,420 150,390" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="300,360 350,390 300,420 250,390" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+    <polygon points="250,420 300,450 250,480 200,450" fill="#D4AF9A" stroke="#C9A176" stroke-width="2"/>
+  </g>
+  <!-- Star accent -->
+  <g id="star">
+    <path d="M 380,80 L 395,120 L 435,120 L 405,145 L 420,185 L 380,160 L 340,185 L 355,145 L 325,120 L 365,120 Z" fill="#1F7B3A" stroke="#155A2F" stroke-width="1"/>
+  </g>
+</svg>

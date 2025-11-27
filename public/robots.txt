@@ -1,0 +1,25 @@
+# Robots.txt for Dar Louka - Maison d'hôte Marrakech
+# Allow all search engine crawlers
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.next/
+Disallow: /node_modules/
+
+# Crawl delay
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://darlouka.com/sitemap.xml
+Sitemap: https://darlouka.com/sitemap-fr.xml

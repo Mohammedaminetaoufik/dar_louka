@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useLanguage } from "@/components/language-provider"
 
 interface BookingFormProps {
   selectedRoom?: string
@@ -14,6 +15,7 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
+  const { t } = useLanguage()
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -35,31 +37,31 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
 
   const validateForm = () => {
     if (!form.name.trim()) {
-      setError("Please enter your name")
+      setError(t("booking.form.error.name"))
       return false
     }
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setError("Please enter a valid email address")
+      setError(t("booking.form.error.email"))
       return false
     }
     if (!form.phone.trim()) {
-      setError("Please enter your phone number")
+      setError(t("booking.form.error.phone"))
       return false
     }
     if (!form.checkIn) {
-      setError("Please select check-in date")
+      setError(t("booking.form.error.checkIn"))
       return false
     }
     if (!form.checkOut) {
-      setError("Please select check-out date")
+      setError(t("booking.form.error.checkOut"))
       return false
     }
     if (new Date(form.checkIn) >= new Date(form.checkOut)) {
-      setError("Check-out date must be after check-in date")
+      setError(t("booking.form.error.checkOutAfterCheckIn"))
       return false
     }
     if (new Date(form.checkIn) < new Date()) {
-      setError("Check-in date cannot be in the past")
+      setError(t("booking.form.error.checkInPast"))
       return false
     }
     return true
@@ -95,7 +97,15 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create booking")
+        // Handle specific error cases
+        if (response.status === 409) {
+          // Conflict - room is already booked
+          const conflictDate = new Date(data.conflictDates.checkIn)
+          const conflictCheckout = new Date(data.conflictDates.checkOut)
+          const conflictMessage = `${t("booking.form.error.conflict").replace("{checkIn}", conflictDate.toLocaleDateString()).replace("{checkOut}", conflictCheckout.toLocaleDateString())} ${data.availableAlternatives || ""}`
+          throw new Error(conflictMessage)
+        }
+        throw new Error(data.error || t("booking.form.error.title"))
       }
 
       setSuccess(true)
@@ -127,7 +137,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {roomName && (
         <div className="bg-sand-50 p-4 rounded-lg border border-sand-200">
-          <p className="text-sm text-olive-700 font-semibold">Booking for:</p>
+          <p className="text-sm text-olive-700 font-semibold">{t("booking.form.bookingFor")}</p>
           <p className="text-lg font-serif text-olive-900">{roomName}</p>
         </div>
       )}
@@ -142,9 +152,9 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
           >
             <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-green-900">Booking Request Sent!</p>
+              <p className="font-semibold text-green-900">{t("booking.form.success.title")}</p>
               <p className="text-sm text-green-700 mt-1">
-                Thank you! We'll contact you shortly at {form.email} to confirm.
+                {t("booking.form.success.message").replace("{email}", form.email)}
               </p>
             </div>
           </motion.div>
@@ -161,7 +171,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
           >
             <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-red-900">Error</p>
+              <p className="font-semibold text-red-900">{t("booking.form.error.title")}</p>
               <p className="text-sm text-red-700">{error}</p>
             </div>
           </motion.div>
@@ -170,13 +180,13 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Full Name *</Label>
+          <Label htmlFor="name">{t("booking.form.fullName")}</Label>
           <Input
             id="name"
             name="name"
             value={form.name}
             onChange={handleChange}
-            placeholder="John Doe"
+            placeholder={t("booking.form.placeholder.name")}
             required
             disabled={loading}
             className="h-11"
@@ -184,14 +194,14 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email Address *</Label>
+          <Label htmlFor="email">{t("booking.form.email")}</Label>
           <Input
             id="email"
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
-            placeholder="john@example.com"
+            placeholder={t("booking.form.placeholder.email")}
             required
             disabled={loading}
             className="h-11"
@@ -201,14 +211,14 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number *</Label>
+          <Label htmlFor="phone">{t("booking.form.phone")}</Label>
           <Input
             id="phone"
             type="tel"
             name="phone"
             value={form.phone}
             onChange={handleChange}
-            placeholder="+212 XXX XXX XXX"
+            placeholder={t("booking.form.placeholder.phone")}
             required
             disabled={loading}
             className="h-11"
@@ -216,7 +226,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="guests">Number of Guests *</Label>
+          <Label htmlFor="guests">{t("booking.form.guests")}</Label>
           <Input
             id="guests"
             type="number"
@@ -234,7 +244,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="checkIn">Check-In Date *</Label>
+          <Label htmlFor="checkIn">{t("booking.form.checkIn")}</Label>
           <Input
             id="checkIn"
             type="date"
@@ -249,7 +259,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="checkOut">Check-Out Date *</Label>
+          <Label htmlFor="checkOut">{t("booking.form.checkOut")}</Label>
           <Input
             id="checkOut"
             type="date"
@@ -265,13 +275,13 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="specialRequests">Special Requests (Optional)</Label>
+        <Label htmlFor="specialRequests">{t("booking.form.specialRequests")}</Label>
         <Textarea
           id="specialRequests"
           name="specialRequests"
           value={form.specialRequests}
           onChange={handleChange}
-          placeholder="Any special requirements or requests..."
+          placeholder={t("booking.form.placeholder.requests")}
           disabled={loading}
           rows={4}
           className="resize-none"
@@ -286,15 +296,15 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
         {loading ? (
           <>
             <Loader2 className="animate-spin mr-2 h-5 w-5" />
-            Sending Request...
+            {t("booking.form.sending")}
           </>
         ) : (
-          "Submit Booking Request"
+          t("booking.form.submit")
         )}
       </Button>
 
       <p className="text-xs text-center text-muted-foreground">
-        * Required fields. By submitting, you agree to our booking terms.
+        {t("booking.form.required")}
       </p>
     </form>
   )

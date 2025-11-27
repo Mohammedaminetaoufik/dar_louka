@@ -78,7 +78,7 @@ export default function GalleryPage() {
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">{t("common.loading")}</span>
+              <span className="ml-2 text-muted-foreground">{t("loading.gallery")}</span>
             </div>
           ) : error ? (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">{error}</div>

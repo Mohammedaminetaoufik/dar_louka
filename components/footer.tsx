@@ -22,8 +22,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-bold text-terracotta-400 mb-4">DAR LOUKA</h3>
-            <p className="text-sand-200 mb-4">{t("footer.tagline")}</p>
+            <h3 className="font-serif text-2xl font-bold text-terracotta-400 mb-2">DAR LOUKA</h3>
+            <p className="text-sm text-terracotta-300 mb-3 italic">"{t("slogan")}"</p>
+            <p className="text-sand-200 mb-4 text-sm">{t("footer.tagline")}</p>
             <div className="flex space-x-4">
               <a
                 href="https://facebook.com"

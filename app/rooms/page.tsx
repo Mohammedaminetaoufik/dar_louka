@@ -82,7 +82,7 @@ export default function RoomsPage() {
             {loading && (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2 text-muted-foreground">{t("common.loading")}</span>
+                <span className="ml-2 text-muted-foreground">{t("loading.rooms")}</span>
               </div>
             )}
 
@@ -198,7 +198,7 @@ export default function RoomsPage() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-6">{t("booking.external")}</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              You can also book your stay through our trusted partner platforms
+              {t("rooms.external.text")}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button variant="outline" size="lg" className="border-2 bg-transparent" onClick={() => window.open("https://booking.com", "_blank")}>

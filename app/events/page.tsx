@@ -95,7 +95,7 @@ export default function EventsPage() {
             {loading && (
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2 text-muted-foreground">{t("common.loading")}</span>
+                <span className="ml-2 text-muted-foreground">{t("loading.events")}</span>
               </div>
             )}
 
