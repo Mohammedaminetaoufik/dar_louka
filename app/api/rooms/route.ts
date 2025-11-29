@@ -19,8 +19,17 @@ const safeParseJSON = (str: string | null | undefined): unknown[] => {
 const validateRoomPayload = (body: any) => {
   const errors: string[] = []
 
-  if (typeof body.name !== "string" || !body.name.trim()) {
-    errors.push("`name` is required and must be a non-empty string")
+  if (typeof body.nameEn !== "string" || !body.nameEn.trim()) {
+    errors.push("`nameEn` is required and must be a non-empty string")
+  }
+  if (typeof body.nameFr !== "string" || !body.nameFr.trim()) {
+    errors.push("`nameFr` is required and must be a non-empty string")
+  }
+  if (typeof body.descriptionEn !== "string" || !body.descriptionEn.trim()) {
+    errors.push("`descriptionEn` is required and must be a non-empty string")
+  }
+  if (typeof body.descriptionFr !== "string" || !body.descriptionFr.trim()) {
+    errors.push("`descriptionFr` is required and must be a non-empty string")
   }
   if (typeof body.price !== "number" || body.price < 0) {
     errors.push("`price` is required and must be a non-negative number")
@@ -36,8 +45,10 @@ const validateRoomPayload = (body: any) => {
 const serializeRoom = (room: any, includeToken = false) => {
   const base = {
     id: room.id,
-    name: room.name,
-    description: room.description ?? null,
+    nameEn: room.nameEn,
+    nameFr: room.nameFr,
+    descriptionEn: room.descriptionEn ?? null,
+    descriptionFr: room.descriptionFr ?? null,
     price: room.price,
     capacity: room.capacity,
     image: room.image ?? null,
@@ -88,8 +99,10 @@ export async function POST(request: NextRequest) {
 
     // 🔹 Prepare data with JSON-stringified fields
     const roomData = {
-      name: body.name.trim(),
-      description: body.description?.trim() ?? null,
+      nameEn: body.nameEn.trim(),
+      nameFr: body.nameFr.trim(),
+      descriptionEn: body.descriptionEn?.trim() ?? null,
+      descriptionFr: body.descriptionFr?.trim() ?? null,
       price: body.price,
       capacity: Math.floor(body.capacity),
       image: body.image?.trim() ?? null,

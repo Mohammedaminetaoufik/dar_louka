@@ -37,7 +37,7 @@ export function CallToAction() {
           {/* </CHANGE> */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/rooms">
-              <Button size="lg" className="bg-terracotta-600 hover:bg-terracotta-700 text-white px-8 py-6 text-lg">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg">
                 {t("hero.cta")}
               </Button>
             </Link>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { BookingConfirmation } from "@/components/admin/booking-confirmation"
+import { useLanguage } from "@/components/language-provider"
 
 interface Booking {
   id: string
@@ -18,6 +19,7 @@ interface Booking {
 }
 
 export function BookingsManager() {
+  const { t } = useLanguage()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -50,52 +52,52 @@ export function BookingsManager() {
     }
   }
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>{t("admin.loading")}</div>
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Bookings</h2>
+      <h2 className="text-2xl font-bold">{t("admin.bookings.title")}</h2>
       {bookings.map((booking) => (
         <div key={booking.id} className="border border-sand-200 rounded-lg p-6 bg-white">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Room</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.room")}</p>
               <p className="font-bold text-lg">{booking.room.name}</p>
             </div>
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Guest</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.guest")}</p>
               <p className="font-bold text-lg">{booking.name}</p>
             </div>
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Guests</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.guests")}</p>
               <p className="font-bold text-lg">{booking.guests}</p>
             </div>
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Check-in</p>
-              <p className="font-bold">{new Date(booking.checkIn).toLocaleDateString()}</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.checkIn")}</p>
+              <p className="font-bold">{new Date(booking.checkIn).toLocaleDateString("fr-FR")}</p>
             </div>
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Check-out</p>
-              <p className="font-bold">{new Date(booking.checkOut).toLocaleDateString()}</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.checkOut")}</p>
+              <p className="font-bold">{new Date(booking.checkOut).toLocaleDateString("fr-FR")}</p>
             </div>
             <div>
-              <p className="text-sm text-olive-600 font-semibold">Status</p>
+              <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.status")}</p>
               <p className={`font-bold ${booking.status === "confirmed" ? "text-green-600" : booking.status === "pending" ? "text-yellow-600" : "text-red-600"}`}>
-                {booking.status.toUpperCase()}
+                {booking.status === "confirmed" ? t("admin.bookings.confirmed") : booking.status === "pending" ? t("admin.bookings.pending") : t("admin.bookings.cancelled")}
               </p>
             </div>
           </div>
 
           <div className="space-y-4 border-t pt-4">
             <div>
-              <p className="text-sm font-semibold text-olive-700 mb-2">Contact Information:</p>
+              <p className="text-sm font-semibold text-olive-700 mb-2">{t("admin.bookings.contact")}:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center gap-2 bg-sand-50 p-3 rounded">
                   <span className="font-semibold">Email:</span>
                   <span>{booking.email}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-sand-50 p-3 rounded">
-                  <span className="font-semibold">Phone:</span>
+                  <span className="font-semibold">Téléphone:</span>
                   <span>{booking.phone}</span>
                 </div>
               </div>

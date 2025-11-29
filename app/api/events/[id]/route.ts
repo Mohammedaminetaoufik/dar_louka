@@ -24,8 +24,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const event = await prisma.event.update({
       where: { id: Number.parseInt(params.id) },
       data: {
-        title: body.title,
-        description: body.description,
+        titleEn: body.titleEn,
+        titleFr: body.titleFr,
+        descriptionEn: body.descriptionEn,
+        descriptionFr: body.descriptionFr,
         date: new Date(body.date),
         time: body.time,
         location: body.location,

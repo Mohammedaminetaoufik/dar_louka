@@ -11,15 +11,17 @@ import { Calendar, Loader2 } from "lucide-react"
 
 export interface Event {
   id: number
-  title: string
-  description: string
+  titleEn: string
+  titleFr: string
+  descriptionEn: string
+  descriptionFr: string
   date: string
   price?: number
   image?: string
 }
 
 export default function EventsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const activitiesRef = useRef(null)
   const isActivitiesInView = useInView(activitiesRef, { once: true, margin: "-100px" })
   const [events, setEvents] = useState<Event[]>([])
@@ -115,7 +117,7 @@ export default function EventsPage() {
                         <div className="relative h-48 overflow-hidden">
                           <img
                             src={event.image || "/placeholder.svg"}
-                            alt={event.title}
+                            alt={language === 'fr' ? event.titleFr : event.titleEn}
                             className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                           />
                         </div>
@@ -127,9 +129,13 @@ export default function EventsPage() {
   {new Date(event.date).toLocaleDateString("fr-FR")}
 </span>
                         </div>
-                        <h3 className="font-serif text-xl font-semibold text-foreground mb-2">{event.title}</h3>
-                        <p className="text-muted-foreground leading-relaxed mb-3">{event.description}</p>
-                        {event.price && <p className="text-primary font-semibold">${event.price}</p>}
+                        <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
+                          {language === 'fr' ? event.titleFr : event.titleEn}
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed mb-3">
+                          {language === 'fr' ? event.descriptionFr : event.descriptionEn}
+                        </p>
+                        {event.price && <p className="text-primary font-semibold">{event.price.toLocaleString("fr-FR")} DH</p>}
                       </CardContent>
                     </Card>
                   </motion.div>

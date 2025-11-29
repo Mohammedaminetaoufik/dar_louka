@@ -24,8 +24,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const image = await prisma.galleryImage.update({
       where: { id: Number.parseInt(params.id) },
       data: {
-        title: body.title,
-        description: body.description,
+        titleEn: body.titleEn,
+        titleFr: body.titleFr,
+        descriptionEn: body.descriptionEn,
+        descriptionFr: body.descriptionFr,
         image: body.image,
         category: body.category,
       },

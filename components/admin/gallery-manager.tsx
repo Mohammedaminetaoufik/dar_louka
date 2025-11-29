@@ -6,16 +6,20 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Loader2, Edit2, Trash2, Image as ImageIcon } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 interface GalleryImage {
   id: number
-  title: string
-  description: string
+  titleEn: string
+  titleFr: string
+  descriptionEn: string
+  descriptionFr: string
   image: string
   category: string
 }
 
 export function GalleryManager() {
+  const { t } = useLanguage()
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -32,9 +36,10 @@ export function GalleryManager() {
     try {
       const response = await fetch("/api/gallery")
       const data = await response.json()
-      setImages(data)
+      setImages(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error fetching gallery:", error)
+      setImages([])
     } finally {
       setLoading(false)
     }
@@ -69,8 +74,8 @@ export function GalleryManager() {
   }
 
   async function handleSave() {
-    if (!formData.title || !formData.description || !formData.category) {
-      alert("Please fill all required fields")
+    if (!formData.titleEn || !formData.titleFr || !formData.descriptionEn || !formData.descriptionFr || !formData.category) {
+      alert(t("admin.gallery.fillRequired"))
       return
     }
 
@@ -87,7 +92,7 @@ export function GalleryManager() {
       }
 
       if (!imageUrl && !editingId) {
-        alert("Please upload an image")
+        alert(t("admin.gallery.uploadRequired"))
         setSaving(false)
         return
       }
@@ -99,8 +104,12 @@ export function GalleryManager() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...formData,
+          titleEn: formData.titleEn,
+          titleFr: formData.titleFr,
+          descriptionEn: formData.descriptionEn,
+          descriptionFr: formData.descriptionFr,
           image: imageUrl,
+          category: formData.category,
         }),
       })
 
@@ -110,18 +119,18 @@ export function GalleryManager() {
         setEditingId(null)
         setImageFile(null)
       } else {
-        alert("Failed to save image")
+        alert(t("admin.gallery.saveFailed"))
       }
     } catch (error) {
       console.error("Error saving image:", error)
-      alert("Error saving image")
+      alert(t("admin.gallery.error"))
     } finally {
       setSaving(false)
     }
   }
 
   async function handleDelete(id: number) {
-    if (confirm("Are you sure you want to delete this image?")) {
+    if (confirm(t("admin.gallery.confirmDelete"))) {
       try {
         await fetch(`/api/gallery/${id}`, { method: "DELETE" })
         fetchImages()
@@ -151,44 +160,65 @@ export function GalleryManager() {
       {/* Add/Edit Form */}
       <div className="bg-sand-50 p-6 rounded-lg border-2 border-sand-200">
         <h2 className="text-2xl font-bold mb-6 text-olive-900">
-          {editingId ? "Edit Gallery Image" : "Add New Image"}
+          {editingId ? t("admin.gallery.edit") : t("admin.gallery.add")}
         </h2>
         
         <div className="space-y-6">
-          {/* Title and Category */}
+          {/* Title - English and French */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Image Title *</Label>
+              <Label>{t("admin.gallery.imageTitle")} (English) *</Label>
               <Input
-                value={formData.title || ""}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g., Moroccan Courtyard"
+                value={formData.titleEn || ""}
+                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                placeholder={t("admin.gallery.placeholder.title")}
               />
             </div>
             <div>
-              <Label>Category *</Label>
+              <Label>{t("admin.gallery.imageTitle")} (Français) *</Label>
               <Input
-                value={formData.category || ""}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                placeholder="e.g., Architecture, Landscape, Rooms"
+                value={formData.titleFr || ""}
+                onChange={(e) => setFormData({ ...formData, titleFr: e.target.value })}
+                placeholder="Ex: Cour Marocaine"
               />
             </div>
           </div>
 
-          {/* Description */}
+          {/* Category */}
           <div>
-            <Label>Description *</Label>
-            <Textarea
-              value={formData.description || ""}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Describe the image..."
-              rows={3}
+            <Label>{t("admin.gallery.category")} *</Label>
+            <Input
+              value={formData.category || ""}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              placeholder={t("admin.gallery.placeholder.category")}
             />
+          </div>
+
+          {/* Description - English and French */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>{t("admin.gallery.description")} (English) *</Label>
+              <Textarea
+                value={formData.descriptionEn || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                placeholder={t("admin.gallery.placeholder.description")}
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label>{t("admin.gallery.description")} (Français) *</Label>
+              <Textarea
+                value={formData.descriptionFr || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionFr: e.target.value })}
+                placeholder="Décrivez l'image..."
+                rows={3}
+              />
+            </div>
           </div>
 
           {/* Image Upload */}
           <div>
-            <Label>Image File *</Label>
+            <Label>{t("admin.gallery.uploadImage")} *</Label>
             <div className="space-y-3">
               {formData.image && !imageFile && (
                 <div className="relative w-48 h-48">
@@ -197,7 +227,7 @@ export function GalleryManager() {
                     alt="Current"
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  <p className="text-xs text-olive-600 mt-1">Current image</p>
+                  <p className="text-xs text-olive-600 mt-1">{t("admin.gallery.currentImage")}</p>
                 </div>
               )}
               <Input
@@ -207,7 +237,7 @@ export function GalleryManager() {
                   const file = e.target.files?.[0]
                   if (file) {
                     if (file.size > 5 * 1024 * 1024) {
-                      alert("File size must be less than 5MB")
+                      alert(t("admin.gallery.fileTooLarge"))
                       return
                     }
                     setImageFile(file)
@@ -215,10 +245,10 @@ export function GalleryManager() {
                 }}
               />
               {imageFile && (
-                <p className="text-sm text-green-600">New image selected: {imageFile.name}</p>
+                <p className="text-sm text-green-600">{t("admin.gallery.newImageSelected")}: {imageFile.name}</p>
               )}
               <p className="text-xs text-olive-600">
-                Upload an image (max 5MB). Supported: JPG, PNG, GIF
+                {t("admin.gallery.imageInstructions")}
               </p>
             </div>
           </div>
@@ -233,10 +263,10 @@ export function GalleryManager() {
               {saving || uploading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {uploading ? "Uploading..." : "Saving..."}
+                  {uploading ? t("admin.gallery.uploading") : t("admin.gallery.saving")}
                 </>
               ) : (
-                editingId ? "Update Image" : "Add Image"
+                editingId ? t("admin.gallery.update") : t("admin.gallery.addImage")
               )}
             </Button>
             {editingId && (
@@ -248,7 +278,7 @@ export function GalleryManager() {
                 }}
                 variant="outline"
               >
-                Cancel
+                {t("admin.rooms.cancel")}
               </Button>
             )}
           </div>
@@ -257,11 +287,11 @@ export function GalleryManager() {
 
       {/* Gallery Grid */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-olive-900">Gallery Images</h2>
+        <h2 className="text-2xl font-bold text-olive-900">{t("admin.gallery.list")}</h2>
         {images.length === 0 ? (
           <div className="text-center py-12 bg-sand-50 rounded-lg">
             <ImageIcon className="h-16 w-16 mx-auto text-sand-300 mb-3" />
-            <p className="text-olive-600">No images yet. Add your first image above!</p>
+            <p className="text-olive-600">{t("admin.gallery.noImages")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -270,12 +300,13 @@ export function GalleryManager() {
                 <div className="aspect-square overflow-hidden">
                   <img
                     src={image.image || "/placeholder.svg"}
-                    alt={image.title}
+                    alt={image.titleEn}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="p-3">
-                  <h3 className="font-semibold text-olive-900 text-sm mb-1 line-clamp-1">{image.title}</h3>
+                  <h3 className="font-semibold text-olive-900 text-sm mb-1 line-clamp-1">{image.titleEn}</h3>
+                  <p className="text-xs text-gray-500 mb-1">{image.titleFr}</p>
                   <p className="text-xs text-olive-600 mb-2">{image.category}</p>
                   <div className="flex gap-2">
                     <Button
@@ -285,7 +316,7 @@ export function GalleryManager() {
                       className="flex-1 text-xs"
                     >
                       <Edit2 className="h-3 w-3 mr-1" />
-                      Edit
+                      {t("admin.rooms.edit")}
                     </Button>
                     <Button
                       onClick={() => handleDelete(image.id)}

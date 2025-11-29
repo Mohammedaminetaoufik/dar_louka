@@ -23,8 +23,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const image = await prisma.galleryImage.create({
       data: {
-        title: body.title,
-        description: body.description,
+        titleEn: body.titleEn,
+        titleFr: body.titleFr,
+        descriptionEn: body.descriptionEn,
+        descriptionFr: body.descriptionFr,
         image: body.image,
         category: body.category,
       },

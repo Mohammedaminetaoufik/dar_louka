@@ -19,7 +19,7 @@ async function getRooms() {
 }
 
 export default function RoomsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const roomsRef = useRef(null)
   const isRoomsInView = useInView(roomsRef, { once: true, margin: "-100px" })
   const [rooms, setRooms] = useState<any[]>([])
@@ -120,7 +120,9 @@ export default function RoomsPage() {
 
                         {/* Content */}
                         <CardContent className="p-8 lg:p-12 flex flex-col justify-center">
-                          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">{room.name}</h2>
+                          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                            {language === 'fr' ? room.nameFr : room.nameEn}
+                          </h2>
 
                           <div className="flex flex-wrap gap-4 mb-6 text-muted-foreground">
                             <div className="flex items-center gap-2">
@@ -131,7 +133,9 @@ export default function RoomsPage() {
                             </div>
                           </div>
 
-                          <p className="text-muted-foreground leading-relaxed mb-6">{room.description}</p>
+                          <p className="text-muted-foreground leading-relaxed mb-6">
+                            {language === 'fr' ? room.descriptionFr : room.descriptionEn}
+                          </p>
 
                           {/* Amenities */}
                           {room.amenities && room.amenities.length > 0 && (
@@ -150,7 +154,7 @@ export default function RoomsPage() {
                             <div>
                               <span className="text-sm text-muted-foreground">{t("rooms.from")}</span>
                               <p className="text-3xl font-bold text-primary">
-                                ${room.price}
+                                {room.price.toLocaleString("fr-FR")} <span className="text-lg">DH</span>
                                 <span className="text-base font-normal text-muted-foreground">/{t("rooms.night")}</span>
                               </p>
                             </div>
@@ -159,7 +163,10 @@ export default function RoomsPage() {
                                 <Button
                                   size="lg"
                                   className="bg-terracotta-600 hover:bg-terracotta-700"
-                                  onClick={() => setSelectedRoomForBooking({ id: room.id.toString(), name: room.name })}
+                                  onClick={() => setSelectedRoomForBooking({ 
+                                    id: room.id.toString(), 
+                                    name: language === 'fr' ? room.nameFr : room.nameEn 
+                                  })}
                                 >
                                   {t("rooms.book")}
                                 </Button>

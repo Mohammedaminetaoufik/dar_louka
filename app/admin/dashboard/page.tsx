@@ -7,8 +7,10 @@ import { EventsManager } from "@/components/admin/events-manager"
 import { GalleryManager } from "@/components/admin/gallery-manager"
 import { BookingsManager } from "@/components/admin/bookings-manager"
 import { LogOut } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 export default function AdminDashboard() {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<"rooms" | "events" | "gallery" | "bookings">("rooms")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -29,18 +31,25 @@ export default function AdminDashboard() {
     router.push("/admin/login")
   }
 
+  const tabLabels = {
+    rooms: t("admin.rooms"),
+    events: t("admin.events"),
+    gallery: t("admin.gallery"),
+    bookings: t("admin.bookings"),
+  }
+
   return (
     <div className="min-h-screen bg-sand-50">
       <div className="bg-white border-b border-sand-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-terracotta-600">DAR LOUKA Admin</h1>
+          <h1 className="text-2xl font-bold text-terracotta-600">{t("admin.title")}</h1>
           <button
             onClick={handleLogout}
             disabled={loading}
             className="flex items-center gap-2 px-4 py-2 bg-terracotta-600 hover:bg-terracotta-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
           >
             <LogOut size={18} />
-            {loading ? "Logging out..." : "Logout"}
+            {loading ? t("admin.loading") : t("admin.logout")}
           </button>
         </div>
       </div>
@@ -58,7 +67,7 @@ export default function AdminDashboard() {
                   : "text-olive-700 hover:text-terracotta-600"
               }`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tabLabels[tab as keyof typeof tabLabels]}
             </button>
           ))}
         </div>

@@ -6,11 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Loader2, Edit2, Trash2, Calendar as CalendarIcon } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 interface Event {
   id: number
-  title: string
-  description: string
+  titleEn: string
+  titleFr: string
+  descriptionEn: string
+  descriptionFr: string
   date: string
   time: string
   location: string
@@ -20,6 +23,7 @@ interface Event {
 }
 
 export function EventsManager() {
+  const { t } = useLanguage()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -36,9 +40,10 @@ export function EventsManager() {
     try {
       const response = await fetch("/api/events")
       const data = await response.json()
-      setEvents(data)
+      setEvents(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error fetching events:", error)
+      setEvents([])
     } finally {
       setLoading(false)
     }
@@ -73,8 +78,8 @@ export function EventsManager() {
   }
 
   async function handleSave() {
-    if (!formData.title || !formData.description || !formData.date || !formData.time || !formData.location || !formData.category) {
-      alert("Please fill all required fields")
+    if (!formData.titleEn || !formData.titleFr || !formData.descriptionEn || !formData.descriptionFr || !formData.date || !formData.time || !formData.location || !formData.category) {
+      alert(t("admin.events.fillRequired"))
       return
     }
 
@@ -91,7 +96,7 @@ export function EventsManager() {
       }
 
       if (!imageUrl && !editingId) {
-        alert("Please upload an image")
+        alert(t("admin.events.uploadRequired"))
         setSaving(false)
         return
       }
@@ -103,8 +108,16 @@ export function EventsManager() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...formData,
+          titleEn: formData.titleEn,
+          titleFr: formData.titleFr,
+          descriptionEn: formData.descriptionEn,
+          descriptionFr: formData.descriptionFr,
+          date: formData.date,
+          time: formData.time,
+          location: formData.location,
+          category: formData.category,
           image: imageUrl,
+          price: formData.price,
         }),
       })
 
@@ -114,18 +127,18 @@ export function EventsManager() {
         setEditingId(null)
         setImageFile(null)
       } else {
-        alert("Failed to save event")
+        alert(t("admin.events.saveFailed"))
       }
     } catch (error) {
       console.error("Error saving event:", error)
-      alert("Error saving event")
+      alert(t("admin.events.error"))
     } finally {
       setSaving(false)
     }
   }
 
   async function handleDelete(id: number) {
-    if (confirm("Are you sure you want to delete this event?")) {
+    if (confirm(t("admin.events.confirmDelete"))) {
       try {
         await fetch(`/api/events/${id}`, { method: "DELETE" })
         fetchEvents()
@@ -155,35 +168,56 @@ export function EventsManager() {
       {/* Add/Edit Form */}
       <div className="bg-sand-50 p-6 rounded-lg border-2 border-sand-200">
         <h2 className="text-2xl font-bold mb-6 text-olive-900">
-          {editingId ? "Edit Event" : "Add New Event"}
+          {editingId ? t("admin.events.edit") : t("admin.events.add")}
         </h2>
         
         <div className="space-y-6">
-          {/* Title */}
-          <div>
-            <Label>Event Title *</Label>
-            <Input
-              value={formData.title || ""}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="e.g., Atlas Mountains Hiking"
-            />
+          {/* Title - English and French */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>{t("admin.events.title")} (English) *</Label>
+              <Input
+                value={formData.titleEn || ""}
+                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                placeholder={t("admin.events.placeholder.title")}
+              />
+            </div>
+            <div>
+              <Label>{t("admin.events.title")} (Français) *</Label>
+              <Input
+                value={formData.titleFr || ""}
+                onChange={(e) => setFormData({ ...formData, titleFr: e.target.value })}
+                placeholder="Ex: Randonnée dans l'Atlas"
+              />
+            </div>
           </div>
 
-          {/* Description */}
-          <div>
-            <Label>Description *</Label>
-            <Textarea
-              value={formData.description || ""}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Describe the event..."
-              rows={4}
-            />
+          {/* Description - English and French */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>{t("admin.events.description")} (English) *</Label>
+              <Textarea
+                value={formData.descriptionEn || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                placeholder={t("admin.events.placeholder.description")}
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label>{t("admin.events.description")} (Français) *</Label>
+              <Textarea
+                value={formData.descriptionFr || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionFr: e.target.value })}
+                placeholder="Décrivez l'événement..."
+                rows={4}
+              />
+            </div>
           </div>
 
           {/* Date, Time, Location */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label>Date *</Label>
+              <Label>{t("admin.events.date")} *</Label>
               <Input
                 type="date"
                 value={formData.date || ""}
@@ -191,7 +225,7 @@ export function EventsManager() {
               />
             </div>
             <div>
-              <Label>Time *</Label>
+              <Label>{t("admin.events.time")} *</Label>
               <Input
                 type="time"
                 value={formData.time || ""}
@@ -199,12 +233,12 @@ export function EventsManager() {
               />
             </div>
             <div>
-              <Label>Price (USD)</Label>
+              <Label>{t("admin.events.price")} (MAD)</Label>
               <Input
                 type="number"
                 value={formData.price || ""}
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) || undefined })}
-                placeholder="Optional"
+                placeholder={t("admin.events.placeholder.price")}
               />
             </div>
           </div>
@@ -212,26 +246,26 @@ export function EventsManager() {
           {/* Location and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Location *</Label>
+              <Label>{t("admin.events.location")} *</Label>
               <Input
                 value={formData.location || ""}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="e.g., Atlas Mountains"
+                placeholder={t("admin.events.placeholder.location")}
               />
             </div>
             <div>
-              <Label>Category *</Label>
+              <Label>{t("admin.events.category")} *</Label>
               <Input
                 value={formData.category || ""}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                placeholder="e.g., Adventure, Cultural"
+                placeholder={t("admin.events.placeholder.category")}
               />
             </div>
           </div>
 
           {/* Image Upload */}
           <div>
-            <Label>Event Image *</Label>
+            <Label>{t("admin.events.image")} *</Label>
             <div className="space-y-3">
               {formData.image && !imageFile && (
                 <div className="relative w-40 h-40">
@@ -240,7 +274,7 @@ export function EventsManager() {
                     alt="Current event"
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  <p className="text-xs text-olive-600 mt-1">Current image</p>
+                  <p className="text-xs text-olive-600 mt-1">{t("admin.events.currentImage")}</p>
                 </div>
               )}
               <Input
@@ -250,7 +284,7 @@ export function EventsManager() {
                   const file = e.target.files?.[0]
                   if (file) {
                     if (file.size > 5 * 1024 * 1024) {
-                      alert("File size must be less than 5MB")
+                      alert(t("admin.events.fileTooLarge"))
                       return
                     }
                     setImageFile(file)
@@ -258,10 +292,10 @@ export function EventsManager() {
                 }}
               />
               {imageFile && (
-                <p className="text-sm text-green-600">New image selected: {imageFile.name}</p>
+                <p className="text-sm text-green-600">{t("admin.events.newImageSelected")}: {imageFile.name}</p>
               )}
               <p className="text-xs text-olive-600">
-                Upload a new image (max 5MB). Supported: JPG, PNG, GIF
+                {t("admin.events.imageInstructions")}
               </p>
             </div>
           </div>
@@ -276,10 +310,10 @@ export function EventsManager() {
               {saving || uploading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {uploading ? "Uploading..." : "Saving..."}
+                  {uploading ? t("admin.events.uploading") : t("admin.events.saving")}
                 </>
               ) : (
-                editingId ? "Update Event" : "Create Event"
+                editingId ? t("admin.events.update") : t("admin.events.create")
               )}
             </Button>
             {editingId && (
@@ -291,7 +325,7 @@ export function EventsManager() {
                 }}
                 variant="outline"
               >
-                Cancel
+                {t("admin.rooms.cancel")}
               </Button>
             )}
           </div>
@@ -300,9 +334,9 @@ export function EventsManager() {
 
       {/* Events List */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-olive-900">Events List</h2>
+        <h2 className="text-2xl font-bold text-olive-900">{t("admin.events.list")}</h2>
         {events.length === 0 ? (
-          <p className="text-olive-600 text-center py-8">No events yet. Create your first event above!</p>
+          <p className="text-olive-600 text-center py-8">{t("admin.events.noEvents")}</p>
         ) : (
           <div className="grid gap-4">
             {events.map((event) => (
@@ -312,24 +346,27 @@ export function EventsManager() {
                   <div className="w-32 h-32 flex-shrink-0">
                     <img
                       src={event.image || "/placeholder.svg"}
-                      alt={event.title}
+                      alt={event.titleEn}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   </div>
                   
                   {/* Event Info */}
                   <div className="flex-1">
-                    <h3 className="font-bold text-xl text-olive-900 mb-2">{event.title}</h3>
-                    <p className="text-olive-700 text-sm mb-2 line-clamp-2">{event.description}</p>
+                    <div>
+                      <h3 className="font-bold text-lg text-olive-900">{event.titleEn}</h3>
+                      <p className="text-sm text-gray-600">{event.titleFr}</p>
+                    </div>
+                    <p className="text-olive-700 text-sm mb-2 line-clamp-2">{event.descriptionEn}</p>
                     <div className="flex flex-wrap gap-4 text-sm text-olive-600">
                       <span className="flex items-center gap-1">
                         <CalendarIcon className="h-4 w-4" />
-                        {new Date(event.date).toLocaleDateString()}
+                        {new Date(event.date).toLocaleDateString("fr-FR")}
                       </span>
-                      <span>Time: {event.time}</span>
-                      <span>Location: {event.location}</span>
+                      <span>{t("admin.events.time")}: {event.time}</span>
+                      <span>{t("admin.events.location")}: {event.location}</span>
                       <span className="text-terracotta-600 font-semibold">
-                        {event.price ? `$${event.price}` : "Free"}
+                        {event.price ? `${event.price} DH` : t("admin.events.free")}
                       </span>
                     </div>
                   </div>
@@ -343,7 +380,7 @@ export function EventsManager() {
                       className="whitespace-nowrap"
                     >
                       <Edit2 className="h-4 w-4 mr-1" />
-                      Edit
+                      {t("admin.rooms.edit")}
                     </Button>
                     <Button
                       onClick={() => handleDelete(event.id)}
@@ -352,7 +389,7 @@ export function EventsManager() {
                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
+                      {t("admin.rooms.delete")}
                     </Button>
                   </div>
                 </div>

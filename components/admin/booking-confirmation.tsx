@@ -111,13 +111,13 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
           <style>
             body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; background-color: #f9f7f4; }
             .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-            .header { background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%); padding: 40px 20px; text-align: center; color: white; }
+            .header { background: linear-gradient(135deg, #B8956F 0%, #E8D5C4 100%); padding: 40px 20px; text-align: center; color: white; }
             .header h1 { margin: 0; font-size: 32px; font-weight: bold; }
             .header p { margin: 10px 0 0 0; font-size: 14px; opacity: 0.9; }
             .content { padding: 40px; }
             .greeting { font-size: 18px; margin-bottom: 20px; color: #333; }
             .body-text { color: #555; margin-bottom: 20px; }
-            .details-box { background-color: #f5f3f0; border-left: 4px solid #C87137; padding: 20px; margin: 20px 0; border-radius: 8px; }
+            .details-box { background-color: #f5f3f0; border-left: 4px solid #D4A574; padding: 20px; margin: 20px 0; border-radius: 8px; }
             .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0d7d0; }
             .detail-row:last-child { border-bottom: none; }
             .detail-label { font-weight: bold; color: #333; }
@@ -127,8 +127,8 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
             .contact-info { background-color: #f9f7f4; padding: 20px; margin: 20px 0; border-radius: 8px; }
             .footer { background-color: #f5f3f0; padding: 30px 20px; text-align: center; border-top: 1px solid #e0d7d0; }
             .footer p { margin: 5px 0; font-size: 13px; color: #666; }
-            .logo-text { font-size: 24px; font-weight: bold; color: #C87137; margin-top: 10px; }
-            .cta-button { display: inline-block; background-color: #C87137; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; margin-top: 20px; font-weight: bold; }
+            .logo-text { font-size: 24px; font-weight: bold; color: #D4A574; margin-top: 10px; }
+            .cta-button { display: inline-block; background-color: #D4A574; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; margin-top: 20px; font-weight: bold; }
           </style>
         </head>
         <body>

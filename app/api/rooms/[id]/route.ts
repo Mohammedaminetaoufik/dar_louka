@@ -58,8 +58,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     // 🔹 Validate input (reuse from your existing validateRoomPayload)
     const errors: string[] = []
-    if (typeof body.name !== "string" || !body.name.trim()) {
-      errors.push("`name` is required and must be a non-empty string")
+    if (typeof body.nameEn !== "string" || !body.nameEn.trim()) {
+      errors.push("`nameEn` is required and must be a non-empty string")
+    }
+    if (typeof body.nameFr !== "string" || !body.nameFr.trim()) {
+      errors.push("`nameFr` is required and must be a non-empty string")
+    }
+    if (typeof body.descriptionEn !== "string" || !body.descriptionEn.trim()) {
+      errors.push("`descriptionEn` is required and must be a non-empty string")
+    }
+    if (typeof body.descriptionFr !== "string" || !body.descriptionFr.trim()) {
+      errors.push("`descriptionFr` is required and must be a non-empty string")
     }
     if (typeof body.price !== "number" || body.price < 0) {
       errors.push("`price` is required and must be a non-negative number")
@@ -75,8 +84,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const room = await prisma.room.update({
       where: { id: roomId },
       data: {
-        name: body.name?.trim(),
-        description: body.description?.trim() ?? null,
+        nameEn: body.nameEn?.trim(),
+        nameFr: body.nameFr?.trim(),
+        descriptionEn: body.descriptionEn?.trim() ?? null,
+        descriptionFr: body.descriptionFr?.trim() ?? null,
         price: body.price,
         capacity: Math.floor(body.capacity),
         image: body.image?.trim() ?? null,
@@ -105,7 +116,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   try {
     const { id } = await params
     const roomId = Number.parseInt(id)
-    if (isNaN(roomId)) {
+    if (Number.isNaN(roomId)) {
       return NextResponse.json({ error: "Invalid room ID" }, { status: 400 })
     }
 

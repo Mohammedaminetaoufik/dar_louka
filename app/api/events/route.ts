@@ -20,8 +20,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const event = await prisma.event.create({
       data: {
-        title: body.title,
-        description: body.description,
+        titleEn: body.titleEn,
+        titleFr: body.titleFr,
+        descriptionEn: body.descriptionEn,
+        descriptionFr: body.descriptionFr,
         date: new Date(body.date),
         time: body.time,
         location: body.location,

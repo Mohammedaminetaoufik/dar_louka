@@ -9,8 +9,10 @@ datasource db {
 
 model Room {
   id             Int       @id @default(autoincrement())
-  name           String
-  description    String    @db.Text
+  nameEn         String
+  nameFr         String
+  descriptionEn  String    @db.Text
+  descriptionFr  String    @db.Text
   price          Float
   capacity       Int
   amenities      String?   @db.LongText
@@ -26,29 +28,33 @@ model Room {
 }
 
 model Event {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.Text
-  date        DateTime
-  time        String
-  location    String
-  category    String
-  image       String
-  price       Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  titleEn         String
+  titleFr         String
+  descriptionEn   String   @db.Text
+  descriptionFr   String   @db.Text
+  date            DateTime
+  time            String
+  location        String
+  category        String
+  image           String
+  price           Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("events")
 }
 
 model GalleryImage {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.Text
-  image       String
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  titleEn         String
+  titleFr         String
+  descriptionEn   String   @db.Text
+  descriptionFr   String   @db.Text
+  image           String
+  category        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("gallery_images")
 }

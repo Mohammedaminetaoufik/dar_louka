@@ -109,7 +109,7 @@ export function RoomPreview() {
                           </p>
                         </div>
                         <Link href="/rooms">
-                          <Button className="bg-terracotta-600 hover:bg-terracotta-700">{t("rooms.book")}</Button>
+                          <Button className="bg-primary hover:bg-primary/90">{t("rooms.book")}</Button>
                         </Link>
                       </div>
                     </CardContent>

@@ -9,11 +9,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Loader2, Edit2, Trash2, X, Upload, Plus, ExternalLink, Copy, Calendar, RefreshCw } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 interface Room {
   id: number
-  name: string
-  description: string
+  nameEn: string
+  nameFr: string
+  descriptionEn: string
+  descriptionFr: string
   price: number
   capacity: number
   amenities: string[]
@@ -24,6 +27,7 @@ interface Room {
 }
 
 export function RoomsManager() {
+  const { t } = useLanguage()
   const [rooms, setRooms] = useState<Room[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -51,9 +55,10 @@ export function RoomsManager() {
     try {
       const response = await fetch("/api/rooms")
       const data = await response.json()
-      setRooms(data)
+      setRooms(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error fetching rooms:", error)
+      setRooms([])
     } finally {
       setLoading(false)
     }
@@ -80,23 +85,33 @@ export function RoomsManager() {
   }
 
   async function handleSave() {
-    if (!formData.name?.trim()) {
-      alert("Please enter room name")
+    if (!formData.nameEn?.trim()) {
+      alert(t("admin.rooms.nameRequired"))
       return
     }
 
-    if (!formData.description?.trim()) {
-      alert("Please enter room description")
+    if (!formData.nameFr?.trim()) {
+      alert("Veuillez entrer le nom de la chambre en français")
+      return
+    }
+
+    if (!formData.descriptionEn?.trim()) {
+      alert(t("admin.rooms.description"))
+      return
+    }
+
+    if (!formData.descriptionFr?.trim()) {
+      alert("Veuillez entrer la description en français")
       return
     }
 
     if (!formData.price || formData.price <= 0) {
-      alert("Please enter a valid price")
+      alert(t("admin.rooms.price"))
       return
     }
 
     if (!formData.capacity || formData.capacity <= 0) {
-      alert("Please enter a valid capacity")
+      alert(t("admin.rooms.capacity"))
       return
     }
 
@@ -130,8 +145,10 @@ export function RoomsManager() {
 
       // ✅ Preserve icalToken on update (critical!)
       const roomData = {
-        name: formData.name?.trim(),
-        description: formData.description?.trim(),
+        nameEn: formData.nameEn?.trim(),
+        nameFr: formData.nameFr?.trim(),
+        descriptionEn: formData.descriptionEn?.trim(),
+        descriptionFr: formData.descriptionFr?.trim(),
         price: Number(formData.price),
         capacity: Number(formData.capacity),
         image: mainImage,
@@ -148,14 +165,14 @@ export function RoomsManager() {
       })
 
       if (response.ok) {
-        alert("Room saved successfully!")
+        alert(t("admin.rooms.savingSuccess"))
         fetchRooms()
         setFormData({ amenities: [], icalImportUrls: [], images: [] })
         setEditingId(null)
         setImageFiles([])
       } else {
         const errorData = await response.json()
-        alert(`Failed to save room: ${errorData.error || "Unknown error"}`)
+        alert(`${t("admin.rooms.error")}: ${errorData.error || "Unknown error"}`)
       }
     } catch (error) {
       console.error("Error saving room:", error)
@@ -167,18 +184,18 @@ export function RoomsManager() {
   }
 
   async function handleDelete(id: number) {
-    if (confirm("Are you sure you want to delete this room?")) {
+    if (confirm(t("admin.rooms.confirmDelete"))) {
       try {
         const response = await fetch(`/api/rooms/${id}`, { method: "DELETE" })
         if (response.ok) {
-          alert("Room deleted successfully")
+          alert(t("admin.rooms.deleteSuccess"))
           fetchRooms()
         } else {
-          alert("Failed to delete room")
+          alert(t("admin.rooms.error"))
         }
       } catch (error) {
         console.error("Error deleting room:", error)
-        alert("Error deleting room")
+        alert(t("admin.rooms.error"))
       }
     }
   }
@@ -298,7 +315,7 @@ export function RoomsManager() {
         const content = await response.text()
         setIcalContent(content)
       } else {
-        setIcalContent(`Error: HTTP ${response.status} — unable to load iCal`)
+        setIcalContent(`Error: HTTP ${response.status} — ${t("admin.loading")}`)
       }
     } catch (error) {
       console.error("Error fetching iCal:", error)
@@ -324,15 +341,15 @@ export function RoomsManager() {
 
       if (response.ok) {
         const data = await response.json()
-        alert(`✅ Successfully synced ${data.bookingsImported} bookings from external calendars`)
+        alert(`✅ ${t("admin.rooms.syncSuccess")}: ${data.bookingsImported} ${t("admin.bookings.bookings")} ${t("admin.rooms.syncSuccess")}`)
         fetchRooms()
       } else {
         const error = await response.json().catch(() => ({}))
-        alert(`❌ Sync failed: ${error.error || "Unknown error"}`)
+        alert(`❌ ${t("admin.rooms.syncError")}: ${error.error || "Unknown error"}`)
       }
     } catch (error) {
       console.error("Sync error:", error)
-      alert("❌ Network error during sync. Check console.")
+      alert(`❌ ${t("admin.rooms.syncError")}`)
     } finally {
       setSyncing(null)
     }
@@ -360,45 +377,68 @@ export function RoomsManager() {
     <div className="space-y-8">
       {/* Add/Edit Form */}
       <div className="bg-sand-50 p-6 rounded-lg border-2 border-sand-200">
-        <h2 className="text-2xl font-bold mb-6 text-olive-900">{editingId ? "Edit Room" : "Add New Room"}</h2>
+        <h2 className="text-2xl font-bold mb-6 text-olive-900">
+          {editingId ? t("admin.rooms.edit") : t("admin.rooms.add")}
+        </h2>
 
         <div className="space-y-6">
-          {/* Name */}
-          <div>
-            <Label>Room Name *</Label>
-            <Input
-              value={formData.name || ""}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Deluxe Suite"
-            />
+          {/* Name - English and French */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>{t("admin.rooms.name")} (English) *</Label>
+              <Input
+                value={formData.nameEn || ""}
+                onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                placeholder="e.g., Deluxe Suite"
+              />
+            </div>
+            <div>
+              <Label>{t("admin.rooms.name")} (Français) *</Label>
+              <Input
+                value={formData.nameFr || ""}
+                onChange={(e) => setFormData({ ...formData, nameFr: e.target.value })}
+                placeholder="Ex: Suite Deluxe"
+              />
+            </div>
           </div>
 
-          {/* Description */}
-          <div>
-            <Label>Description *</Label>
-            <Textarea
-              value={formData.description || ""}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Describe the room..."
-              rows={4}
-            />
+          {/* Description - English and French */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>{t("admin.rooms.description")} (English) *</Label>
+              <Textarea
+                value={formData.descriptionEn || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                placeholder="Describe the room..."
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label>{t("admin.rooms.description")} (Français) *</Label>
+              <Textarea
+                value={formData.descriptionFr || ""}
+                onChange={(e) => setFormData({ ...formData, descriptionFr: e.target.value })}
+                placeholder="Décrivez la chambre..."
+                rows={4}
+              />
+            </div>
           </div>
 
           {/* Price and Capacity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Price per Night (USD) *</Label>
+              <Label>{t("admin.rooms.price")} (MAD) *</Label>
               <Input
                 type="number"
                 min="0"
                 step="0.01"
                 value={formData.price || ""}
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                placeholder="150"
+                placeholder="1500"
               />
             </div>
             <div>
-              <Label>Capacity (Guests) *</Label>
+              <Label>{t("admin.rooms.capacity")} *</Label>
               <Input
                 type="number"
                 min="1"
@@ -411,7 +451,7 @@ export function RoomsManager() {
 
           {/* Amenities */}
           <div>
-            <Label>Amenities</Label>
+            <Label>{t("admin.rooms.amenities")}</Label>
             <div className="space-y-3">
               <div className="flex gap-2">
                 <Input
@@ -422,7 +462,7 @@ export function RoomsManager() {
                 />
                 <Button type="button" onClick={addAmenity} variant="outline">
                   <Plus className="h-4 w-4 mr-1" />
-                  Add
+                  {t("admin.rooms.addAmenity")}
                 </Button>
               </div>
 
@@ -686,11 +726,14 @@ export function RoomsManager() {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <img
                     src={room.image || "/placeholder.svg"}
-                    alt={room.name}
+                    alt={room.nameEn}
                     className="h-12 w-16 object-cover rounded"
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{room.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                  <div>{room.nameEn}</div>
+                  <div className="text-sm text-gray-600">{room.nameFr}</div>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500">{room.capacity} Guests</td>
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500">${room.price}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

@@ -47,54 +47,70 @@ export function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? "bg-background/95 backdrop-blur-md shadow-md" : "bg-transparent"
+          isScrolled 
+            ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-primary/10" 
+            : "bg-gradient-to-b from-black/40 to-transparent"
         }`}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex items-center justify-between h-24">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3">
-              <motion.div whileHover={{ scale: 1.05 }} className="w-12 h-12 md:w-14 md:h-14">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <motion.div whileHover={{ scale: 1.08 }} className="w-14 h-14 md:w-16 md:h-16 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Image
                   src="/dar-louka-logo.svg"
                   alt="Dar Louka Logo"
-                  width={56}
-                  height={56}
-                  className="w-full h-full"
+                  width={64}
+                  height={64}
+                  className="w-full h-full relative z-10"
                 />
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="font-serif text-xl md:text-2xl font-bold text-primary hidden sm:block">
+              <motion.div whileHover={{ scale: 1.05 }} className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent hidden sm:block tracking-wide">
                 DAR LOUKA
               </motion.div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-2">
               {navItems.map((item) => (
                 <Link
                   key={item.key}
                   href={item.href}
-                  className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                  className="relative px-4 py-2 text-foreground font-medium text-sm uppercase tracking-widest transition-all duration-300 group"
                 >
-                  {t(item.key)}
+                  <span className="relative z-10">{t(item.key)}</span>
+                  <motion.div 
+                    className="absolute bottom-0 left-4 right-4 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40 rounded-full"
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </Link>
               ))}
             </nav>
 
             {/* Language Switcher & Sidebar Toggle */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Globe className="h-5 w-5" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="relative hover:bg-primary/10 rounded-full transition-colors"
+                  >
+                    <Globe className="h-5 w-5 text-primary" />
+                    <span className="absolute inset-0 rounded-full border border-primary/20" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="border-primary/20">
                   {languages.map((lang) => (
                     <DropdownMenuItem
                       key={lang.code}
                       onClick={() => setLanguage(lang.code as any)}
-                      className={language === lang.code ? "bg-muted" : ""}
+                      className={`font-medium transition-all ${
+                        language === lang.code ? "bg-primary/20 text-primary" : ""
+                      }`}
                     >
                       {lang.name}
                     </DropdownMenuItem>
@@ -106,10 +122,15 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden"
+                className="lg:hidden relative hover:bg-primary/10 rounded-full transition-colors"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               >
-                {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isSidebarOpen ? (
+                  <X className="h-6 w-6 text-primary" />
+                ) : (
+                  <Menu className="h-6 w-6 text-primary" />
+                )}
+                <span className="absolute inset-0 rounded-full border border-primary/20" />
               </Button>
             </div>
           </div>
@@ -135,17 +156,23 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               transition={{ duration: 0.3 }}
-              className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-border z-30 lg:hidden overflow-y-auto pt-24"
+              className="fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-background/98 to-background/95 backdrop-blur-xl border-r border-primary/10 z-30 lg:hidden overflow-y-auto pt-28"
             >
-              <nav className="px-6 py-8 flex flex-col space-y-6">
+              <nav className="px-6 py-8 flex flex-col space-y-3">
                 {navItems.map((item) => (
                   <Link
                     key={item.key}
                     href={item.href}
                     onClick={handleNavClick}
-                    className="text-lg text-foreground hover:text-primary transition-colors duration-200 font-medium py-3 px-4 rounded-lg hover:bg-muted"
+                    className="relative text-lg text-foreground hover:text-primary transition-colors duration-200 font-medium py-3 px-4 rounded-lg hover:bg-primary/10 border border-transparent hover:border-primary/20 group overflow-hidden"
                   >
-                    {t(item.key)}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"
+                      initial={{ x: '-100%' }}
+                      whileHover={{ x: 0 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <span className="relative z-10">{t(item.key)}</span>
                   </Link>
                 ))}
               </nav>
