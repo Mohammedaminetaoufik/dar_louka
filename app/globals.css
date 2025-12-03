@@ -43,7 +43,10 @@
   --font-sans: var(--font-geist-sans);
   --font-serif: var(--font-playfair);
 
-  /* Moroccan-inspired color palette */
+  /* Logo-inspired color palette */
+  --color-logo-beige: #D4AF9A;
+  --color-logo-sand: #C9A176;
+  --color-logo-green: #1F7B3A;
   --color-terracotta-50: #fef5f1;
   --color-terracotta-100: #fde8dd;
   --color-terracotta-200: #fbd0bb;
@@ -95,7 +98,7 @@
   --color-card-foreground: var(--color-olive-900);
   --color-popover: #ffffff;
   --color-popover-foreground: var(--color-olive-900);
-  --color-primary: var(--color-terracotta-600);
+  --color-primary: var(--color-logo-beige);
   --color-primary-foreground: #ffffff;
   --color-secondary: var(--color-olive-600);
   --color-secondary-foreground: #ffffff;
@@ -107,7 +110,7 @@
   --color-destructive-foreground: #ffffff;
   --color-border: var(--color-sand-200);
   --color-input: var(--color-sand-200);
-  --color-ring: var(--color-terracotta-500);
+  --color-ring: var(--color-logo-beige);
   --radius: 0.5rem;
 
   --color-chart-1: var(--chart-1);
@@ -162,10 +165,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-terracotta-400);
+  background: var(--color-logo-beige);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-terracotta-600);
+  background: var(--color-logo-sand);
 }

@@ -257,7 +257,7 @@ export function GalleryManager() {
           <div className="flex gap-3 pt-4">
             <Button 
               onClick={handleSave} 
-              className="bg-terracotta-600 hover:bg-terracotta-700"
+              className="bg-primary hover:bg-primary/90"
               disabled={saving || uploading}
             >
               {saving || uploading ? (

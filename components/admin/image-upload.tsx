@@ -82,7 +82,7 @@ export function ImageUpload({ maxImages = 3, onImagesChange, initialImages = [] 
       {/* Upload Area */}
       <div
         onClick={() => fileInputRef.current?.click()}
-        className="border-2 border-dashed border-sand-300 rounded-lg p-6 text-center cursor-pointer hover:border-terracotta-500 hover:bg-terracotta-50 transition-colors"
+        className="border-2 border-dashed border-sand-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
       >
         <input
           ref={fileInputRef}

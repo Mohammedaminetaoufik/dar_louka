@@ -471,13 +471,13 @@ export function RoomsManager() {
                   {(formData.amenities || []).map((amenity, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 bg-terracotta-100 text-terracotta-700 px-3 py-1 rounded-full text-sm"
+                      className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
                     >
                       {amenity}
                       <button
                         type="button"
                         onClick={() => removeAmenity(index)}
-                        className="hover:text-terracotta-900"
+                        className="hover:text-primary"
                         aria-label="Remove amenity"
                       >
                         <X className="h-3 w-3" />
@@ -541,7 +541,7 @@ export function RoomsManager() {
 
               {/* Export URL Section */}
               <div className="mt-6 border-t pt-4">
-                <Label className="flex items-center gap-2 text-lg font-semibold mb-3 text-terracotta-700">
+                <Label className="flex items-center gap-2 text-lg font-semibold mb-3 text-primary">
                   <Calendar className="h-5 w-5" />
                   Export Calendar (Outgoing iCal)
                 </Label>
@@ -657,7 +657,7 @@ export function RoomsManager() {
                   />
                   <label
                     htmlFor="room-images"
-                    className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-sand-300 rounded-lg p-6 cursor-pointer hover:border-terracotta-500 hover:bg-terracotta-50 transition-colors"
+                    className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-sand-300 rounded-lg p-6 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
                   >
                     <Upload className="h-6 w-6 text-sand-400" />
                     <span className="text-olive-700 font-semibold">Upload Images ({totalImages}/3)</span>
@@ -671,7 +671,7 @@ export function RoomsManager() {
           <div className="flex gap-3 pt-4">
             <Button
               onClick={handleSave}
-              className="bg-terracotta-600 hover:bg-terracotta-700"
+              className="bg-primary hover:bg-primary/90"
               disabled={saving || uploading || totalImages === 0}
             >
               {saving || uploading ? (

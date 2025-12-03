@@ -91,7 +91,7 @@ export default function RoomsPage() {
                 <p className="text-red-700 font-semibold">{error}</p>
                 <Button 
                   onClick={() => window.location.reload()} 
-                  className="mt-4 bg-terracotta-600 hover:bg-terracotta-700"
+                  className="mt-4 bg-primary hover:bg-primary/90"
                 >
                   Retry
                 </Button>
@@ -162,7 +162,7 @@ export default function RoomsPage() {
                               <DialogTrigger asChild>
                                 <Button
                                   size="lg"
-                                  className="bg-terracotta-600 hover:bg-terracotta-700"
+                                  className="bg-primary hover:bg-primary/90"
                                   onClick={() => setSelectedRoomForBooking({ 
                                     id: room.id.toString(), 
                                     name: language === 'fr' ? room.nameFr : room.nameEn 

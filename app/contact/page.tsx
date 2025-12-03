@@ -87,11 +87,11 @@ export default function ContactPage() {
 
                 <div className="space-y-6">
                   {/* Address */}
-                  <Card className="border-l-4 border-l-terracotta-600">
+                  <Card className="border-l-4 border-l-primary">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-terracotta-100 rounded-lg">
-                          <MapPin className="h-6 w-6 text-terracotta-600" />
+                        <div className="p-3 bg-primary/10 rounded-lg">
+                          <MapPin className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-foreground mb-1">Address</h3>
@@ -229,7 +229,7 @@ export default function ContactPage() {
                         />
                       </div>
 
-                      <Button type="submit" size="lg" className="w-full bg-terracotta-600 hover:bg-terracotta-700 h-12">
+                      <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90 h-12">
                         <Send className="h-5 w-5 mr-2" />
                         Send Message
                       </Button>

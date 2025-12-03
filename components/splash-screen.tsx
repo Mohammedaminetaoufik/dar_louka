@@ -28,7 +28,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, delay: 7.5 }}
-      className="fixed inset-0 z-50 bg-gradient-to-br from-olive-900 via-sand-50 to-terracotta-100 flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-50 bg-gradient-to-br from-olive-900 via-sand-50 to-primary/20 flex items-center justify-center overflow-hidden"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -36,7 +36,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.1 }}
           transition={{ duration: 1.5 }}
-          className="absolute top-10 left-10 w-96 h-96 bg-terracotta-600 rounded-full blur-3xl"
+          className="absolute top-10 left-10 w-96 h-96 bg-primary rounded-full blur-3xl"
         />
         <motion.div
           initial={{ opacity: 0 }}
@@ -82,7 +82,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            <p className="font-serif text-xl md:text-2xl text-terracotta-600 italic">
+            <p className="font-serif text-xl md:text-2xl text-primary italic">
               Atlas Retreat en Terre Berbère
             </p>
           </motion.div>
@@ -108,7 +108,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           {[0, 1, 2].map((index) => (
             <motion.div
               key={index}
-              className="w-3 h-3 bg-terracotta-600 rounded-full"
+              className="w-3 h-3 bg-primary rounded-full"
               animate={{
                 y: [0, -10, 0],
               }}

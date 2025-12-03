@@ -42,11 +42,11 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-sand-50">
       <div className="bg-white border-b border-sand-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-terracotta-600">{t("admin.title")}</h1>
+          <h1 className="text-2xl font-bold text-primary">{t("admin.title")}</h1>
           <button
             onClick={handleLogout}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-terracotta-600 hover:bg-terracotta-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors disabled:bg-gray-400"
           >
             <LogOut size={18} />
             {loading ? t("admin.loading") : t("admin.logout")}
@@ -63,8 +63,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab(tab as typeof activeTab)}
               className={`px-4 py-2 font-semibold transition-colors whitespace-nowrap ${
                 activeTab === tab
-                  ? "text-terracotta-600 border-b-2 border-terracotta-600"
-                  : "text-olive-700 hover:text-terracotta-600"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-olive-700 hover:text-primary"
               }`}
             >
               {tabLabels[tab as keyof typeof tabLabels]}

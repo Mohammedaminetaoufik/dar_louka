@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
       >
         <div className="bg-white rounded-lg shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-terracotta-600 mb-2">DAR LOUKA</h1>
+            <h1 className="text-4xl font-bold text-primary mb-2">DAR LOUKA</h1>
             <p className="text-olive-700 font-semibold">Admin Dashboard</p>
           </div>
 
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-sand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta-500"
+                className="w-full px-4 py-2 border border-sand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="admin@darlouka.com"
                 required
               />
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-sand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-terracotta-500"
+                className="w-full px-4 py-2 border border-sand-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="••••••••"
                 required
               />
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-terracotta-600 hover:bg-terracotta-700 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg transition-colors"
+              className="w-full bg-primary hover:bg-primary/90 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg transition-colors"
             >
               {loading ? "Logging in..." : "Login"}
             </button>

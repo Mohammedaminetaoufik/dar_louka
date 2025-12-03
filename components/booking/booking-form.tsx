@@ -290,7 +290,7 @@ export function BookingForm({ selectedRoom, roomName }: BookingFormProps) {
 
       <Button
         type="submit"
-        className="w-full bg-terracotta-600 hover:bg-terracotta-700 h-12 text-base font-semibold"
+        className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-semibold"
         disabled={loading}
       >
         {loading ? (

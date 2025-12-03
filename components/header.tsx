@@ -77,15 +77,11 @@ export function Header() {
                 <Link
                   key={item.key}
                   href={item.href}
-                  className="relative px-4 py-2 text-foreground font-medium text-sm uppercase tracking-widest transition-all duration-300 group"
+                  className={`px-4 py-2 font-medium text-sm uppercase tracking-widest transition-colors duration-200 rounded-md hover:bg-primary/5 ${
+                    isScrolled ? "text-black hover:text-primary" : "text-primary"
+                  }`}
                 >
-                  <span className="relative z-10">{t(item.key)}</span>
-                  <motion.div 
-                    className="absolute bottom-0 left-4 right-4 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40 rounded-full"
-                    initial={{ scaleX: 0 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  {t(item.key)}
                 </Link>
               ))}
             </nav>
@@ -164,15 +160,9 @@ export function Header() {
                     key={item.key}
                     href={item.href}
                     onClick={handleNavClick}
-                    className="relative text-lg text-foreground hover:text-primary transition-colors duration-200 font-medium py-3 px-4 rounded-lg hover:bg-primary/10 border border-transparent hover:border-primary/20 group overflow-hidden"
+                    className="text-lg text-foreground hover:text-primary font-medium py-3 px-4 rounded-lg hover:bg-primary/5 transition-colors duration-200"
                   >
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"
-                      initial={{ x: '-100%' }}
-                      whileHover={{ x: 0 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    <span className="relative z-10">{t(item.key)}</span>
+                    {t(item.key)}
                   </Link>
                 ))}
               </nav>

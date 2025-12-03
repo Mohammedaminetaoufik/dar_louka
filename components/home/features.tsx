@@ -16,7 +16,7 @@ export function Features() {
       icon: Home,
       titleKey: "features.authentic.title",
       descKey: "features.authentic.desc",
-      color: "terracotta",
+      color: "primary",
     },
     {
       icon: Mountain,

@@ -22,15 +22,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-bold text-terracotta-400 mb-2">DAR LOUKA</h3>
-            <p className="text-sm text-terracotta-300 mb-3 italic">"{t("slogan")}"</p>
+            <h3 className="font-serif text-2xl font-bold text-primary mb-2">DAR LOUKA</h3>
+            <p className="text-sm text-primary/70 mb-3 italic">"{t("slogan")}"</p>
             <p className="text-sand-200 mb-4 text-sm">{t("footer.tagline")}</p>
             <div className="flex space-x-4">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-terracotta-400 transition-colors"
+                className="hover:text-primary transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -38,11 +38,11 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-terracotta-400 transition-colors"
+                className="hover:text-primary transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="mailto:info@darlouka.com" className="hover:text-terracotta-400 transition-colors">
+              <a href="mailto:info@darlouka.com" className="hover:text-primary transition-colors">
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -54,7 +54,7 @@ export function Footer() {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.key}>
-                  <Link href={link.href} className="text-sand-200 hover:text-terracotta-400 transition-colors">
+                  <Link href={link.href} className="text-sand-200 hover:text-primary transition-colors">
                     {t(link.key)}
                   </Link>
                 </li>
@@ -90,7 +90,7 @@ export function Footer() {
                   href="https://booking.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-terracotta-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   Booking.com
                 </a>
@@ -100,7 +100,7 @@ export function Footer() {
                   href="https://airbnb.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-terracotta-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   Airbnb
                 </a>
@@ -110,7 +110,7 @@ export function Footer() {
                   href="https://tripadvisor.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-terracotta-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   TripAdvisor
                 </a>

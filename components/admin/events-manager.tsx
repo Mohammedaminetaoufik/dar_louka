@@ -304,7 +304,7 @@ export function EventsManager() {
           <div className="flex gap-3 pt-4">
             <Button 
               onClick={handleSave} 
-              className="bg-terracotta-600 hover:bg-terracotta-700"
+              className="bg-primary hover:bg-primary/90"
               disabled={saving || uploading}
             >
               {saving || uploading ? (
@@ -365,7 +365,7 @@ export function EventsManager() {
                       </span>
                       <span>{t("admin.events.time")}: {event.time}</span>
                       <span>{t("admin.events.location")}: {event.location}</span>
-                      <span className="text-terracotta-600 font-semibold">
+                      <span className="text-primary font-semibold">
                         {event.price ? `${event.price} DH` : t("admin.events.free")}
                       </span>
                     </div>

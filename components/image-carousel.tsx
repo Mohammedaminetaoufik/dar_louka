@@ -118,7 +118,7 @@ export function ImageCarousel({ images, autoScroll = true, autoScrollInterval = 
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`h-2 rounded-full transition-all ${
-                  index === currentIndex ? "bg-terracotta-600 w-8" : "bg-white/50 w-2 hover:bg-white/70"
+                  index === currentIndex ? "bg-primary w-8" : "bg-white/50 w-2 hover:bg-white/70"
                 }`}
                 whileHover={{ scale: 1.2 }}
                 aria-label={`Go to slide ${index + 1}`}

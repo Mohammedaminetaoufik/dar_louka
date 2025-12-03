@@ -23,8 +23,6 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   // Enable compression
   compress: true,
-  // Optimize font loading
-  optimizeFonts: true,
   // Generate ETag for static files
   generateEtags: true,
   // Experimental features for better performance
