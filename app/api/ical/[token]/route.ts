@@ -29,8 +29,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Create iCal calendar
     const calendar = ical({
-      name: `DAR LOUKA - ${room.name}`,
-      description: `Booking calendar for ${room.name} at DAR LOUKA`,
+      name: `DAR LOUKA - ${room.nameEn}`,
+      description: `Booking calendar for ${room.nameEn} at DAR LOUKA`,
       timezone: "Africa/Casablanca",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/ical/${token}`,
       prodId: {
@@ -78,7 +78,7 @@ ${booking.specialRequests ? `- Special Requests: ${booking.specialRequests}` : "
     return new Response(calendar.toString(), {
       headers: {
         "Content-Type": "text/calendar; charset=utf-8",
-        "Content-Disposition": `attachment; filename="darlouka-${room.name.toLowerCase().replace(/\s+/g, "-")}.ics"`,
+        "Content-Disposition": `attachment; filename="darlouka-${room.nameEn.toLowerCase().replace(/\s+/g, "-")}.ics"`,
       },
     })
   } catch (error) {
