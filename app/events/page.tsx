@@ -32,7 +32,9 @@ export default function EventsPage() {
     const fetchEventsData = async () => {
       try {
         setLoading(true)
-        const response = await fetch("/api/events")
+        const response = await fetch("/api/events", { 
+          cache: "default"
+        })
         if (!response.ok) throw new Error("Failed to fetch events")
         const data: Event[] = await response.json()
         setEvents(data)

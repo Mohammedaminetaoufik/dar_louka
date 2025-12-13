@@ -1,8 +1,7 @@
 // app/api/rooms/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import crypto from "crypto"
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 // 🔹 Helper: Safe JSON parsing (avoids crash on invalid/malformed JSON)
 const safeParseJSON = (str: string | null | undefined): unknown[] => {
   if (!str) return []
@@ -69,14 +68,14 @@ const serializeRoom = (room: any, includeToken = false) => {
 // GET — List all rooms (hide icalToken for security)
 export async function GET() {
   try {
-    console.log("[v0] GET /api/rooms - Fetching rooms from database")
     const rooms = await prisma.room.findMany({
       orderBy: { createdAt: "desc" },
     })
 
-    console.log("[v0] Found rooms:", rooms.length)
     const serializedRooms = rooms.map((room) => serializeRoom(room, false))
-    return NextResponse.json(serializedRooms)
+    const response = NextResponse.json(serializedRooms)
+    response.headers.set('Cache-Control', 'public, max-age=30, s-maxage=30, stale-while-revalidate=60')
+    return response
   } catch (error) {
     console.error("[GET /api/rooms] Error:", error)
     return NextResponse.json({ error: "Failed to fetch rooms" }, { status: 500 })

@@ -104,7 +104,7 @@ export function RoomPreview() {
                         <div>
                           <span className="text-sm text-muted-foreground">{t("rooms.from")}</span>
                           <p className="text-2xl font-bold text-primary">
-                            ${room.price}
+                            {room.price.toLocaleString("fr-FR")} <span className="text-lg">DH</span>
                             <span className="text-sm font-normal text-muted-foreground">/{t("rooms.night")}</span>
                           </p>
                         </div>

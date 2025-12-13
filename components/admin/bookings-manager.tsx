@@ -15,7 +15,7 @@ interface Booking {
   email: string
   phone: string
   status: string
-  room: { name: string }
+  room: { nameEn: string; nameFr: string }
 }
 
 export function BookingsManager() {
@@ -62,7 +62,7 @@ export function BookingsManager() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             <div>
               <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.room")}</p>
-              <p className="font-bold text-lg">{booking.room.name}</p>
+              <p className="font-bold text-lg">{booking.room.nameEn}</p>
             </div>
             <div>
               <p className="text-sm text-olive-600 font-semibold">{t("admin.bookings.guest")}</p>
@@ -114,7 +114,7 @@ export function BookingsManager() {
                   checkIn: booking.checkIn,
                   checkOut: booking.checkOut,
                   guests: booking.guests,
-                  roomName: booking.room.name,
+                  roomName: booking.room.nameEn,
                 }}
               />
             </div>

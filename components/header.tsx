@@ -42,10 +42,7 @@ export function Header() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+      <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled 
             ? "bg-background/98 backdrop-blur-xl shadow-2xl border-b border-primary/10" 
@@ -55,8 +52,8 @@ export function Header() {
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 group">
-              <motion.div whileHover={{ scale: 1.08 }} className="w-14 h-14 md:w-16 md:h-16 relative">
+            <Link href="/" prefetch={true} className="flex items-center space-x-3 group">
+              <div className="w-14 h-14 md:w-16 md:h-16 relative transition-transform hover:scale-105">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                 <Image
                   src="/dar-louka-logo.svg"
@@ -64,11 +61,12 @@ export function Header() {
                   width={64}
                   height={64}
                   className="w-full h-full relative z-10"
+                  priority
                 />
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent hidden sm:block tracking-wide">
+              </div>
+              <div className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent hidden sm:block tracking-wide transition-transform hover:scale-105">
                 DAR LOUKA
-              </motion.div>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -77,6 +75,7 @@ export function Header() {
                 <Link
                   key={item.key}
                   href={item.href}
+                  prefetch={true}
                   className={`px-4 py-2 font-medium text-sm uppercase tracking-widest transition-colors duration-200 rounded-md hover:bg-primary/5 ${
                     isScrolled ? "text-black hover:text-primary" : "text-primary"
                   }`}
@@ -131,7 +130,7 @@ export function Header() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Sidebar */}
       <AnimatePresence>
@@ -159,6 +158,7 @@ export function Header() {
                   <Link
                     key={item.key}
                     href={item.href}
+                    prefetch={true}
                     onClick={handleNavClick}
                     className="text-lg text-foreground hover:text-primary font-medium py-3 px-4 rounded-lg hover:bg-primary/5 transition-colors duration-200"
                   >

@@ -366,7 +366,7 @@ export function EventsManager() {
                       <span>{t("admin.events.time")}: {event.time}</span>
                       <span>{t("admin.events.location")}: {event.location}</span>
                       <span className="text-primary font-semibold">
-                        {event.price ? `${event.price} DH` : t("admin.events.free")}
+                        {event.price ? `${event.price.toLocaleString("fr-FR")} DH` : t("admin.events.free")}
                       </span>
                     </div>
                   </div>

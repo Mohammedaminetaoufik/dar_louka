@@ -13,7 +13,9 @@ import { ImageCarousel } from "@/components/image-carousel"
 import { useLanguage } from "@/components/language-provider"
 
 async function getRooms() {
-  const res = await fetch("/api/rooms", { cache: "no-store" })
+  const res = await fetch("/api/rooms", { 
+    cache: "default"
+  })
   if (!res.ok) throw new Error("Failed to fetch rooms")
   return res.json()
 }

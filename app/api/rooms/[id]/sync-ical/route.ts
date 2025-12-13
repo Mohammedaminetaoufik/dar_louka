@@ -1,8 +1,7 @@
 // app/api/rooms/[id]/sync-ical/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { parseICS } from "node-ical"
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 const safeParseJSON = (str: string | null | undefined): string[] => {
   if (!str) return []

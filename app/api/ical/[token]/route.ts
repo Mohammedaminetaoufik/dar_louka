@@ -1,9 +1,7 @@
 // app/api/ical/[token]/route.ts
 import { type NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import ical, { ICalEventStatus, ICalEventBusyStatus } from "ical-generator"
-
-const prisma = new PrismaClient()
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   try {

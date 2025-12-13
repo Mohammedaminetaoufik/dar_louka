@@ -42,6 +42,8 @@ model Event {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  @@index([date])
+  @@index([category])
   @@map("events")
 }
 
@@ -56,6 +58,8 @@ model GalleryImage {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  @@index([category])
+  @@index([createdAt])
   @@map("gallery_images")
 }
 
@@ -79,6 +83,9 @@ model Booking {
   room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@index([roomId], map: "bookings_roomId_fkey")
+  @@index([roomId, checkIn, checkOut])
+  @@index([status])
+  @@index([createdAt])
   @@map("bookings")
 }
 

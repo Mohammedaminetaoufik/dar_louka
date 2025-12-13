@@ -1,14 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
     const events = await prisma.event.findMany({
       orderBy: { date: "asc" },
     })
-    return NextResponse.json(events)
+    
+    const response = NextResponse.json(events)
+    response.headers.set('Cache-Control', 'public, max-age=30, s-maxage=30, stale-while-revalidate=60')
+    return response
   } catch (error) {
     console.error("[v0] Error fetching events:", error)
     return NextResponse.json({ error: "Failed to fetch events" }, { status: 500 })

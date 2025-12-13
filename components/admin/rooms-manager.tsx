@@ -735,7 +735,7 @@ export function RoomsManager() {
                   <div className="text-sm text-gray-600">{room.nameFr}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-gray-500">{room.capacity} Guests</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">${room.price}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-gray-500">{room.price.toLocaleString("fr-FR")} DH</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {/* iCal Status Column with Sync Button */}
                   <div className="flex items-center gap-2">

@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,7 +9,10 @@ export async function GET(request: NextRequest) {
       where: category ? { category } : {},
       orderBy: { createdAt: "desc" },
     })
-    return NextResponse.json(images)
+    
+    const response = NextResponse.json(images)
+    response.headers.set('Cache-Control', 'public, max-age=30, s-maxage=30, stale-while-revalidate=60')
+    return response
   } catch (error) {
     console.error("[v0] Error fetching gallery:", error)
     return NextResponse.json({ error: "Failed to fetch gallery" }, { status: 500 })
