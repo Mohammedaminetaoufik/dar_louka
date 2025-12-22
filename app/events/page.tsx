@@ -7,7 +7,7 @@ import { useLanguage } from "@/components/language-provider"
 import { Card, CardContent } from "@/components/ui/card"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
-import { Calendar, Loader2 } from "lucide-react"
+import { Calendar, Loader2, Users, Clock } from "lucide-react"
 
 export interface Event {
   id: number
@@ -15,9 +15,14 @@ export interface Event {
   titleFr: string
   descriptionEn: string
   descriptionFr: string
-  date: string
+  startDate: string
+  endDate?: string
+  type: "ONE_DAY" | "THREE_DAYS"
+  programEn?: string
+  programFr?: string
+  maxParticipants?: number
   price?: number
-  image?: string
+  image: string
 }
 
 export default function EventsPage() {
@@ -106,7 +111,7 @@ export default function EventsPage() {
             {error && <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">{error}</div>}
 
             {!loading && events.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {events.map((event, index) => (
                   <motion.div
                     key={event.id}
@@ -114,30 +119,64 @@ export default function EventsPage() {
                     animate={isActivitiesInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
-                    <Card className="h-full hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                    <Card className="h-full hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
                       {event.image && (
-                        <div className="relative h-48 overflow-hidden">
+                        <div className="relative h-64 overflow-hidden">
                           <img
                             src={event.image || "/placeholder.svg"}
                             alt={language === 'fr' ? event.titleFr : event.titleEn}
                             className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                           />
+                          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-olive-900">
+                            {event.type === "THREE_DAYS" ? (language === 'fr' ? "3 Nuits" : "3 Nights") : (language === 'fr' ? "1 Jour" : "1 Day")}
+                          </div>
                         </div>
                       )}
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          <span>
-  {new Date(event.date).toLocaleDateString("fr-FR")}
-</span>
+                      <CardContent className="p-6 flex-1 flex flex-col">
+                        <div className="flex flex-wrap gap-4 mb-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            <span>
+                              {new Date(event.startDate).toLocaleDateString(language === 'fr' ? "fr-FR" : "en-US")}
+                              {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString(language === 'fr' ? "fr-FR" : "en-US")}`}
+                            </span>
+                          </div>
+                          {event.maxParticipants && (
+                            <div className="flex items-center gap-1">
+                              <Users className="h-4 w-4" />
+                              <span>{event.maxParticipants} {language === 'fr' ? "pers max" : "max pers"}</span>
+                            </div>
+                          )}
                         </div>
-                        <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
+                        
+                        <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">
                           {language === 'fr' ? event.titleFr : event.titleEn}
                         </h3>
-                        <p className="text-muted-foreground leading-relaxed mb-3">
+                        
+                        <p className="text-muted-foreground leading-relaxed mb-6">
                           {language === 'fr' ? event.descriptionFr : event.descriptionEn}
                         </p>
-                        {event.price && <p className="text-primary font-semibold">{event.price.toLocaleString("fr-FR")} DH</p>}
+
+                        {(language === 'fr' ? event.programFr : event.programEn) && (
+                          <div className="mt-auto bg-sand-50 p-4 rounded-lg mb-4">
+                            <h4 className="font-semibold mb-2 text-olive-900 flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              {language === 'fr' ? "Programme" : "Itinerary"}
+                            </h4>
+                            <div className="text-sm text-olive-800 whitespace-pre-line">
+                              {language === 'fr' ? event.programFr : event.programEn}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="mt-auto pt-4 border-t border-sand-200 flex justify-between items-center">
+                          {event.price && (
+                            <div className="text-2xl font-bold text-primary">
+                              {event.price.toLocaleString(language === 'fr' ? "fr-FR" : "en-US")} {language === 'fr' ? "€/pers" : "€/pers"}
+                            </div>
+                          )}
+                          {/* Add booking button or link here if needed */}
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>

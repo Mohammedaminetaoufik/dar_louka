@@ -53,6 +53,22 @@ export async function GET(request: NextRequest) {
       })
     }
 
+    // Check for conflicting 3-day packages (Retreats block all rooms)
+    const conflictingPackage = await prisma.event.findFirst({
+      where: {
+        type: "THREE_DAYS",
+        startDate: { lt: checkOut },
+        endDate: { gt: checkIn },
+      },
+    })
+
+    if (conflictingPackage) {
+      return NextResponse.json({
+        available: false,
+        message: "Dates are blocked due to a special retreat package",
+      })
+    }
+
     // Get next available dates for the room
     const upcomingBooking = await prisma.booking.findFirst({
       where: {

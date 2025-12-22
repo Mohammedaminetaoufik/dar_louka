@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 export async function GET(request: NextRequest) {
   try {
     const events = await prisma.event.findMany({
-      orderBy: { date: "asc" },
+      orderBy: { startDate: "asc" },
     })
     
     const response = NextResponse.json(events)
@@ -25,12 +25,14 @@ export async function POST(request: NextRequest) {
         titleFr: body.titleFr,
         descriptionEn: body.descriptionEn,
         descriptionFr: body.descriptionFr,
-        date: new Date(body.date),
-        time: body.time,
-        location: body.location,
-        category: body.category,
+        startDate: new Date(body.startDate),
+        endDate: body.endDate ? new Date(body.endDate) : null,
+        type: body.type,
+        programEn: body.programEn,
+        programFr: body.programFr,
+        maxParticipants: body.maxParticipants ? Number(body.maxParticipants) : null,
         image: body.image,
-        price: body.price,
+        price: body.price ? Number(body.price) : null,
       },
     })
     return NextResponse.json(event, { status: 201 })

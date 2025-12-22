@@ -14,12 +14,14 @@ interface Event {
   titleFr: string
   descriptionEn: string
   descriptionFr: string
-  date: string
-  time: string
-  location: string
-  category: string
-  image: string
+  startDate: string
+  endDate?: string
+  type: "ONE_DAY" | "THREE_DAYS"
+  programEn?: string
+  programFr?: string
+  maxParticipants?: number
   price?: number
+  image: string
 }
 
 export function EventsManager() {
@@ -27,7 +29,7 @@ export function EventsManager() {
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [formData, setFormData] = useState<Partial<Event>>({})
+  const [formData, setFormData] = useState<Partial<Event>>({ type: "ONE_DAY" })
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -78,7 +80,7 @@ export function EventsManager() {
   }
 
   async function handleSave() {
-    if (!formData.titleEn || !formData.titleFr || !formData.descriptionEn || !formData.descriptionFr || !formData.date || !formData.time || !formData.location || !formData.category) {
+    if (!formData.titleEn || !formData.titleFr || !formData.descriptionEn || !formData.descriptionFr || !formData.startDate || !formData.type) {
       alert(t("admin.events.fillRequired"))
       return
     }
@@ -108,22 +110,17 @@ export function EventsManager() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          titleEn: formData.titleEn,
-          titleFr: formData.titleFr,
-          descriptionEn: formData.descriptionEn,
-          descriptionFr: formData.descriptionFr,
-          date: formData.date,
-          time: formData.time,
-          location: formData.location,
-          category: formData.category,
+          ...formData,
           image: imageUrl,
-          price: formData.price,
+          // Ensure numbers are sent as numbers
+          price: formData.price ? Number(formData.price) : null,
+          maxParticipants: formData.maxParticipants ? Number(formData.maxParticipants) : null,
         }),
       })
 
       if (response.ok) {
         fetchEvents()
-        setFormData({})
+        setFormData({ type: "ONE_DAY" })
         setEditingId(null)
         setImageFile(null)
       } else {
@@ -150,7 +147,11 @@ export function EventsManager() {
 
   function handleEdit(event: Event) {
     setEditingId(event.id)
-    setFormData(event)
+    setFormData({
+      ...event,
+      startDate: event.startDate ? new Date(event.startDate).toISOString().split('T')[0] : '',
+      endDate: event.endDate ? new Date(event.endDate).toISOString().split('T')[0] : '',
+    })
     setImageFile(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -172,6 +173,19 @@ export function EventsManager() {
         </h2>
         
         <div className="space-y-6">
+          {/* Type Selection */}
+          <div>
+            <Label>Type *</Label>
+            <select
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={formData.type || "ONE_DAY"}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value as "ONE_DAY" | "THREE_DAYS" })}
+            >
+              <option value="ONE_DAY">Forfait 1 Jour</option>
+              <option value="THREE_DAYS">Forfait 3 Nuits</option>
+            </select>
+          </div>
+
           {/* Title - English and French */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -179,7 +193,7 @@ export function EventsManager() {
               <Input
                 value={formData.titleEn || ""}
                 onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
-                placeholder={t("admin.events.placeholder.title")}
+                placeholder="e.g. 3-Night Package"
               />
             </div>
             <div>
@@ -187,7 +201,7 @@ export function EventsManager() {
               <Input
                 value={formData.titleFr || ""}
                 onChange={(e) => setFormData({ ...formData, titleFr: e.target.value })}
-                placeholder="Ex: Randonnée dans l'Atlas"
+                placeholder="e.g. Forfait 3 Nuits"
               />
             </div>
           </div>
@@ -199,7 +213,7 @@ export function EventsManager() {
               <Textarea
                 value={formData.descriptionEn || ""}
                 onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
-                placeholder={t("admin.events.placeholder.description")}
+                placeholder="Package description..."
                 rows={4}
               />
             </div>
@@ -208,57 +222,68 @@ export function EventsManager() {
               <Textarea
                 value={formData.descriptionFr || ""}
                 onChange={(e) => setFormData({ ...formData, descriptionFr: e.target.value })}
-                placeholder="Décrivez l'événement..."
+                placeholder="Description du forfait..."
                 rows={4}
               />
             </div>
           </div>
 
-          {/* Date, Time, Location */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Program / Itinerary */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>{t("admin.events.date")} *</Label>
-              <Input
-                type="date"
-                value={formData.date || ""}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              <Label>Program / Itinerary (English)</Label>
+              <Textarea
+                value={formData.programEn || ""}
+                onChange={(e) => setFormData({ ...formData, programEn: e.target.value })}
+                placeholder="Day 1: ... Day 2: ..."
+                rows={6}
               />
             </div>
             <div>
-              <Label>{t("admin.events.time")} *</Label>
-              <Input
-                type="time"
-                value={formData.time || ""}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>{t("admin.events.price")} (MAD)</Label>
-              <Input
-                type="number"
-                value={formData.price || ""}
-                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) || undefined })}
-                placeholder={t("admin.events.placeholder.price")}
+              <Label>Programme / Itinéraire (Français)</Label>
+              <Textarea
+                value={formData.programFr || ""}
+                onChange={(e) => setFormData({ ...formData, programFr: e.target.value })}
+                placeholder="Jour 1: ... Jour 2: ..."
+                rows={6}
               />
             </div>
           </div>
 
-          {/* Location and Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Date, Price, Participants */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <Label>{t("admin.events.location")} *</Label>
+              <Label>{t("admin.events.date")} (Start) *</Label>
               <Input
-                value={formData.location || ""}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder={t("admin.events.placeholder.location")}
+                type="date"
+                value={formData.startDate || ""}
+                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              />
+            </div>
+            {formData.type === "THREE_DAYS" && (
+              <div>
+                <Label>End Date</Label>
+                <Input
+                  type="date"
+                  value={formData.endDate || ""}
+                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                />
+              </div>
+            )}
+            <div>
+              <Label>{t("admin.events.price")} (MAD/EUR)</Label>
+              <Input
+                type="number"
+                value={formData.price || ""}
+                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) || undefined })}
               />
             </div>
             <div>
-              <Label>{t("admin.events.category")} *</Label>
+              <Label>Max Participants</Label>
               <Input
-                value={formData.category || ""}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                placeholder={t("admin.events.placeholder.category")}
+                type="number"
+                value={formData.maxParticipants || ""}
+                onChange={(e) => setFormData({ ...formData, maxParticipants: Number(e.target.value) || undefined })}
               />
             </div>
           </div>
@@ -294,9 +319,6 @@ export function EventsManager() {
               {imageFile && (
                 <p className="text-sm text-green-600">{t("admin.events.newImageSelected")}: {imageFile.name}</p>
               )}
-              <p className="text-xs text-olive-600">
-                {t("admin.events.imageInstructions")}
-              </p>
             </div>
           </div>
 
@@ -320,7 +342,7 @@ export function EventsManager() {
               <Button
                 onClick={() => {
                   setEditingId(null)
-                  setFormData({})
+                  setFormData({ type: "ONE_DAY" })
                   setImageFile(null)
                 }}
                 variant="outline"
@@ -353,20 +375,24 @@ export function EventsManager() {
                   
                   {/* Event Info */}
                   <div className="flex-1">
-                    <div>
-                      <h3 className="font-bold text-lg text-olive-900">{event.titleEn}</h3>
-                      <p className="text-sm text-gray-600">{event.titleFr}</p>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-lg text-olive-900">{event.titleEn}</h3>
+                        <p className="text-sm text-gray-600">{event.titleFr}</p>
+                      </div>
+                      <span className="px-2 py-1 bg-sand-100 text-olive-800 text-xs rounded-full">
+                        {event.type === "THREE_DAYS" ? "3 Days" : "1 Day"}
+                      </span>
                     </div>
                     <p className="text-olive-700 text-sm mb-2 line-clamp-2">{event.descriptionEn}</p>
                     <div className="flex flex-wrap gap-4 text-sm text-olive-600">
                       <span className="flex items-center gap-1">
                         <CalendarIcon className="h-4 w-4" />
-                        {new Date(event.date).toLocaleDateString("fr-FR")}
+                        {new Date(event.startDate).toLocaleDateString("fr-FR")}
+                        {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString("fr-FR")}`}
                       </span>
-                      <span>{t("admin.events.time")}: {event.time}</span>
-                      <span>{t("admin.events.location")}: {event.location}</span>
                       <span className="text-primary font-semibold">
-                        {event.price ? `${event.price.toLocaleString("fr-FR")} DH` : t("admin.events.free")}
+                        {event.price ? `${event.price.toLocaleString("fr-FR")} €` : t("admin.events.free")}
                       </span>
                     </div>
                   </div>

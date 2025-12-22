@@ -130,88 +130,31 @@ async function main() {
   const events = await prisma.event.createMany({
     data: [
       {
-        titleEn: "Atlas Mountains Hiking",
-        titleFr: "Randonnée dans les Montagnes de l'Atlas",
-        descriptionEn:
-          "Join us for an unforgettable hiking adventure in the Atlas Mountains. Our experienced guides will lead you through scenic trails with breathtaking views of the surrounding valleys and Berber villages. Perfect for nature lovers and adventure seekers.",
-        descriptionFr:
-          "Rejoignez-nous pour une aventure de randonnée inoubliable dans les Montagnes de l'Atlas. Nos guides expérimentés vous feront découvrir des sentiers pittoresques avec des vues à couper le souffle sur les vallées environnantes et les villages berbères. Parfait pour les amoureux de la nature et les amateurs d'aventure.",
-        date: new Date("2024-12-15"),
-        time: "08:00 AM",
-        location: "Atlas Mountains",
-        category: "Adventure",
+        titleEn: "3-Night Package at Dar Louka",
+        titleFr: "Forfait 3 Nuits à Dar Louka",
+        descriptionEn: "Silence and Shiatsu Escape 40km from Marrakech. Transfer from Marrakech included.",
+        descriptionFr: "L'Évasion Silence et Shiatsu à 40km de Marrakech. Transfert de marrakech inclus.",
+        startDate: new Date("2025-01-15"),
+        endDate: new Date("2025-01-18"),
+        type: "THREE_DAYS",
+        programEn: "Day 1 (Anchoring): Arrival, immersion, settling into tranquility and softness then Dinner\nDay 2 (Repair): Breakfast (light), followed by your Expert Shiatsu Session (1h30 min), including 20 min of infrared sauna beforehand, then at the end of the day a gentle hike to discover the Hinterland.\nDay 3 (Integration): Body Awakening (Yoga/Gentle Movements), \"Vitality\" Lunch, with a green juice among others then Self-Care Workshop (Reflexology Techniques) for the return. In the afternoon discovery of Imlil with a small hike\nDay 4 (Departure and Intention): Departure according to flight, equipped with some tips to maintain the benefits",
+        programFr: "Jour 1 (Ancrage) : Arrivée, immersion, installation dans la tranquillité et la douceur puis Dîner\nJour 2 (Réparation) : Petit-déjeuner (légér, suivi de votre Séance Shiatsu Expert  (1h30 min),inclue au préalable du soin un 20 mn de sauna infra rouge puis en fin de journée une randonnée douce pour la Découverte de l'Arrière-Pays.\nJour 3 (Intégration) : Éveil Corporel (Yoga/Mouvements Doux), Déjeuner »Vitalité », avec un jus vert  entre autre  puis Atelier d'Auto-Soin (Techniques de Réflexologie) pour le retour. En après midi découverte d’imlil avec petite randonnée\nJour 4 (Départ et Intention : Départ en fonction du vol , muni de quelques conseils pour maintenir les bénéfices",
+        maxParticipants: 4,
         image: "/placeholder.svg?height=400&width=600",
-        price: 45,
+        price: 590,
       },
       {
-        titleEn: "Traditional Moroccan Cooking Class",
-        titleFr: "Cours de Cuisine Marocaine Traditionnelle",
-        descriptionEn:
-          "Learn to prepare authentic Moroccan dishes from our experienced chef. This hands-on cooking class covers traditional recipes, spice blending, and cooking techniques passed down through generations. Includes a delicious meal at the end.",
-        descriptionFr:
-          "Apprenez à préparer des plats marocains authentiques avec notre chef expérimenté. Ce cours de cuisine pratique couvre les recettes traditionnelles, le mélange d'épices et les techniques culinaires transmises de génération en génération. Comprend un délicieux repas à la fin.",
-        date: new Date("2024-12-16"),
-        time: "10:00 AM",
-        location: "DAR LOUKA Kitchen",
-        category: "Cultural",
+        titleEn: "1-Day Retreat at Dar Louka",
+        titleFr: "Forfait 1 jour retraite à Dar Louka",
+        descriptionEn: "Silence and Shiatsu Escape 40km from Marrakech. Transfer from Marrakech included.",
+        descriptionFr: "L'Évasion Silence et Shiatsu à 40km de Marrakech. Transfert de marrakech inclus.",
+        startDate: new Date("2025-01-20"),
+        type: "ONE_DAY",
+        programEn: "10:00 - 10:30 Private Transfer and Arrival: The client leaves the noise of the city.\n10:30 - 11:00 Welcome & Silencing Anchoring: Welcome tea and discovery of the place. Invitation to leave the phone aside\n11:00 - 12:30 The Expert Care Energy Repair: Complete Shiatsu and Reflexology session (60 min).\n12:30 - 13:30 Free Resourcing Integration: Free access to the pool, gardens and reading corners. The client takes advantage of the silence to integrate the benefits of the care.\n13:30 - 14:30 Detox Lunch Nourish and Cleanse: Light and healthy lunch (Balanced Detox Cuisine), ideal not to weigh down the body after the care.\n14:30 - 15:30 Pause and Disconnection Closing: Last moment of calm before the return.\n15:30 - 16:00 Departure and Private Return: The client leaves rested, realigned, joyful.",
+        programFr: "10h00 - 10h30 Transfert Privé et Arrivée : Le client quitte le bruit de la ville.\n10h30 - 11h00 Accueil & Mise en Silence Ancrage : Thé de bienvenue et découverte du lieu. Invitation à laisser le téléphone de côté\n11h00 - 12h30 Le Soin Expert Réparation Énergétique : Séance complète de Shiatsu et  Réflexologie (60 min).\n12h30 - 13h30 Ressourcement Libre Intégration : Accès libre à la piscine, aux jardins et aux coins de lecture. Le client profite du silence pour intégrer les bénéfices du soin.\n13h30 - 14h30 Déjeuner Détox Nourrir et Nettoyer : Déjeuner léger et sain (Cuisine Équilibrée Détox), idéal pour ne pas alourdir le corps après le soin.\n14h30 - 15h30 Pause et Déconnexion Clôture : Dernier moment de calme avant le retour.\n15h30 - 16h00 Départ et Retour Privé : Le client repart reposé, réaligné, joyeux.",
+        maxParticipants: 2,
         image: "/placeholder.svg?height=400&width=600",
-        price: 55,
-      },
-      {
-        titleEn: "Sunset Camel Trekking",
-        titleFr: "Balade en Chameau au Coucher du Soleil",
-        descriptionEn:
-          "Experience the magic of the Moroccan landscape on a camel trek at sunset. Ride through the foothills of the Atlas Mountains as the sun paints the sky in golden hues. A truly memorable experience.",
-        descriptionFr:
-          "Découvrez la magie du paysage marocain lors d'une randonnée en chameau au coucher du soleil. Chevauchez les contreforts des Montagnes de l'Atlas alors que le soleil peint le ciel de teintes dorées. Une expérience vraiment mémorable.",
-        date: new Date("2024-12-17"),
-        time: "04:00 PM",
-        location: "Tahanaout Valley",
-        category: "Adventure",
-        image: "/placeholder.svg?height=400&width=600",
-        price: 50,
-      },
-      {
-        titleEn: "Berber Village Tour",
-        titleFr: "Visite de Villages Berbères",
-        descriptionEn:
-          "Visit authentic Berber villages and experience traditional Moroccan culture. Meet local families, learn about their customs, and enjoy traditional tea and hospitality. A cultural immersion experience.",
-        descriptionFr:
-          "Visitez des villages berbères authentiques et découvrez la culture marocaine traditionnelle. Rencontrez les familles locales, apprenez leurs coutumes et profitez du thé traditionnel et de l'hospitalité. Une expérience d'immersion culturelle.",
-        date: new Date("2024-12-18"),
-        time: "09:00 AM",
-        location: "Berber Villages",
-        category: "Cultural",
-        image: "/placeholder.svg?height=400&width=600",
-        price: 40,
-      },
-      {
-        titleEn: "Marrakech Medina Exploration",
-        titleFr: "Exploration de la Médina de Marrakech",
-        descriptionEn:
-          "Explore the vibrant Marrakech Medina with its bustling souks, historic palaces, and stunning architecture. Our knowledgeable guide will take you through the winding streets and share fascinating stories about this ancient city.",
-        descriptionFr:
-          "Explorez la vibrante Médina de Marrakech avec ses souks animés, ses palais historiques et son architecture époustouflante. Notre guide expérimenté vous emmènera dans les ruelles sinueuses et partagera des histoires fascinantes sur cette ville ancienne.",
-        date: new Date("2024-12-19"),
-        time: "02:00 PM",
-        location: "Marrakech Medina",
-        category: "Cultural",
-        image: "/placeholder.svg?height=400&width=600",
-        price: 35,
-      },
-      {
-        titleEn: "Ourika Valley Waterfall Trek",
-        titleFr: "Randonnée aux Cascades de la Vallée d'Ourika",
-        descriptionEn:
-          "Hike to the beautiful Ourika Valley waterfalls surrounded by lush greenery and mountain streams. This moderate trek offers refreshing swimming opportunities and stunning natural scenery.",
-        descriptionFr:
-          "Randonnez jusqu'aux belles cascades de la Vallée d'Ourika entourées de verdure luxuriante et de ruisseaux de montagne. Cette randonnée modérée offre des opportunités de baignade rafraîchissantes et des paysages naturels époustouflants.",
-        date: new Date("2024-12-20"),
-        time: "08:30 AM",
-        location: "Ourika Valley",
-        category: "Adventure",
-        image: "/placeholder.svg?height=400&width=600",
-        price: 48,
+        price: 125,
       },
     ],
   })
