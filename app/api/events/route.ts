@@ -35,6 +35,35 @@ export async function POST(request: NextRequest) {
         price: body.price ? Number(body.price) : null,
       },
     })
+
+    // If it's a 3-day event (Forfait), block all rooms for the duration
+    if (body.type === "THREE_DAYS") {
+      const rooms = await prisma.room.findMany()
+      const checkIn = new Date(body.startDate)
+      const checkOut = body.endDate 
+        ? new Date(body.endDate) 
+        : new Date(checkIn.getTime() + 3 * 24 * 60 * 60 * 1000) // Default to 3 days if not specified
+
+      const blockingBookings = rooms.map(room => ({
+        roomId: room.id,
+        eventId: event.id, // Link to the event so deleting the event removes the blocks
+        checkIn,
+        checkOut,
+        guests: 1,
+        name: `Event Block: ${body.titleEn}`,
+        email: "admin@darlouka.com",
+        phone: "0000000000",
+        status: "confirmed",
+        specialRequests: "Automatically blocked for event"
+      }))
+
+      if (blockingBookings.length > 0) {
+        await prisma.booking.createMany({
+          data: blockingBookings
+        })
+      }
+    }
+
     return NextResponse.json(event, { status: 201 })
   } catch (error) {
     console.error("[v0] Error creating event:", error)

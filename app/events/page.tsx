@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { Calendar, Loader2, Users, Clock } from "lucide-react"
+import { EventBookingDialog } from "@/components/booking/event-booking-dialog"
 
 export interface Event {
   id: number
@@ -172,10 +173,10 @@ export default function EventsPage() {
                         <div className="mt-auto pt-4 border-t border-sand-200 flex justify-between items-center">
                           {event.price && (
                             <div className="text-2xl font-bold text-primary">
-                              {event.price.toLocaleString(language === 'fr' ? "fr-FR" : "en-US")} {language === 'fr' ? "€/pers" : "€/pers"}
+                              {event.price.toLocaleString(language === 'fr' ? "fr-FR" : "en-US")} {language === 'fr' ? "DH/pers" : "MAD/pers"}
                             </div>
                           )}
-                          {/* Add booking button or link here if needed */}
+                          <EventBookingDialog event={event} />
                         </div>
                       </CardContent>
                     </Card>

@@ -31,7 +31,17 @@ export function BookingsManager() {
     try {
       const response = await fetch("/api/bookings")
       const data = await response.json()
-      setBookings(data)
+      
+      const bookingsList = data.bookings || (Array.isArray(data) ? data : [])
+      
+      if (!Array.isArray(bookingsList)) {
+        console.error("Expected array of bookings but got:", data)
+        return
+      }
+
+      // Filter for room bookings only
+      const roomBookings = bookingsList.filter((booking: any) => booking.roomId !== null)
+      setBookings(roomBookings)
     } catch (error) {
       console.error("[v0] Error fetching bookings:", error)
     } finally {
@@ -93,18 +103,18 @@ export function BookingsManager() {
               <p className="text-sm font-semibold text-olive-700 mb-2">{t("admin.bookings.contact")}:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex items-center gap-2 bg-sand-50 p-3 rounded">
-                  <span className="font-semibold">Email:</span>
+                  <span className="font-semibold">{t("admin.bookings.email")}:</span>
                   <span>{booking.email}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-sand-50 p-3 rounded">
-                  <span className="font-semibold">Téléphone:</span>
+                  <span className="font-semibold">{t("admin.bookings.phone")}:</span>
                   <span>{booking.phone}</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-olive-700 mb-3">Send Confirmation:</p>
+              <p className="text-sm font-semibold text-olive-700 mb-3">{t("admin.bookings.sendConfirmation")}:</p>
               <BookingConfirmation
                 booking={{
                   id: booking.id,
@@ -125,19 +135,19 @@ export function BookingsManager() {
               onClick={() => updateStatus(booking.id, "confirmed")}
               className={booking.status === "confirmed" ? "bg-green-600 hover:bg-green-700" : "bg-sand-200 hover:bg-sand-300"}
             >
-              Confirm Booking
+              {t("admin.bookings.confirmAction")}
             </Button>
             <Button
               onClick={() => updateStatus(booking.id, "pending")}
               className={booking.status === "pending" ? "bg-yellow-600 hover:bg-yellow-700" : "bg-sand-200 hover:bg-sand-300"}
             >
-              Mark Pending
+              {t("admin.bookings.pendingAction")}
             </Button>
             <Button
               onClick={() => updateStatus(booking.id, "cancelled")}
               className={booking.status === "cancelled" ? "bg-red-600 hover:bg-red-700" : "bg-sand-200 hover:bg-sand-300"}
             >
-              Cancel
+              {t("admin.bookings.cancelAction")}
             </Button>
           </div>
         </div>

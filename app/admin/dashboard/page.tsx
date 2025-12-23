@@ -6,12 +6,13 @@ import {RoomsManager}  from "@/components/admin/rooms-manager"
 import { EventsManager } from "@/components/admin/events-manager"
 import { GalleryManager } from "@/components/admin/gallery-manager"
 import { BookingsManager } from "@/components/admin/bookings-manager"
+import { EventBookingsManager } from "@/components/admin/event-bookings-manager"
 import { LogOut } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 export default function AdminDashboard() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState<"rooms" | "events" | "gallery" | "bookings">("rooms")
+  const [activeTab, setActiveTab] = useState<"rooms" | "events" | "gallery" | "bookings" | "eventBookings">("rooms")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -36,6 +37,7 @@ export default function AdminDashboard() {
     events: t("admin.events"),
     gallery: t("admin.gallery"),
     bookings: t("admin.bookings"),
+    eventBookings: t("admin.eventBookings.title"),
   }
 
   return (
@@ -57,7 +59,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Tab Navigation */}
         <div className="flex gap-4 mb-8 border-b border-sand-200 overflow-x-auto">
-          {["rooms", "events", "gallery", "bookings"].map((tab) => (
+          {["rooms", "events", "gallery", "bookings", "eventBookings"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as typeof activeTab)}
@@ -78,6 +80,7 @@ export default function AdminDashboard() {
           {activeTab === "events" && <EventsManager />}
           {activeTab === "gallery" && <GalleryManager />}
           {activeTab === "bookings" && <BookingsManager />}
+          {activeTab === "eventBookings" && <EventBookingsManager />}
         </div>
       </main>
     </div>

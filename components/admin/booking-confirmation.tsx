@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Mail, MessageCircle, Phone, CheckCircle, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
+import { useLanguage } from "@/components/language-provider"
 
 interface BookingConfirmationProps {
   booking: {
@@ -16,6 +17,7 @@ interface BookingConfirmationProps {
     checkOut: string
     guests: number
     roomName?: string
+    eventName?: string
   }
 }
 
@@ -82,7 +84,8 @@ const confirmationTemplates = {
 }
 
 export function BookingConfirmation({ booking }: BookingConfirmationProps) {
-  const [language, setLanguage] = useState<Language>("en")
+  const { t } = useLanguage()
+  const [language, setLanguage] = useState<Language>("fr")
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [selectedMethod, setSelectedMethod] = useState<ConfirmationMethod | null>(null)
@@ -100,6 +103,9 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
     const template = confirmationTemplates[language].email
     const checkInDate = formatDate(booking.checkIn)
     const checkOutDate = formatDate(booking.checkOut)
+    
+    const itemLabel = booking.eventName ? (language === 'fr' ? "Événement:" : "Event:") : template.room
+    const itemName = booking.eventName || booking.roomName || "Standard Room"
 
     return {
       subject: template.subject,
@@ -144,8 +150,8 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
               <div class="details-box">
                 <p style="font-weight: bold; margin-top: 0; color: #333;">${template.bookingDetails}</p>
                 <div class="detail-row">
-                  <span class="detail-label">${template.room}</span>
-                  <span class="detail-value">${booking.roomName || "Standard Room"}</span>
+                  <span class="detail-label">${itemLabel}</span>
+                  <span class="detail-value">${itemName}</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">${template.checkIn}</span>
@@ -196,7 +202,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
       .replace("{checkIn}", formatDate(booking.checkIn))
       .replace("{checkOut}", formatDate(booking.checkOut))
       .replace("{guests}", booking.guests.toString())
-      .replace("{roomName}", booking.roomName || "Standard Room")
+      .replace("{roomName}", booking.eventName || booking.roomName || "Standard Room")
   }
 
   const getPhoneMessage = () => {
@@ -206,7 +212,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
       .replace("{checkIn}", formatDate(booking.checkIn))
       .replace("{checkOut}", formatDate(booking.checkOut))
       .replace("{guests}", booking.guests.toString())
-      .replace("{roomName}", booking.roomName || "Standard Room")
+      .replace("{roomName}", booking.eventName || booking.roomName || "Standard Room")
   }
 
   const handleSendConfirmation = async (method: ConfirmationMethod) => {
@@ -237,7 +243,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
       setTimeout(() => setSent(false), 3000)
     } catch (error) {
       console.error("Confirmation error:", error)
-      alert(language === "en" ? "Failed to send confirmation" : "Échec de l'envoi de la confirmation")
+      alert(t("admin.confirmation.error"))
     } finally {
       setLoading(false)
       setSelectedMethod(null)
@@ -269,7 +275,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
           className="bg-green-50 border border-green-200 rounded p-3 flex items-center gap-2 text-sm text-green-700"
         >
           <CheckCircle className="h-4 w-4" />
-          {language === "en" ? "Confirmation sent successfully!" : "Confirmation envoyée avec succès!"}
+          {t("admin.confirmation.success")}
         </motion.div>
       )}
 
@@ -284,13 +290,13 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
               disabled={loading}
             >
               <Mail className="h-4 w-4" />
-              {language === "en" ? "Email" : "Email"}
+              {t("admin.confirmation.emailBtn")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                {language === "en" ? "Email Preview" : "Aperçu Email"}
+                {t("admin.confirmation.emailPreview")}
               </DialogTitle>
             </DialogHeader>
             <div
@@ -305,12 +311,10 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
               {loading && selectedMethod === "email" ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  {language === "en" ? "Sending..." : "Envoi..."}
+                  {t("admin.confirmation.sending")}
                 </>
-              ) : language === "en" ? (
-                "Send Email"
               ) : (
-                "Envoyer Email"
+                t("admin.confirmation.sendEmailBtn")
               )}
             </Button>
           </DialogContent>
@@ -328,7 +332,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
           disabled={loading}
         >
           <MessageCircle className="h-4 w-4" />
-          {language === "en" ? "WhatsApp" : "WhatsApp"}
+          {t("admin.confirmation.whatsappBtn")}
         </Button>
 
         {/* Phone Button */}
@@ -346,7 +350,7 @@ export function BookingConfirmation({ booking }: BookingConfirmationProps) {
           disabled={loading}
         >
           <Phone className="h-4 w-4" />
-          {language === "en" ? "Call" : "Appeler"}
+          {t("admin.confirmation.callBtn")}
         </Button>
       </div>
     </div>

@@ -72,7 +72,7 @@ export function EventsManager() {
       return data.url
     } catch (error) {
       console.error("Error uploading image:", error)
-      alert("Failed to upload image")
+      alert(t("admin.common.uploadError"))
       return null
     } finally {
       setUploading(false)
@@ -271,7 +271,7 @@ export function EventsManager() {
               </div>
             )}
             <div>
-              <Label>{t("admin.events.price")} (MAD/EUR)</Label>
+              <Label>{t("admin.events.price")} (DH)</Label>
               <Input
                 type="number"
                 value={formData.price || ""}
@@ -347,7 +347,7 @@ export function EventsManager() {
                 }}
                 variant="outline"
               >
-                {t("admin.rooms.cancel")}
+                {t("admin.events.cancel")}
               </Button>
             )}
           </div>
@@ -392,7 +392,7 @@ export function EventsManager() {
                         {event.endDate && ` - ${new Date(event.endDate).toLocaleDateString("fr-FR")}`}
                       </span>
                       <span className="text-primary font-semibold">
-                        {event.price ? `${event.price.toLocaleString("fr-FR")} €` : t("admin.events.free")}
+                        {event.price ? `${event.price.toLocaleString("fr-FR")} DH` : t("admin.events.free")}
                       </span>
                     </div>
                   </div>
@@ -406,7 +406,7 @@ export function EventsManager() {
                       className="whitespace-nowrap"
                     >
                       <Edit2 className="h-4 w-4 mr-1" />
-                      {t("admin.rooms.edit")}
+                      {t("admin.events.edit")}
                     </Button>
                     <Button
                       onClick={() => handleDelete(event.id)}
@@ -415,7 +415,7 @@ export function EventsManager() {
                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4 mr-1" />
-                      {t("admin.rooms.delete")}
+                      {t("admin.events.delete")}
                     </Button>
                   </div>
                 </div>

@@ -66,7 +66,7 @@ export function GalleryManager() {
       return data.url
     } catch (error) {
       console.error("Error uploading image:", error)
-      alert("Failed to upload image")
+      alert(t("admin.common.uploadError"))
       return null
     } finally {
       setUploading(false)

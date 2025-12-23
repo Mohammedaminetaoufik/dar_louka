@@ -176,6 +176,8 @@ const translations: Record<Language, Record<string, string>> = {
     // Events
     "events.title": "Events & Activities near Marrakech",
     "events.subtitle": "Discover the Magic of Morocco from Our Guesthouse",
+    "events.activities": "Activities",
+    "events.activitiesDesc": "Discover our exclusive packages and retreats designed for your well-being and cultural discovery.",
     "events.local": "Local Experiences",
     "events.activities": "Activities",
     "events.activities.intro":
@@ -360,6 +362,11 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.rooms.syncError": "Error syncing calendar",
     "admin.rooms.viewIcal": "View iCal",
     "admin.rooms.noRooms": "No rooms found",
+    "admin.rooms.error.nameEn": "Please enter room name in English",
+    "admin.rooms.error.nameFr": "Please enter room name in French",
+    "admin.rooms.error.descriptionEn": "Please enter description in English",
+    "admin.rooms.error.descriptionFr": "Please enter description in French",
+    "admin.common.uploadError": "Failed to upload image",
 
     // Bookings Manager
     "admin.bookings.title": "Manage Bookings",
@@ -380,6 +387,12 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.bookings.cancelled": "Cancelled",
     "admin.bookings.statusUpdated": "Status updated",
     "admin.bookings.noBookings": "No bookings found",
+    "admin.eventBookings.title": "Event Bookings",
+    "admin.bookings.event": "Event",
+    "admin.bookings.date": "Date",
+    "admin.bookings.confirmAction": "Confirm Booking",
+    "admin.bookings.pendingAction": "Mark Pending",
+    "admin.bookings.cancelAction": "Cancel",
 
     // Booking Confirmation
     "admin.confirmation.title": "Send Booking Confirmation",
@@ -388,6 +401,11 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.confirmation.email": "Send Email",
     "admin.confirmation.whatsapp": "Send WhatsApp",
     "admin.confirmation.phone": "Send Phone Call",
+    "admin.confirmation.emailBtn": "Email",
+    "admin.confirmation.whatsappBtn": "WhatsApp",
+    "admin.confirmation.callBtn": "Call",
+    "admin.confirmation.emailPreview": "Email Preview",
+    "admin.confirmation.sendEmailBtn": "Send Email",
     "admin.confirmation.send": "Send",
     "admin.confirmation.sending": "Sending...",
     "admin.confirmation.success": "Confirmation sent successfully!",
@@ -597,6 +615,8 @@ const translations: Record<Language, Record<string, string>> = {
     // Events
     "events.title": "Événements & Activités près de Marrakech",
     "events.subtitle": "Découvrez la Magie du Maroc depuis Notre Maison d'hôte",
+    "events.activities": "Activités",
+    "events.activitiesDesc": "Découvrez nos forfaits et retraites exclusifs conçus pour votre bien-être et votre découverte culturelle.",
     "about.values.text":
       "Nous croyons au tourisme durable, au soutien des communautés locales et à la préservation de la beauté naturelle de notre région. Notre équipe se consacre à fournir un service personnalisé qui fait que chaque invité se sente chez lui.",
     "about.location": "Notre Emplacement",
@@ -844,6 +864,11 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.rooms.syncError": "Erreur lors de la synchronisation du calendrier",
     "admin.rooms.viewIcal": "Afficher iCal",
     "admin.rooms.noRooms": "Aucune chambre trouvée",
+    "admin.rooms.error.nameEn": "Veuillez entrer le nom de la chambre en anglais",
+    "admin.rooms.error.nameFr": "Veuillez entrer le nom de la chambre en français",
+    "admin.rooms.error.descriptionEn": "Veuillez entrer la description en anglais",
+    "admin.rooms.error.descriptionFr": "Veuillez entrer la description en français",
+    "admin.common.uploadError": "Échec du téléchargement de l'image",
 
     // Bookings Manager
     "admin.bookings.title": "Gérer les Réservations",
@@ -864,6 +889,12 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.bookings.cancelled": "Annulée",
     "admin.bookings.statusUpdated": "Statut mis à jour",
     "admin.bookings.noBookings": "Aucune réservation trouvée",
+    "admin.eventBookings.title": "Réservations d'Événements",
+    "admin.bookings.event": "Événement",
+    "admin.bookings.date": "Date",
+    "admin.bookings.confirmAction": "Confirmer la Réservation",
+    "admin.bookings.pendingAction": "Mettre en Attente",
+    "admin.bookings.cancelAction": "Annuler",
 
     // Booking Confirmation
     "admin.confirmation.title": "Envoyer la Confirmation de Réservation",
@@ -872,6 +903,11 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.confirmation.email": "Envoyer un Email",
     "admin.confirmation.whatsapp": "Envoyer WhatsApp",
     "admin.confirmation.phone": "Appel Téléphonique",
+    "admin.confirmation.emailBtn": "Email",
+    "admin.confirmation.whatsappBtn": "WhatsApp",
+    "admin.confirmation.callBtn": "Appeler",
+    "admin.confirmation.emailPreview": "Aperçu Email",
+    "admin.confirmation.sendEmailBtn": "Envoyer Email",
     "admin.confirmation.send": "Envoyer",
     "admin.confirmation.sending": "Envoi...",
     "admin.confirmation.success": "Confirmation envoyée avec succès!",
@@ -920,7 +956,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.events.time": "Heure",
     "admin.events.location": "Lieu",
     "admin.events.category": "Catégorie",
-    "admin.events.price": "Prix (MAD)",
+    "admin.events.price": "Prix (DH)",
     "admin.events.image": "Image de l'Événement",
     "admin.events.uploadImage": "Télécharger l'Image",
     "admin.events.noEvents": "Aucun événement trouvé",
@@ -945,6 +981,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.events.create": "Créer l'Événement",
     "admin.events.list": "Liste des Événements",
     "admin.events.free": "Gratuit",
+    "admin.events.cancel": "Annuler",
 
     // Contacts Manager
     "admin.contacts.title": "Messages de Contact",

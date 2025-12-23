@@ -79,24 +79,24 @@ export function RoomsManager() {
       return data.url
     } catch (error) {
       console.error("Error uploading image:", error)
-      alert("Failed to upload image")
+      alert(t("admin.common.uploadError"))
       return null
     }
   }
 
   async function handleSave() {
     if (!formData.nameEn?.trim()) {
-      alert(t("admin.rooms.nameRequired"))
+      alert(t("admin.rooms.error.nameEn"))
       return
     }
 
     if (!formData.nameFr?.trim()) {
-      alert("Veuillez entrer le nom de la chambre en français")
+      alert(t("admin.rooms.error.nameFr"))
       return
     }
 
     if (!formData.descriptionEn?.trim()) {
-      alert(t("admin.rooms.description"))
+      alert(t("admin.rooms.error.descriptionEn"))
       return
     }
 
