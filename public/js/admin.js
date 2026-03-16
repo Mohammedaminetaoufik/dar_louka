@@ -124,7 +124,7 @@ function uploadRoomImages(input) {
             roomUploadedImages.push(url);
             if (!roomMainImage) roomMainImage = url;
             renderRoomImages();
-        });
+        }, 'rooms');
     }
     if (files.length > remaining) {
         alert('Seulement ' + remaining + ' image(s) supplémentaire(s) autorisée(s). Maximum ' + MAX_ROOM_IMAGES + '.');
@@ -154,7 +154,7 @@ function handleRoomImageDrop(e) {
                 roomUploadedImages.push(url);
                 if (!roomMainImage) roomMainImage = url;
                 renderRoomImages();
-            });
+            }, 'rooms');
         }
     }
     if (files.length > remaining) {
@@ -222,7 +222,7 @@ function renderRoomImages() {
                     roomUploadedImages[replaceIdx] = url;
                     if (replaceIdx === 0) roomMainImage = url;
                     renderRoomImages();
-                });
+                }, 'rooms');
             }
         };
         div.appendChild(replaceInput);
@@ -882,9 +882,12 @@ function copyConfirmation(bookingId) {
 }
 
 /* ==================== FILE UPLOAD ==================== */
-function uploadFile(file, callback) {
+function uploadFile(file, callback, folder) {
     var formData = new FormData();
     formData.append('file', file);
+    if (folder) {
+        formData.append('folder', folder);
+    }
 
     fetch('/api/upload', {
         method: 'POST',
