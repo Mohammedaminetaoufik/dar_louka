@@ -230,7 +230,7 @@ return [
         'rights' => 'All rights reserved',
         'quickLinks' => 'Quick Links',
         'contactUs' => 'Contact Us',
-        'address' => 'Douar Ait Souka, Tahanaout, Marrakech-Safi, Morocco',
+        'address' => 'Sour Tidrara, Tahanaout, Marrakech-Safi, Morocco',
         'bookingPlatforms' => 'Booking Platforms',
         'follow' => 'Follow Us',
     ],

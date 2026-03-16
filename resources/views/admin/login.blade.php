@@ -12,7 +12,7 @@
 <body>
     <div class="login-container">
         <div class="login-card">
-            <img src="{{ asset('uploads/dar-louka-logo.svg') }}" alt="Dar Louka" style="height:64px;margin:0 auto 1rem;display:block;">
+            <img src="{{ asset('uploads/dar-louka-logo.png') }}" alt="Dar Louka" style="height:64px;margin:0 auto 1rem;display:block;">
             <h1>Dar Louka</h1>
             <h2>Administration</h2>
 

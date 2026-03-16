@@ -3,7 +3,7 @@
     <div class="container header-inner">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="logo-link">
-            <img src="{{ asset('uploads/dar-louka-logo.svg') }}" alt="Dar Louka" class="logo-img">
+            <img src="{{ asset('uploads/dar-louka-logo.png') }}" alt="Dar Louka" class="logo-img">
             <span class="logo-text">Dar Louka</span>
         </a>
 

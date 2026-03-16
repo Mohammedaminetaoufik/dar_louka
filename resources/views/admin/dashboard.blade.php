@@ -13,7 +13,7 @@
 <body style="background: var(--sand-50);">
     <!-- Admin Header -->
     <header class="admin-header">
-        <h1><img src="{{ asset('uploads/dar-louka-logo.svg') }}" alt="Dar Louka" style="height:32px;vertical-align:middle;margin-right:8px;"> Dar Louka - Administration</h1>
+        <h1><img src="{{ asset('uploads/dar-louka-logo.png') }}" alt="Dar Louka" style="height:32px;vertical-align:middle;margin-right:8px;"> Dar Louka - Administration</h1>
         <div style="display:flex;align-items:center;gap:1rem;">
             <a href="{{ route('home') }}" class="btn btn-sm btn-outline" style="border-color:var(--color-primary);color:var(--color-primary);">
                 <i class="fas fa-external-link-alt"></i> Voir le site
@@ -28,11 +28,11 @@
     <div class="admin-container">
         <!-- Tabs -->
         <div class="admin-tabs">
-            <button class="admin-tab active" onclick="switchTab('rooms')"><i class="fas fa-bed"></i> Chambres</button>
-            <button class="admin-tab" onclick="switchTab('events')"><i class="fas fa-calendar-alt"></i> Forfaits</button>
-            <button class="admin-tab" onclick="switchTab('gallery')"><i class="fas fa-images"></i> Galerie</button>
-            <button class="admin-tab" onclick="switchTab('roomBookings')"><i class="fas fa-book"></i> Réservations Chambres</button>
-            <button class="admin-tab" onclick="switchTab('eventBookings')"><i class="fas fa-ticket-alt"></i> Réservations Forfaits</button>
+            <button class="admin-tab active" onclick="switchTab('rooms', this)"><i class="fas fa-bed"></i> Chambres</button>
+            <button class="admin-tab" onclick="switchTab('events', this)"><i class="fas fa-calendar-alt"></i> Forfaits</button>
+            <button class="admin-tab" onclick="switchTab('gallery', this)"><i class="fas fa-images"></i> Galerie</button>
+            <button class="admin-tab" onclick="switchTab('roomBookings', this)"><i class="fas fa-book"></i> Réservations Chambres</button>
+            <button class="admin-tab" onclick="switchTab('eventBookings', this)"><i class="fas fa-ticket-alt"></i> Réservations Forfaits</button>
         </div>
 
         <!-- ==================== ROOMS TAB ==================== -->
@@ -154,8 +154,18 @@
                         @foreach($rooms as $room)
                         <tr data-id="{{ $room->id }}">
                             <td>
-                                @if($room->image)
-                                <img src="{{ asset($room->image) }}" alt="">
+                                @php
+                                    $allImgs = [];
+                                    if($room->image) $allImgs[] = $room->image;
+                                    $extra = is_string($room->images) ? (json_decode($room->images, true) ?? []) : ($room->images ?? []);
+                                    foreach($extra as $ei) { if($ei && !in_array($ei, $allImgs)) $allImgs[] = $ei; }
+                                @endphp
+                                @if(count($allImgs) > 0)
+                                <div class="table-images-row">
+                                    @foreach($allImgs as $tIdx => $tImg)
+                                    <img src="{{ asset($tImg) }}" alt="" title="Image {{ $tIdx + 1 }}{{ $tIdx === 0 ? ' (Principal)' : '' }}">
+                                    @endforeach
+                                </div>
                                 @else
                                 <span class="text-muted">—</span>
                                 @endif
@@ -428,6 +438,8 @@
                                     <div class="confirmation-methods">
                                         <button class="btn btn-sm btn-primary" onclick="generateConfirmation({{ $booking->id }}, 'email', 'fr')"><i class="fas fa-envelope"></i> Email FR</button>
                                         <button class="btn btn-sm btn-primary" onclick="generateConfirmation({{ $booking->id }}, 'email', 'en')"><i class="fas fa-envelope"></i> Email EN</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="generateConfirmation({{ $booking->id }}, 'email-send', 'fr')"><i class="fas fa-paper-plane"></i> Envoyer Email FR</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="generateConfirmation({{ $booking->id }}, 'email-send', 'en')"><i class="fas fa-paper-plane"></i> Envoyer Email EN</button>
                                         <button class="btn btn-sm btn-success" onclick="generateConfirmation({{ $booking->id }}, 'whatsapp', 'fr')"><i class="fab fa-whatsapp"></i> WhatsApp FR</button>
                                         <button class="btn btn-sm btn-success" onclick="generateConfirmation({{ $booking->id }}, 'whatsapp', 'en')"><i class="fab fa-whatsapp"></i> WhatsApp EN</button>
                                     </div>
@@ -498,6 +510,8 @@
                                     <div class="confirmation-methods">
                                         <button class="btn btn-sm btn-primary" onclick="generateConfirmation({{ $booking->id }}, 'email', 'fr')"><i class="fas fa-envelope"></i> Email FR</button>
                                         <button class="btn btn-sm btn-primary" onclick="generateConfirmation({{ $booking->id }}, 'email', 'en')"><i class="fas fa-envelope"></i> Email EN</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="generateConfirmation({{ $booking->id }}, 'email-send', 'fr')"><i class="fas fa-paper-plane"></i> Envoyer Email FR</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="generateConfirmation({{ $booking->id }}, 'email-send', 'en')"><i class="fas fa-paper-plane"></i> Envoyer Email EN</button>
                                         <button class="btn btn-sm btn-success" onclick="generateConfirmation({{ $booking->id }}, 'whatsapp', 'fr')"><i class="fab fa-whatsapp"></i> WhatsApp FR</button>
                                         <button class="btn btn-sm btn-success" onclick="generateConfirmation({{ $booking->id }}, 'whatsapp', 'en')"><i class="fab fa-whatsapp"></i> WhatsApp EN</button>
                                     </div>
@@ -525,6 +539,6 @@
         const bookingsData = @json($bookingsJson);
         const eventBookingsData = @json($eventBookingsJson);
     </script>
-    <script src="{{ asset('js/admin.js') }}"></script>
+    <script src="{{ asset('js/admin.js') }}?v={{ filemtime(public_path('js/admin.js')) }}"></script>
 </body>
 </html>

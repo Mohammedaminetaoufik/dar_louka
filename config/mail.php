@@ -115,4 +115,6 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'admin_notification_address' => env('ADMIN_RESERVATION_EMAIL', 'ataoufik031@gmail.com'),
+
 ];

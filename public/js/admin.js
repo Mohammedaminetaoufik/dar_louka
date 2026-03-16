@@ -15,16 +15,62 @@ function apiHeaders() {
     };
 }
 
+function resolveImageSrc(url) {
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) return url;
+    return url.startsWith('/') ? url : '/' + url;
+}
+
+function normalizeImagePathForSave(url) {
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) {
+        try {
+            var parsed = new URL(url);
+            return parsed.pathname || '';
+        } catch (e) {
+            return url;
+        }
+    }
+    return url;
+}
+
 /* ---------- Tab Switching ---------- */
-function switchTab(tabName) {
+function switchTab(tabName, tabButton) {
     document.querySelectorAll('.tab-content').forEach(function (el) {
         el.classList.add('hidden');
     });
     document.querySelectorAll('.admin-tab').forEach(function (el) {
         el.classList.remove('active');
     });
-    document.getElementById('tab-' + tabName).classList.remove('hidden');
-    event.target.closest('.admin-tab').classList.add('active');
+
+    const tabContent = document.getElementById('tab-' + tabName);
+    if (tabContent) tabContent.classList.remove('hidden');
+
+    const activeButton = tabButton || document.querySelector('.admin-tab[onclick*="\'' + tabName + '\'"]');
+    if (activeButton) activeButton.classList.add('active');
+
+    try {
+        localStorage.setItem('adminActiveTab', tabName);
+    } catch (e) {
+        console.warn('Cannot persist active tab in localStorage:', e);
+    }
+}
+
+function getActiveTabName() {
+    const activeTabContent = document.querySelector('.tab-content:not(.hidden)');
+    if (!activeTabContent?.id) {
+        return 'rooms';
+    }
+    return activeTabContent.id.replace('tab-', '');
+}
+
+function reloadPreservingCurrentTab() {
+    try {
+        localStorage.setItem('adminActiveTab', getActiveTabName());
+    } catch (e) {
+        console.warn('Cannot persist active tab before reload:', e);
+    }
+    location.reload();
 }
 
 /* ==================== ROOMS ==================== */
@@ -155,12 +201,31 @@ function renderRoomImages() {
         div.className = 'room-img-thumb';
         div.draggable = true;
         div.dataset.idx = idx;
-        var imgSrc = url.startsWith('/') ? url : '/' + url;
+        var imgSrc = resolveImageSrc(url);
         div.innerHTML =
             '<img src="' + imgSrc + '" alt="Room image ' + (idx + 1) + '">' +
             '<span class="room-img-num">' + (idx + 1) + '</span>' +
             (idx === 0 ? '<span class="room-img-main">Principal</span>' : '') +
+            '<button type="button" class="room-img-replace" onclick="replaceRoomImage(' + idx + ')" title="Remplacer"><i class="fas fa-sync-alt"></i></button>' +
             '<button type="button" class="room-img-remove" onclick="removeRoomImage(' + idx + ')" title="Supprimer">&times;</button>';
+
+        // Hidden file input for replacing this specific image
+        var replaceInput = document.createElement('input');
+        replaceInput.type = 'file';
+        replaceInput.accept = 'image/*';
+        replaceInput.style.display = 'none';
+        replaceInput.id = 'replaceInput-' + idx;
+        replaceInput.onchange = function() {
+            if (this.files[0]) {
+                var replaceIdx = parseInt(this.id.split('-')[1]);
+                uploadFile(this.files[0], function(url) {
+                    roomUploadedImages[replaceIdx] = url;
+                    if (replaceIdx === 0) roomMainImage = url;
+                    renderRoomImages();
+                });
+            }
+        };
+        div.appendChild(replaceInput);
 
         // Drag handlers for reordering
         div.addEventListener('dragstart', function (e) {
@@ -196,6 +261,11 @@ function renderRoomImages() {
         container.appendChild(div);
     });
     updateImageCounter();
+}
+
+function replaceRoomImage(idx) {
+    var input = document.getElementById('replaceInput-' + idx);
+    if (input) input.click();
 }
 
 function removeRoomImage(idx) {
@@ -279,8 +349,8 @@ function saveRoom() {
         price: parseFloat(document.getElementById('roomPrice').value) || 0,
         capacity: parseInt(document.getElementById('roomCapacity').value) || 2,
         amenities: amenities,
-        image: roomUploadedImages[0] || '',
-        images: roomUploadedImages.slice(1),
+        image: normalizeImagePathForSave(roomUploadedImages[0] || ''),
+        images: roomUploadedImages.slice(1).map(normalizeImagePathForSave),
     };
 
     var url = id ? '/api/rooms/' + id : '/api/rooms';
@@ -314,10 +384,10 @@ function saveRoom() {
                         method: 'PUT',
                         headers: apiHeaders(),
                         body: JSON.stringify({ ical_import_urls: urls }),
-                    }).then(function () { location.reload(); });
+                    }).then(function () { reloadPreservingCurrentTab(); });
                 }
             }
-            location.reload();
+            reloadPreservingCurrentTab();
         })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
@@ -328,7 +398,7 @@ function deleteRoom(id) {
         method: 'DELETE',
         headers: apiHeaders(),
     })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -500,6 +570,16 @@ function toggleEventForm() {
 
 // Listen for start date changes to auto-set end date
 document.addEventListener('DOMContentLoaded', function() {
+    var savedTab = null;
+    try {
+        savedTab = localStorage.getItem('adminActiveTab');
+    } catch (e) {
+        savedTab = null;
+    }
+    if (savedTab) {
+        switchTab(savedTab);
+    }
+
     var startDateEl = document.getElementById('eventStartDate');
     if (startDateEl) {
         startDateEl.addEventListener('change', function() {
@@ -530,7 +610,7 @@ function uploadEventImage(input) {
     if (input.files[0]) {
         uploadFile(input.files[0], function (url) {
             eventUploadedImage = url;
-            var src = url.startsWith('/') ? url : '/' + url;
+            var src = resolveImageSrc(url);
             document.getElementById('eventImagePreview').innerHTML = '<img src="' + src + '" style="width:100px;height:60px;object-fit:cover;border-radius:4px;">';
         });
     }
@@ -557,7 +637,7 @@ function editEvent(id) {
     document.getElementById('eventProgramEn').value = (progEn || []).join('\n');
     eventUploadedImage = ev.image || '';
     if (eventUploadedImage) {
-        var src = eventUploadedImage.startsWith('/') ? eventUploadedImage : '/' + eventUploadedImage;
+        var src = resolveImageSrc(eventUploadedImage);
         document.getElementById('eventImagePreview').innerHTML = '<img src="' + src + '" style="width:100px;height:60px;object-fit:cover;border-radius:4px;">';
     }
     document.getElementById('eventFormTitle').textContent = 'Modifier le forfait';
@@ -585,7 +665,7 @@ function saveEvent() {
         max_participants: parseInt(document.getElementById('eventMaxParticipants').value) || null,
         program_fr: programFr,
         program_en: programEn,
-        image: eventUploadedImage,
+        image: normalizeImagePathForSave(eventUploadedImage),
     };
 
     var url = id ? '/api/events/' + id : '/api/events';
@@ -597,7 +677,7 @@ function saveEvent() {
         body: JSON.stringify(body),
     })
         .then(function (res) { return res.json(); })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -607,7 +687,7 @@ function deleteEvent(id) {
         method: 'DELETE',
         headers: apiHeaders(),
     })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -636,7 +716,7 @@ function uploadGalleryImage(input) {
     if (input.files[0]) {
         uploadFile(input.files[0], function (url) {
             galleryUploadedImage = url;
-            var src = url.startsWith('/') ? url : '/' + url;
+            var src = resolveImageSrc(url);
             document.getElementById('galleryImagePreview').innerHTML = '<img src="' + src + '" style="width:100px;height:60px;object-fit:cover;border-radius:4px;">';
         });
     }
@@ -653,7 +733,7 @@ function editGalleryItem(id) {
     document.getElementById('galleryCategory').value = img.category || '';
     galleryUploadedImage = img.image || '';
     if (galleryUploadedImage) {
-        var src = galleryUploadedImage.startsWith('/') ? galleryUploadedImage : '/' + galleryUploadedImage;
+        var src = resolveImageSrc(galleryUploadedImage);
         document.getElementById('galleryImagePreview').innerHTML = '<img src="' + src + '" style="width:100px;height:60px;object-fit:cover;border-radius:4px;">';
     }
     document.getElementById('galleryFormTitle').textContent = 'Modifier l\'image';
@@ -670,7 +750,7 @@ function saveGalleryItem() {
         description_fr: document.getElementById('galleryDescFr').value,
         description_en: document.getElementById('galleryDescEn').value,
         category: document.getElementById('galleryCategory').value,
-        image: galleryUploadedImage,
+        image: normalizeImagePathForSave(galleryUploadedImage),
     };
 
     var url = id ? '/api/gallery/' + id : '/api/gallery';
@@ -682,7 +762,7 @@ function saveGalleryItem() {
         body: JSON.stringify(body),
     })
         .then(function (res) { return res.json(); })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -692,7 +772,7 @@ function deleteGalleryItem(id) {
         method: 'DELETE',
         headers: apiHeaders(),
     })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -703,7 +783,7 @@ function updateBookingStatus(id, status) {
         headers: apiHeaders(),
         body: JSON.stringify({ status: status }),
     })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -713,7 +793,7 @@ function deleteBooking(id) {
         method: 'DELETE',
         headers: apiHeaders(),
     })
-        .then(function () { location.reload(); })
+        .then(function () { reloadPreservingCurrentTab(); })
         .catch(function (err) { alert('Erreur: ' + err.message); });
 }
 
@@ -740,19 +820,19 @@ function generateConfirmation(bookingId, method, lang) {
 
     if (lang === 'fr') {
         msg = 'Cher(e) ' + booking.name + ',\n\n';
-        msg += 'Nous avons le plaisir de confirmer votre réservation à Dar Louka.\n\n';
-        msg += 'Détails de la réservation :\n';
+        msg += 'Nous avons le plaisir de confirmer votre reservation a Dar Louka.\n\n';
+        msg += 'Details de la reservation :\n';
         msg += (isEvent ? '- Forfait : ' : '- Chambre : ') + locationName + '\n';
-        msg += '- Arrivée : ' + checkIn + '\n';
-        msg += '- Départ : ' + checkOut + '\n';
+        msg += '- Arrivee : ' + checkIn + '\n';
+        msg += '- Depart : ' + checkOut + '\n';
         msg += '- Nombre de voyageurs : ' + booking.guests + '\n';
         if (booking.special_requests) {
-            msg += '- Demandes spéciales : ' + booking.special_requests + '\n';
+            msg += '- Demandes speciales : ' + booking.special_requests + '\n';
         }
         msg += '\nNous vous attendons avec impatience !\n\n';
-        msg += 'Cordialement,\nL\'équipe Dar Louka\n';
-        msg += 'Tél: +212 6 62 02 46 68\n';
-        msg += 'Email: dar.louka@gmail.com';
+        msg += 'Cordialement,\nL\'equipe Dar Louka\n';
+        msg += 'Tel: +212 6 16 46 05 40\n';
+        msg += 'Email: info@dar-louka-maroc.com';
     } else {
         msg = 'Dear ' + booking.name + ',\n\n';
         msg += 'We are pleased to confirm your reservation at Dar Louka.\n\n';
@@ -766,14 +846,26 @@ function generateConfirmation(bookingId, method, lang) {
         }
         msg += '\nWe look forward to welcoming you!\n\n';
         msg += 'Best regards,\nThe Dar Louka Team\n';
-        msg += 'Tel: +212 6 62 02 46 68\n';
-        msg += 'Email: dar.louka@gmail.com';
+        msg += 'Tel: +212 6 16 46 05 40\n';
+        msg += 'Email: info@dar-louka-maroc.com';
     }
 
     var msgDiv = document.getElementById('confirmMsg-' + bookingId);
     var textarea = document.getElementById('confirmText-' + bookingId);
     textarea.value = msg;
     msgDiv.classList.remove('hidden');
+
+    if (method === 'email-send') {
+        var subject = lang === 'fr'
+            ? 'Confirmation de votre reservation - Dar Louka'
+            : 'Your reservation confirmation - Dar Louka';
+        var recipient = booking.email || '';
+        var mailtoUrl = 'mailto:' + encodeURIComponent(recipient)
+            + '?subject=' + encodeURIComponent(subject)
+            + '&body=' + encodeURIComponent(msg);
+        window.location.href = mailtoUrl;
+        return;
+    }
 
     if (method === 'whatsapp') {
         var phone = (booking.phone || '').replace(/[^0-9+]/g, '');

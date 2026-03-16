@@ -130,7 +130,7 @@
         <img id="lightbox-img" src="" alt="">
     </div>
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
     @stack('scripts')
 </body>
 </html>

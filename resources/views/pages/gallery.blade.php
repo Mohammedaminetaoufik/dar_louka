@@ -39,8 +39,8 @@
 
         <div class="gallery-grid" id="galleryGrid">
             @foreach($images as $image)
-            <div class="gallery-item" data-category="{{ $image->category ?? 'all' }}" onclick="openLightbox('{{ asset($image->image) }}')">
-                <img src="{{ asset($image->image) }}" alt="{{ $image->translated_title }}" loading="lazy">
+            <div class="gallery-item" data-category="{{ $image->category ?? 'all' }}" onclick="openLightbox('{{ Str::startsWith($image->image, ['http://', 'https://']) ? $image->image : asset($image->image) }}')">
+                <img src="{{ Str::startsWith($image->image, ['http://', 'https://']) ? $image->image : asset($image->image) }}" alt="{{ $image->translated_title }}" loading="lazy">
                 @if($image->translated_title || $image->translated_description)
                 <div class="gallery-caption">
                     @if($image->translated_title)

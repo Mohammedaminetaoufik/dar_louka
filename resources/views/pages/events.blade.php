@@ -36,7 +36,7 @@
             <div class="card event-card reveal">
                 @if($event->image)
                 <div style="overflow:hidden;position:relative;">
-                    <img src="{{ asset($event->image) }}" alt="{{ $event->translated_title }}" class="card-img">
+                        <img src="{{ Str::startsWith($event->image, ['http://', 'https://']) ? $event->image : asset($event->image) }}" alt="{{ $event->translated_title }}" class="card-img">
                     <span class="badge {{ $event->type === 'THREE_DAYS' ? 'badge-confirmed' : 'badge-pending' }}" style="position:absolute;top:1rem;left:1rem;font-size:0.9rem;padding:0.4rem 0.8rem;">
                         {{ $event->type === 'THREE_DAYS' ? __('messages.events.threeDays') : __('messages.events.oneDay') }}
                     </span>
@@ -101,7 +101,7 @@
                     <div class="event-card__footer">
                         @if($event->price)
                         <div class="event-price" style="padding:1rem;background:var(--sand-50);border-radius:8px;text-align:center;">
-                            <span style="font-size:2rem;font-weight:700;color:var(--color-primary);">{{ number_format($event->price, 0, ',', ' ') }} &euro;</span>
+                            <span style="font-size:2rem;font-weight:700;color:var(--color-primary);">{{ number_format($event->price, 0, ',', ' ') }} €</span>
                             <span style="font-size:0.85rem;color:var(--color-muted-foreground);display:block;">{{ __('messages.events.perPerson') }}</span>
                         </div>
                         @endif

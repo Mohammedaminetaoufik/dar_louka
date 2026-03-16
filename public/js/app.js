@@ -229,9 +229,19 @@ function submitBooking(e) {
                 successDiv.classList.remove('hidden');
                 document.getElementById('bookingForm').reset();
             } else {
-                var msg = result.data.message || result.data.error || 'Erreur';
-                if (result.status === 409 && result.data.conflictDates) {
-                    msg += ': ' + result.data.conflictDates.join(', ');
+                var msg = result.data.message || result.data.error || 'Une erreur est survenue. Veuillez réessayer.';
+                if (result.status === 409) {
+                    var professionalMsg = 'Cette chambre n\'est malheureusement plus disponible pour les dates selectionnees. Merci de choisir d\'autres dates ou une autre chambre.';
+                    var conflictDates = result.data && result.data.conflictDates ? result.data.conflictDates : null;
+                    if (conflictDates && conflictDates.checkIn && conflictDates.checkOut) {
+                        var startDate = new Date(conflictDates.checkIn);
+                        var endDate = new Date(conflictDates.checkOut);
+                        var startLabel = isNaN(startDate.getTime()) ? conflictDates.checkIn : startDate.toLocaleDateString('fr-FR');
+                        var endLabel = isNaN(endDate.getTime()) ? conflictDates.checkOut : endDate.toLocaleDateString('fr-FR');
+                        msg = professionalMsg + ' Periode deja reservee : du ' + startLabel + ' au ' + endLabel + '.';
+                    } else {
+                        msg = professionalMsg;
+                    }
                 }
                 document.getElementById('bookingErrorText').textContent = msg;
                 errorDiv.classList.remove('hidden');

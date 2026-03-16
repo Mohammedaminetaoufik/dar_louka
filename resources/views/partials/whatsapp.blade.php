@@ -1,5 +1,5 @@
 <!-- WhatsApp Floating Button -->
-<a href="https://wa.me/212662024668?text={{ urlencode(__('messages.slogan')) }}" 
+<a href="https://wa.me/212616460540?text={{ urlencode(__('messages.slogan')) }}" 
    target="_blank" 
    rel="noopener" 
    class="whatsapp-btn" 

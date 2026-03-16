@@ -49,7 +49,7 @@
             <div class="room-gallery-mosaic" data-images='@json($allImages)'>
                 @foreach($allImages as $idx => $img)
                 <div class="mosaic-tile {{ $idx === 0 ? 'mosaic-hero' : '' }}" onclick="openRoomLightbox(this, {{ $idx }})">
-                    <img src="{{ asset($img) }}" alt="{{ $room->translated_name }}" loading="{{ $idx < 3 ? 'eager' : 'lazy' }}">
+                    <img src="{{ Str::startsWith($img, ['http://', 'https://']) ? $img : asset($img) }}" alt="{{ $room->translated_name }}" loading="{{ $idx < 3 ? 'eager' : 'lazy' }}">
                     <div class="mosaic-hover">
                         <i class="fas fa-search-plus"></i>
                     </div>

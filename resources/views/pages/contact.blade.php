@@ -3,8 +3,8 @@
 @section('meta_description')
 @php
     echo app()->getLocale() === 'fr'
-        ? "Contactez Dar Louka, maison d'hôte à Tahanaout, Marrakech. Réservation, informations et accès. Douar Ait Souka, à 30 min de Marrakech, Maroc."
-        : "Contact Dar Louka guesthouse in Tahanaout, Marrakech. Reservations, information and directions. Douar Ait Souka, 30 min from Marrakech, Morocco.";
+        ? "Contactez Dar Louka, maison d'hôte à Tahanaout, Marrakech. Réservation, informations et accès. Sour Tidrara, à 30 min de Marrakech, Maroc."
+        : "Contact Dar Louka guesthouse in Tahanaout, Marrakech. Reservations, information and directions. Sour Tidrara, 30 min from Marrakech, Morocco.";
 @endphp
 @endsection
 
@@ -49,14 +49,14 @@
                 <div class="contact-icon"><i class="fas fa-phone"></i></div>
                 <div>
                     <h3>{{ __('messages.contact.phone') }}</h3>
-                    <p>+212 6 62 02 46 68</p>
+                    <p>+212 6 16 46 05 40</p>
                 </div>
             </div>
             <div class="contact-info-card">
                 <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                 <div>
                     <h3>{{ __('messages.contact.email') }}</h3>
-                    <p>dar.louka@gmail.com</p>
+                    <p>info@dar-louka-maroc.com</p>
                 </div>
             </div>
         </div>

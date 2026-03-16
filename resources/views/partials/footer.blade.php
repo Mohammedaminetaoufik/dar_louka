@@ -4,7 +4,7 @@
         <div class="footer-grid">
             <!-- Brand -->
             <div class="footer-brand">
-                <img src="{{ asset('uploads/dar-louka-logo.svg') }}" alt="Dar Louka" class="footer-logo">
+                <img src="{{ asset('uploads/dar-louka-logo.png') }}" alt="Dar Louka" class="footer-logo">
                 <h3>Dar Louka</h3>
                 <p class="footer-slogan">{{ __('messages.slogan') }}</p>
                 <p class="footer-tagline">{{ __('messages.tagline') }}</p>
@@ -36,11 +36,11 @@
                 </div>
                 <div class="footer-contact-item">
                     <span class="footer-contact-icon"><i class="fas fa-phone"></i></span>
-                    <span>+212 6 62 02 46 68</span>
+                    <span>+212 6 16 46 05 40</span>
                 </div>
                 <div class="footer-contact-item">
                     <span class="footer-contact-icon"><i class="fas fa-envelope"></i></span>
-                    <span>dar.louka@gmail.com</span>
+                    <span>info@dar-louka-maroc.com</span>
                 </div>
             </div>
 

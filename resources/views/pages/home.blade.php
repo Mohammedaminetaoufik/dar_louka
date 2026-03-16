@@ -106,7 +106,7 @@
                 @endphp
                 @if($mainImg)
                 <div style="overflow:hidden;">
-                    <img src="{{ asset($mainImg) }}" alt="{{ $room->translated_name }}" class="card-img">
+                    <img src="{{ Str::startsWith($mainImg, ['http://', 'https://']) ? $mainImg : asset($mainImg) }}" alt="{{ $room->translated_name }}" class="card-img">
                 </div>
                 @endif
                 <div class="card-body">

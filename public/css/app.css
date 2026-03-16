@@ -2284,7 +2284,7 @@ button { cursor: pointer; font-family: inherit; }
 .badge-cancelled { background: #fee2e2; color: #991b1b; }
 
 .admin-form {
-    max-width: 600px;
+    max-width: 700px;
     background: white;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -2418,6 +2418,55 @@ button { cursor: pointer; font-family: inherit; }
 
 .room-img-thumb:hover .room-img-remove {
     opacity: 1;
+}
+
+.room-img-replace {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--gold-500);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    line-height: 1;
+}
+
+.room-img-thumb:hover .room-img-replace {
+    opacity: 1;
+}
+
+.table-images-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.table-images-row img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--sand-200);
+    transition: transform 0.2s;
+}
+
+.table-images-row img:first-child {
+    border-color: var(--gold-500);
+}
+
+.table-images-row img:hover {
+    transform: scale(1.3);
+    z-index: 2;
+    position: relative;
 }
 
 .login-container {
