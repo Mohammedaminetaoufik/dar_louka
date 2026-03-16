@@ -117,7 +117,7 @@
                     <p class="room-description">{{ Str::limit($room->translated_description, 120) }}</p>
                     <div class="room-price-row">
                         <span class="room-price-label">{{ __('messages.rooms.from') }}</span>
-                        <span class="room-price">{{ number_format($room->price) }} MAD <span class="room-price-unit">/ {{ __('messages.rooms.perNight') }}</span></span>
+                        <span class="room-price">{{ number_format($room->price) }} €<span class="room-price-unit">/ {{ __('messages.rooms.perNight') }}</span></span>
                     </div>
                 </div>
             </div>

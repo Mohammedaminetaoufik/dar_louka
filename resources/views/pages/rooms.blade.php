@@ -112,7 +112,7 @@
                 <div class="room-footer">
                     <div class="price-block">
                         <span class="price-from">{{ __('messages.rooms.from') }}</span>
-                        <span class="price-amount">{{ number_format($room->price) }} MAD <span class="price-unit">/ {{ __('messages.rooms.perNight') }}</span></span>
+                        <span class="price-amount">{{ number_format($room->price) }} €<span class="price-unit">/ {{ __('messages.rooms.perNight') }}</span></span>
                     </div>
                     <button class="btn btn-gold" onclick="openBookingModal({{ $room->id }}, '{{ addslashes($room->translated_name) }}', {{ $room->price }})">
                         <i class="fas fa-calendar-check"></i> {{ __('messages.rooms.bookNow') }}
