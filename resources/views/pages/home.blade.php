@@ -18,7 +18,7 @@
 @section('content')
 <!-- Hero Section -->
 <section class="hero">
-    <div class="hero-bg" style="background-image: url('{{ asset('images/hero.jpg') }}');"></div>
+    <div class="hero-bg" style="background-image: url('{{ asset('uploads/dar-louka.jpeg') }}');"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <div class="hero-badge">
