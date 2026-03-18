@@ -8,13 +8,14 @@ class Room extends Model
 {
     protected $fillable = [
         'name_en', 'name_fr', 'description_en', 'description_fr',
-        'price', 'capacity', 'amenities', 'image', 'images',
+        'price', 'capacity', 'surface', 'amenities', 'image', 'images',
         'ical_import_urls', 'ical_token', 'last_ical_sync',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'capacity' => 'integer',
+        'surface' => 'integer',
         'last_ical_sync' => 'datetime',
     ];
 

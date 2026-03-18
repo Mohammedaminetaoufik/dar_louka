@@ -96,6 +96,7 @@ function resetRoomForm() {
     document.getElementById('roomDescEn').value = '';
     document.getElementById('roomPrice').value = '';
     document.getElementById('roomCapacity').value = '2';
+    document.getElementById('roomSurface').value = '';
     document.getElementById('roomAmenities').value = '';
     document.getElementById('roomImagesList').innerHTML = '';
     document.getElementById('roomFormTitle').textContent = 'Ajouter une chambre';
@@ -288,6 +289,7 @@ function editRoom(id) {
     document.getElementById('roomDescEn').value = room.description_en || '';
     document.getElementById('roomPrice').value = room.price || '';
     document.getElementById('roomCapacity').value = room.capacity || 2;
+    document.getElementById('roomSurface').value = room.surface || '';
     var amenities = room.amenities;
     if (typeof amenities === 'string') {
         try { amenities = JSON.parse(amenities); } catch (e) { amenities = []; }
@@ -348,6 +350,7 @@ function saveRoom() {
         description_en: document.getElementById('roomDescEn').value,
         price: parseFloat(document.getElementById('roomPrice').value) || 0,
         capacity: parseInt(document.getElementById('roomCapacity').value) || 2,
+        surface: parseInt(document.getElementById('roomSurface').value) || null,
         amenities: amenities,
         image: normalizeImagePathForSave(roomUploadedImages[0] || ''),
         images: roomUploadedImages.slice(1).map(normalizeImagePathForSave),

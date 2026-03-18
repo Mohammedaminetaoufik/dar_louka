@@ -33,6 +33,7 @@ class RoomApiController extends Controller
             'description_fr' => 'required|string',
             'price' => 'required|numeric|min:0',
             'capacity' => 'required|integer|min:1',
+            'surface' => 'nullable|integer|min:1',
         ]);
 
         $data = $request->all();
@@ -74,6 +75,7 @@ class RoomApiController extends Controller
             'description_fr' => 'required|string',
             'price' => 'required|numeric|min:0',
             'capacity' => 'required|integer|min:1',
+            'surface' => 'nullable|integer|min:1',
         ]);
 
         $data = $request->all();
@@ -125,6 +127,7 @@ class RoomApiController extends Controller
             'descriptionFr' => $room->description_fr,
             'price' => (float) $room->price,
             'capacity' => $room->capacity,
+            'surface' => $room->surface,
             'amenities' => $room->amenities_array,
             'image' => $room->image,
             'images' => $room->images_array,

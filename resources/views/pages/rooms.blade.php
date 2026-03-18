@@ -43,6 +43,7 @@
             if($room->image) $allImages[] = $room->image;
             if(is_array($images)) $allImages = array_merge($allImages, $images);
             $allImages = array_values(array_unique(array_filter($allImages)));
+            $roomSurface = $room->surface ? ($room->surface . 'm²') : '—';
         @endphp
         <div class="room-card-luxury reveal">
             <!-- Image Gallery -->
@@ -88,7 +89,7 @@
                     </div>
                     <div class="room-feature-item">
                         <i class="fas fa-expand-arrows-alt"></i>
-                        <span class="feature-val">{{ $room->capacity * 10 }}m²</span>
+                        <span class="feature-val">{{ $roomSurface }}</span>
                         <span class="feature-lbl">{{ __('messages.rooms.size') }}</span>
                     </div>
                 </div>

@@ -30,6 +30,7 @@ class DashboardController extends Controller
                 'description_en' => $r->description_en,
                 'price' => $r->price,
                 'capacity' => $r->capacity,
+                'surface' => $r->surface,
                 'amenities' => $r->amenities,
                 'image' => $r->image,
                 'images' => $r->images,

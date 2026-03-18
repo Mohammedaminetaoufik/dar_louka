@@ -73,6 +73,10 @@
                         <label class="form-label">Capacité</label>
                         <input type="number" class="form-input" id="roomCapacity" min="1" value="2">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Surface (m²)</label>
+                        <input type="number" class="form-input" id="roomSurface" min="1" placeholder="25">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Équipements (un par ligne)</label>
@@ -146,6 +150,7 @@
                             <th>Nom</th>
                             <th>Prix</th>
                             <th>Capacité</th>
+                            <th>Surface</th>
                             <th>iCal</th>
                             <th>Actions</th>
                         </tr>
@@ -173,6 +178,7 @@
                             <td>{{ $room->name_fr ?: $room->name_en }}</td>
                             <td>{{ number_format($room->price) }} MAD</td>
                             <td>{{ $room->capacity }}</td>
+                            <td>{{ $room->surface ? $room->surface . ' m²' : '—' }}</td>
                             <td>
                                 @if($room->ical_token)
                                     @php
