@@ -32,6 +32,8 @@ class DashboardController extends Controller
                 'capacity' => $r->capacity,
                 'surface' => $r->surface,
                 'amenities' => $r->amenities,
+                'amenities_fr' => $r->amenities_fr,
+                'amenities_en' => $r->amenities_en,
                 'image' => $r->image,
                 'images' => $r->images,
                 'ical_token' => $r->ical_token,

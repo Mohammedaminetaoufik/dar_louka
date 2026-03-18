@@ -37,8 +37,10 @@
             $images = is_string($room->images) ? (json_decode($room->images, true) ?? []) : ($room->images ?? []);
             if (!is_array($images)) $images = [];
             $mainImg = $room->image ?: (count($images) > 0 ? $images[0] : '');
-            $amenities = is_string($room->amenities) ? (json_decode($room->amenities, true) ?? []) : ($room->amenities ?? []);
-            if (!is_array($amenities)) $amenities = [];
+            $amenities = $room->translated_amenities;
+            if (!is_array($amenities)) {
+                $amenities = [];
+            }
             $allImages = [];
             if($room->image) $allImages[] = $room->image;
             if(is_array($images)) $allImages = array_merge($allImages, $images);
@@ -102,7 +104,7 @@
                         @foreach($amenities as $amenity)
                         <span class="amenity-tag">
                             <i class="fas fa-check-circle"></i>
-                            {{ __('messages.amenities.' . $amenity, [], app()->getLocale()) !== 'messages.amenities.' . $amenity ? __('messages.amenities.' . $amenity) : $amenity }}
+                            {{ $amenity }}
                         </span>
                         @endforeach
                     </div>

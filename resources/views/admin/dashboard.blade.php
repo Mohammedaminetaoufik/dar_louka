@@ -78,9 +78,15 @@
                         <input type="number" class="form-input" id="roomSurface" min="1" placeholder="25">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Équipements (un par ligne)</label>
-                    <textarea class="form-textarea" id="roomAmenities" placeholder="wifi&#10;climatisation&#10;piscine"></textarea>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Équipements (FR, un par ligne)</label>
+                        <textarea class="form-textarea" id="roomAmenitiesFr" placeholder="wifi&#10;climatisation&#10;piscine"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amenities (EN, one per line)</label>
+                        <textarea class="form-textarea" id="roomAmenitiesEn" placeholder="wifi&#10;air conditioning&#10;pool"></textarea>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Images <span id="roomImageCounter" style="font-size:0.85rem;color:#888;font-weight:normal;">0/5</span></label>

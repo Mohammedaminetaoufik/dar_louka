@@ -34,18 +34,25 @@ class RoomApiController extends Controller
             'price' => 'required|numeric|min:0',
             'capacity' => 'required|integer|min:1',
             'surface' => 'nullable|integer|min:1',
+            'amenities_fr' => 'nullable',
+            'amenities_en' => 'nullable',
         ]);
 
         $data = $request->all();
         $data['ical_token'] = Str::random(32);
 
-        // Handle amenities: accept array or JSON string
-        $amenities = $request->input('amenities', []);
-        if (is_string($amenities)) {
-            $decoded = json_decode($amenities, true);
-            $amenities = is_array($decoded) ? $decoded : [];
+        $amenitiesFr = $this->parseArrayInput($request->input('amenities_fr', []));
+        $amenitiesEn = $this->parseArrayInput($request->input('amenities_en', []));
+        $legacyAmenities = $this->parseArrayInput($request->input('amenities', []));
+
+        if (empty($amenitiesFr) && empty($amenitiesEn) && !empty($legacyAmenities)) {
+            $amenitiesFr = $legacyAmenities;
+            $amenitiesEn = $legacyAmenities;
         }
-        $data['amenities'] = json_encode($amenities);
+
+        $data['amenities_fr'] = json_encode($amenitiesFr);
+        $data['amenities_en'] = json_encode($amenitiesEn);
+        $data['amenities'] = json_encode(!empty($amenitiesFr) ? $amenitiesFr : $amenitiesEn);
 
         // Handle images: accept array or JSON string
         $images = $request->input('images', []);
@@ -76,17 +83,24 @@ class RoomApiController extends Controller
             'price' => 'required|numeric|min:0',
             'capacity' => 'required|integer|min:1',
             'surface' => 'nullable|integer|min:1',
+            'amenities_fr' => 'nullable',
+            'amenities_en' => 'nullable',
         ]);
 
         $data = $request->all();
 
-        // Handle amenities: accept array or JSON string
-        $amenities = $request->input('amenities', []);
-        if (is_string($amenities)) {
-            $decoded = json_decode($amenities, true);
-            $amenities = is_array($decoded) ? $decoded : [];
+        $amenitiesFr = $this->parseArrayInput($request->input('amenities_fr', []));
+        $amenitiesEn = $this->parseArrayInput($request->input('amenities_en', []));
+        $legacyAmenities = $this->parseArrayInput($request->input('amenities', []));
+
+        if (empty($amenitiesFr) && empty($amenitiesEn) && !empty($legacyAmenities)) {
+            $amenitiesFr = $legacyAmenities;
+            $amenitiesEn = $legacyAmenities;
         }
-        $data['amenities'] = json_encode($amenities);
+
+        $data['amenities_fr'] = json_encode($amenitiesFr);
+        $data['amenities_en'] = json_encode($amenitiesEn);
+        $data['amenities'] = json_encode(!empty($amenitiesFr) ? $amenitiesFr : $amenitiesEn);
 
         // Handle images: accept array or JSON string
         $images = $request->input('images', []);
@@ -129,6 +143,10 @@ class RoomApiController extends Controller
             'capacity' => $room->capacity,
             'surface' => $room->surface,
             'amenities' => $room->amenities_array,
+            'amenities_fr' => $room->amenities_fr_array,
+            'amenities_en' => $room->amenities_en_array,
+            'amenitiesFr' => $room->amenities_fr_array,
+            'amenitiesEn' => $room->amenities_en_array,
             'image' => $room->image,
             'images' => $room->images_array,
             'created_at' => $room->created_at,
@@ -143,5 +161,21 @@ class RoomApiController extends Controller
         }
 
         return $data;
+    }
+
+    private function parseArrayInput($value): array
+    {
+        if (is_array($value)) {
+            return array_values(array_filter(array_map('trim', $value), fn($item) => $item !== ''));
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return array_values(array_filter(array_map('trim', $decoded), fn($item) => $item !== ''));
+            }
+        }
+
+        return [];
     }
 }

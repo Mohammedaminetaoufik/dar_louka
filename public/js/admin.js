@@ -97,7 +97,8 @@ function resetRoomForm() {
     document.getElementById('roomPrice').value = '';
     document.getElementById('roomCapacity').value = '2';
     document.getElementById('roomSurface').value = '';
-    document.getElementById('roomAmenities').value = '';
+    document.getElementById('roomAmenitiesFr').value = '';
+    document.getElementById('roomAmenitiesEn').value = '';
     document.getElementById('roomImagesList').innerHTML = '';
     document.getElementById('roomFormTitle').textContent = 'Ajouter une chambre';
     roomUploadedImages = [];
@@ -290,11 +291,30 @@ function editRoom(id) {
     document.getElementById('roomPrice').value = room.price || '';
     document.getElementById('roomCapacity').value = room.capacity || 2;
     document.getElementById('roomSurface').value = room.surface || '';
-    var amenities = room.amenities;
-    if (typeof amenities === 'string') {
-        try { amenities = JSON.parse(amenities); } catch (e) { amenities = []; }
+    var amenitiesFr = room.amenities_fr;
+    if (typeof amenitiesFr === 'string') {
+        try { amenitiesFr = JSON.parse(amenitiesFr); } catch (e) { amenitiesFr = []; }
     }
-    document.getElementById('roomAmenities').value = (amenities || []).join('\n');
+    if (!Array.isArray(amenitiesFr) || amenitiesFr.length === 0) {
+        amenitiesFr = room.amenities;
+        if (typeof amenitiesFr === 'string') {
+            try { amenitiesFr = JSON.parse(amenitiesFr); } catch (e) { amenitiesFr = []; }
+        }
+    }
+
+    var amenitiesEn = room.amenities_en;
+    if (typeof amenitiesEn === 'string') {
+        try { amenitiesEn = JSON.parse(amenitiesEn); } catch (e) { amenitiesEn = []; }
+    }
+    if (!Array.isArray(amenitiesEn) || amenitiesEn.length === 0) {
+        amenitiesEn = room.amenities;
+        if (typeof amenitiesEn === 'string') {
+            try { amenitiesEn = JSON.parse(amenitiesEn); } catch (e) { amenitiesEn = []; }
+        }
+    }
+
+    document.getElementById('roomAmenitiesFr').value = (amenitiesFr || []).join('\n');
+    document.getElementById('roomAmenitiesEn').value = (amenitiesEn || []).join('\n');
     roomMainImage = room.image || '';
     var images = room.images;
     if (typeof images === 'string') {
@@ -340,8 +360,10 @@ function editRoom(id) {
 
 function saveRoom() {
     var id = document.getElementById('roomEditId').value;
-    var amenitiesText = document.getElementById('roomAmenities').value;
-    var amenities = amenitiesText.split('\n').map(function (a) { return a.trim(); }).filter(Boolean);
+    var amenitiesFrText = document.getElementById('roomAmenitiesFr').value;
+    var amenitiesEnText = document.getElementById('roomAmenitiesEn').value;
+    var amenitiesFr = amenitiesFrText.split('\n').map(function (a) { return a.trim(); }).filter(Boolean);
+    var amenitiesEn = amenitiesEnText.split('\n').map(function (a) { return a.trim(); }).filter(Boolean);
 
     var body = {
         name_fr: document.getElementById('roomNameFr').value,
@@ -351,7 +373,9 @@ function saveRoom() {
         price: parseFloat(document.getElementById('roomPrice').value) || 0,
         capacity: parseInt(document.getElementById('roomCapacity').value) || 2,
         surface: parseInt(document.getElementById('roomSurface').value) || null,
-        amenities: amenities,
+        amenities_fr: amenitiesFr,
+        amenities_en: amenitiesEn,
+        amenities: amenitiesFr.length ? amenitiesFr : amenitiesEn,
         image: normalizeImagePathForSave(roomUploadedImages[0] || ''),
         images: roomUploadedImages.slice(1).map(normalizeImagePathForSave),
     };
